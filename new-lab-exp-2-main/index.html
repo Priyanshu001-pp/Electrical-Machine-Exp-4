@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Control Panel</title>
+
+      <script src="https://unpkg.com/jsplumb/dist/js/jsplumb.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+    <main class="panel">
+        <section class="top-row">
+            <aside class="left-column">
+                <div class="mcb-starter-section">
+                    <div class="mcb-block">
+                        <img class="mcb-toggle" src="images/mcb-off.png" alt="MCB">
+                        <h3 class="mcb-label">
+                            MCB
+                        </h3>
+                    </div>
+                    <!-- MCB -->
+<div id="mcb">
+     <div class=" point" id="pointR"></div>
+     <div class=" point" id="pointB"></div>
+     <div class=" point" id="pointL"></div>
+
+</div>
+
+<!-- Starter -->
+<div id="starter">
+  <div class=" point" id="starter-t1"></div>
+  <div class=" point" id="starter-t2"></div>
+</div>
+
+                    <div class="starter-block">
+                         <h3 class="starter-label">
+                            Starter
+                        </h3>
+                        <img class="starter-body" src="images/starter.png" alt="Starter body">
+                        <img class="starter-handle" src="images/red-light.png" alt="red-light">
+
+                    </div>
+                </div>
+                 <div class="rheostat">
+                        <h3 class="rheostat-label1">Field resistance</h3>
+                        <img class="rheostat-img-1" src="images/Rheostat.png" alt="Rheostat">
+                         <div class="" id="H"></div>
+                           <div class="" id="I"></div>
+                </div>            
+                <div class="rheostat">
+                        <h3 class="rheostat-label2">Armature resistance</h3>
+                        <img class="rheostat-img-2" src="images/Rheostat.png" alt="Rheostat">
+                         <div class="" id="J"></div>
+                      <div class="" id="K"></div>
+                    </div>       
+            </aside>
+
+            <section class="center-column">
+
+                    
+ 
+                <div class="meter-panel">                  
+                    <div class="meters">
+                        <h3 id="ammter1-label">
+                            Ammeter
+                        </h3>
+                        
+                        <h3 id="voltmeter1-label">
+                            Voltmeter
+                        </h3>
+                          <h3 id="rpm1-label">
+                            RPM INDICATOR
+                        </h3>
+                         
+                        
+                        <div class="meter-card">
+                               
+ 
+                                 <img src="images/ammeter.png" alt="Ammeter">
+                              
+                                  <div class=" point" id="pointC"></div>
+                                    <div class=" point" id="pointD"></div>
+
+
+                            <div class="meter-needle1">
+                                <img src="images/needle.png" alt="needle">
+                            </div>
+                           
+                        </div>
+                        <div class="meter-card">
+                            <img src="images/voltmeter.png" alt="Voltmeter">
+
+                            <div class=" point" id="pointA"></div> <!-- Left -->
+                               <div class=" point" id="pointF"></div> <!-- Right -->
+                             <div class="meter-needle3">
+                                <img src="images/needle.png" alt="needle">
+                            </div>
+                        </div>
+
+                        <div class="meter-card rpm-card">
+                                      <img src="images/rpm.png" alt="RPM Indicator">
+                                    </div>
+                    </div>
+                </div>
+               
+
+                <div class="workspace">
+                    
+                    <div class="equipment-row">
+                        <div class="assembly">
+                              
+                            <div class="motor-box">
+                               <h3 class="labeld">DC Motor</h3>
+                             <img src="images/shuntmotor.png" alt="Motor">
+                              <div class="" id="A1"></div>
+                                  <div class="" id="A2"></div>
+                                   <div class="" id="F1"></div>
+                                   <div class="" id="F2"></div>
+                            </div>
+                        
+                            <div class="generator-box">
+                                <h3 class="labeld">Front view</h3>
+                                <img class="generator-body" src="images/Rotor-body.png" alt="Rotor body">
+                                <img class="generator-rotor" id="gr" src="images/Generator-Rotor.png" alt="Generator rotor">
+                                
+                            </div>
+                         </div>
+                    
+                    </div>
+                    </div>
+                    <div class="center-actions">
+                                <button class="pill-btn">Add Table</button></br>
+                                <button class="pill-btn">Reset</button></br>
+                                <button class="pill-btn">Print</button></br>
+                                </div>
+              
+                
+            </section>
+
+            <aside class="right-column">
+    <div class="pill-stack">
+        <button class="pill-btn">Instructions</button>
+        <button class="pill-btn">Check Connections</button>
+        <button class="pill-btn">Speaking</button>
+        <button class="pill-btn">Auto Connect</button>
+    
+
+    <section class="data-section">
+       <h3 class="obs-title">OBSERVATION TABLE</h3>
+        <div class="data-table">
+            <div class="table-header">
+               
+                <span>Sr No.</span>
+                <span>Current (A)</span>
+                <span>Voltage (V)</span>
+            </div>
+            <div class="table-row"><span></span><span></span><span></span></div>
+            <div class="table-row"><span></span><span></span><span></span></div>
+            <div class="table-row"><span></span><span></span><span></span></div>
+            <div class="table-row"><span></span><span></span><span></span></div>
+            <div class="table-row"><span></span><span></span><span></span></div>
+            <div class="table-row"><span></span><span></span><span></span></div>
+            <div class="table-row"><span></span><span></span><span></span></div>
+            
+            
+        </div>
+    </div>
+    </section>
+</aside>
+
+        </section>
+
+        <section class="graph-section">
+            <div class="graph-header">
+                <h3>Output Graph</h3>
+                <div class="center-actions">
+            <button class="pill-btn">Report</button>
+            <button class="pill-btn">Graph</button>
+            </div>
+                <span class="graph-caption">Auto-generated from readings</span>
+            
+            </div>
+            
+            <div class="graph-canvas">
+                <div class="graph-bars" id="graphBars"></div>
+                
+            </div>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
