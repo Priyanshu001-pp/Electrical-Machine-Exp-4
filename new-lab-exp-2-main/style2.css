@@ -12,7 +12,7 @@
  .point-I, 
  .point-J, 
  .point-K,
- .point-A1,
+ .point-A1,    /* Until here is code correct */
  .point-Z1,  
  .point-A3, 
  .point-Z3,
@@ -248,8 +248,8 @@ top: 167px;
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 30px;
-   top: 178px;
+   left: 60px;
+   top: 170px;
    font-weight: bold;
  }
 
@@ -258,8 +258,8 @@ top: 167px;
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 62px;
-   top: 178px;
+   left: 90px;
+   top: 170px;
  }
 
  .point-L {
@@ -267,8 +267,8 @@ top: 167px;
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 40px;
-   top: 210px;
+   left: 170px;
+   top: 170px;
  }
 
  .point-F {
@@ -276,8 +276,8 @@ top: 167px;
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 70px;
-   top: 210px;
+   left: 195px;
+   top: 170px;
  }
 
  .point-A {
