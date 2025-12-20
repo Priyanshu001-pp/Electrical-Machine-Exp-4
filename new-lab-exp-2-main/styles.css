@@ -231,13 +231,13 @@ h3 {
 
 .rheostat-label1{
     position: absolute;
-    top: 308px;
+    top: 320px;
     text-align: center;
     left: 83px;
 }
 .rheostat-label2{
     position: absolute;
-    top: 499px;
+    top: 515px;
     text-align: center;
     left: 62px;
 }
@@ -832,7 +832,7 @@ img {
 .mcb-label {
     position: absolute;
     letter-spacing: 0.1em;
-    top: 210px;
+    top: 218px;
     left: 37%; 
     /* top: calc(100% + clamp(8px, 1.5vw, 12px));
     left: calc((100% / 4) * 0.5); */
@@ -846,7 +846,7 @@ img {
 }
 .starter-label {
     position: absolute;
-    top: 249px;
+    top: 258px;
     left: 49%;
     letter-spacing: 2px;
     transform: translateX(-50%);
