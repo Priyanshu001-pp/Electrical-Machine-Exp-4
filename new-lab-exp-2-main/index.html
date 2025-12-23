@@ -55,12 +55,16 @@
                         <img class="rheostat-img-1" src="images/Rheostat.png" alt="Rheostat">
                          <div class="point" id="pointH"></div>
                            <div class="point" id="pointI"></div>
+                           <button class="point-H">H</button>
+                           <button class="point-I">I</button>
                 </div>            
                 <div class="rheostat">
                         <h3 class="rheostat-label2">Armature resistance</h3>
                         <img class="rheostat-img-2" src="images/Rheostat.png" alt="Rheostat">
                          <div class="point" id="pointJ"></div>
                       <div class="point" id="pointK"></div>
+                      <button class="point-J">J</button>
+                      <button class="point-K">K</button>
                     </div>       
             </aside>
 
@@ -72,11 +76,11 @@
                     <div class="meters">
                         
                      <h3 id="voltmeter1-label">
-                            Voltmeter
+                            Ammeter
                         </h3>
 
                         <h3 id="ammter1-label">
-                            Ammeter
+                            Voltmeter
                         </h3>
                         
                        
@@ -130,12 +134,26 @@
                             <div class="motor-box">
                                <h3 class="labeld">DC Motor</h3>
                              <img src="images/shuntmotor.png" alt="Motor">
-                              <div class="" id="A1"></div>
-                                  <div class="" id="A2"></div>
-                                   <div class="" id="F1"></div>
-                                   <div class="" id="F2"></div>
+
+                            <div>
+                                <button class="point-A1">A1</button>
+                                  <button class="point-F1">F1</button>
+
+                                <div class="point" id="pointA1"></div>
+                                   <div class="point" id="pointF1"></div>
                             </div>
-                        
+                              
+                                   <div>
+                                  
+                                  <button class="point-A2">A2</button>
+                                  <button class="point-F2">F2</button>
+
+                                  <div class="point" id="pointA2"></div> 
+                                   <div class="point" id="pointF2"></div>
+                                    </div>
+                                </div>
+
+
                             <div class="generator-box">
                                 <h3 class="labeld">Front view</h3>
                                 <img class="generator-body" src="images/Rotor-body.png" alt="Rotor body">
@@ -157,7 +175,22 @@
 
             <aside class="right-column">
     <div class="pill-stack">
-        <button class="pill-btn">Instructions</button>
+         <!-- ✅ Instructions with hover -->
+        <div class="instruction-wrapper">
+  <button class="pill-btn instruction-btn">Instructions</button>
+
+  <div class="instruction-box">
+    <h4>Instructions</h4>
+    <ul>
+      <li>Connect the circuit as per DC Shunt Motor diagram</li>
+      <li>Use red wire for positive connections</li>
+      <li>Use blue wire for negative connections</li>
+      <li>Click on terminal to remove a connection</li>
+      <li>Click "Check Connections" after wiring</li>
+    </ul>
+  </div>
+</div>
+
         <button class="pill-btn">Check Connections</button>
         <button class="pill-btn">Speaking</button>
         <button class="pill-btn">Auto Connect</button>

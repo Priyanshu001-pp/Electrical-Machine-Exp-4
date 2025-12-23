@@ -218,28 +218,28 @@ h3 {
 
 }
 .rheostat-img-1{
-   position: absolute;
+   position: relative;
     width: 295px;
-    bottom: 138px;
+    bottom: 65px;
 }
 
 .rheostat-img-2{
-    position: absolute;
+    position: relative;
     width: 295px;
-    bottom: -58px;
+    bottom: 220px;
 }
 
 .rheostat-label1{
-    position: absolute;
-    top: 320px;
+    position: relative;
+    top: 32px;
     text-align: center;
-    left: 83px;
+    left: 35px;
 }
 .rheostat-label2{
-    position: absolute;
-    top: 515px;
+    position: relative;
+    top: -126px;
     text-align: center;
-    left: 62px;
+    left: 9px;
 }
 #rpm1-label {
     position: absolute;
@@ -385,6 +385,8 @@ h3 {
  {
     width:100%;
     height: 100%; 
+    position: relative;
+    z-index: 1;
 }
 
 
@@ -880,3 +882,5 @@ img {
 #s2 { left: 94px; top: 150px; }
 #s3 { left: 170px; top: 150px; }
 #s4 { left: 220px; top: 150px; }
+
+

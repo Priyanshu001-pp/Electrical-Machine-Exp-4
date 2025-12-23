@@ -14,7 +14,7 @@ jsPlumb.ready(function () {
     isSource: true,
     isTarget: true,
     maxConnections: -1,
-    connector: ["Bezier", { curviness: 60 }]
+    connector: ["Bezier", { curviness: 65 }]
   };
   const container = document.querySelector(".top-row");
   if (container) {
@@ -46,7 +46,9 @@ jsPlumb.ready(function () {
     pointA4: [0, 0.5, -1, 0],
     pointZ4: [1, 0.5, 1, 0],
     pointL1: [0, 0.5, -1, 0],
-    pointL2: [1, 0.5, 1, 0],
+    pointF2: [1, 0.5, 1, 0],
+    pointF1: [1, 0.5, -1, 0]
+     
   };
   const endpointsById = new Map();
   const loopbackTargets = new Map();
@@ -220,21 +222,16 @@ jsPlumb.ready(function () {
 
   // Required connections: unsorted list for iteration order in auto-connect, sorted Set for checking
   const requiredPairs = [
-    "pointR-pointC",
-    "pointR-pointE",
-    "pointB-pointG",
+    "pointR-pointL",
+    "pointB-pointD",
     "pointB-pointA2",
-    "pointA2-pointZ2",
-    "pointL-pointD",
-    "pointF-pointZ1",
-    "pointA-pointA1",
-    "pointL2-pointA4",
-    "pointA4-pointZ4",
-    "pointZ4-pointK",
-    "pointI-pointJ",
-    "pointJ-pointL1",
-    "pointH-pointA3",
-    "pointH-pointZ3"
+    "pointB-pointF2",
+    "pointF-pointE", 
+    "pointA-pointJ",  
+    "pointG-pointH",  
+    "pointI-pointF1",
+    "pointC-pointA1",  
+    "pointA1-pointK"
   ];
   const requiredConnections = new Set(requiredPairs.map(pair => {
     const [a, b] = pair.split("-");
@@ -261,15 +258,37 @@ jsPlumb.ready(function () {
   });
 
   // Existing: make clickable elements (endpoint divs) removable
-  document.querySelectorAll(".point").forEach(p => {
-    p.style.cursor = "pointer";
-    p.addEventListener("click", function () {
-      const id = this.id;
-      jsPlumb.getConnections({ source: id }).concat(jsPlumb.getConnections({ target: id }))
-        .forEach(c => jsPlumb.deleteConnection(c));
-      jsPlumb.repaintEverything();
-    });
+    
+      document.querySelectorAll(".point").forEach(p => {
+  p.style.cursor = "pointer";
+
+  p.addEventListener("click", function () {
+    const id = this.id;
+
+    // Get connections only related to this point
+    const conns = jsPlumb.getAllConnections().filter(conn =>
+      conn.sourceId === id || conn.targetId === id
+    );
+
+    if (conns.length === 0) return;
+
+    // Remove only this point's connection
+    jsPlumb.deleteConnection(conns[0]);
+
+    jsPlumb.repaintEverything();
   });
+});
+
+    
+  // document.querySelectorAll(".point").forEach(p => {
+  //   p.style.cursor = "pointer";
+  //   p.addEventListener("click", function () {
+  //     const id = this.id;
+  //     jsPlumb.getConnections({ source: id }).concat(jsPlumb.getConnections({ target: id }))
+  //       .forEach(c => jsPlumb.deleteConnection(c));
+  //     jsPlumb.repaintEverything();
+  //   });
+  // });
 
   // Check button - Robust selection by text content (no ID needed)
   const checkBtns = document.querySelectorAll('.pill-btn');
@@ -354,7 +373,7 @@ jsPlumb.ready(function () {
     ".point",
     ".point-R", ".point-B", ".point-L", ".point-F", ".point-A",
     ".point-C", ".point-D", ".point-E", ".point-G", ".point-H", ".point-I", ".point-J", ".point-K",
-    ".point-A1", ".point-Z1", ".point-A2", ".point-Z2", ".point-A3", ".point-Z3", ".point-A4", ".point-Z4",
+    ".point-A1", ".point-F1", ".point-A2", ".point-F2", ".point-A3", ".point-Z3", ".point-A4", ".point-Z4",
     ".point-L1", ".point-L2"
   ];
   const basePositions = new Map();

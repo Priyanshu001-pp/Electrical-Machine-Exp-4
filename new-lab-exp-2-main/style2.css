@@ -21,6 +21,8 @@
  .point-A4,
  .point-Z4,
  .point-L1,
+ .point-F1,
+ .point-F2,
  .point-L2 {
    position: absolute;
    width: 44px;
@@ -75,6 +77,8 @@
  .point-A4:hover,
  .point-Z4:hover, 
  .point-L1:hover,
+ .point-F1:hover,
+ .point-F2:hover,
  .point-L2:hover
  {
    transform: translateY(-2px);
@@ -106,6 +110,8 @@
  .point-A4:active,
  .point-Z4:active,
  .point-L1:active,
+ .point-F1:active,
+ .point-F2:active,
  .point-L2:active  {
    transform: translateY(0);
    box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.55),
@@ -147,8 +153,6 @@
    position: absolute;
    left: 62px;
   top: 176px;
- 
- 
  }
 
  #pointD {
@@ -170,34 +174,34 @@ top: 176px;
  }
  #pointH {
   position: absolute;
-   left: 55.5px;
-top: 167px;
+   left: 85px;
+   top: 442px;
  }
  #pointI {
  position: absolute;
-  left: 112px;
-top: 167px;
+  left: 285px;
+  top: 442px;
  }
  #pointJ {
   position: absolute;
-   left: 55.5px;
-top: 167px;
+   left: 85px;
+   top: 616px;
  }
  #pointK {
  position: absolute;
-  left: 112px;
-top: 167px;
+  left: 285px;
+ top: 616px;
  }
 
 #pointA1 {
   position: absolute;
- left: 50px;
-   top: 20px;
+   left: 15px;
+   top: 15px;
 }
-#pointZ1 {
+#pointF1 {
    position: absolute;
-  left:160px;
-  top: 20px;
+  left:225px;
+  top: 15px;
 }
 
 #pointA3 {
@@ -213,14 +217,14 @@ top: 167px;
 }
 #pointA2 {
   position: absolute;
-  left: 49px;
-   top: 184px;
+  left: 15px;
+   top: 225px;
 }
 
-#pointZ2 {
+#pointF2 {
    position: absolute;
-  left:160px;
-  top: 184px;
+  left:225px;
+  top: 225px;
 }
 #pointA4 {
   position: absolute;
@@ -334,40 +338,40 @@ top: 167px;
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 42px;
- top: 180px;
+   left: 73px;
+   top: 458px;
 }
 .point-I {
   font-weight: bold;
    position: absolute;
    width: 24px;
    height: 24px;
-   left:  100px;
- top: 180px;
+   left:  272px;
+  top: 458px;
 }
 .point-J {
    font-weight: bold;
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 42px;
- top: 180px;
+   left: 73px;
+   top: 634px;
 }
 .point-K {
   font-weight: bold;
    position: absolute;
    width: 24px;
    height: 24px;
-   left:  100px;
-   top: 180px;
+   left:  272px;
+   top: 633px;
 }
 .point-A1 {
    font-weight: bold;
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 5px;
-   top: 2px;
+   left: 26px;
+   top: 1px;
 }
 .point-Z1{
    font-weight: bold;
@@ -419,8 +423,8 @@ top: 167px;
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 5px;
-  top: 165px;
+   left: 26px;
+   top: 210px;
 }
 
 .point-Z2 {
@@ -447,7 +451,24 @@ top: 167px;
    width: 24px;
    height: 24px;
    left:  180px;
- top: 300px;
+   top: 300px;
 
 }
-/* jsPlumb point div should not block button hover */
+.point-F1 {
+   font-weight: bold;
+   position: absolute;
+   width: 24px;
+   height: 24px;
+   left: 184px;
+   top: 1px;
+}
+.point-F2 {
+   font-weight: bold;
+   position: absolute;
+   width: 24px;
+   height: 24px;
+   left: 184px;
+   top: 210px;
+}
+
+
