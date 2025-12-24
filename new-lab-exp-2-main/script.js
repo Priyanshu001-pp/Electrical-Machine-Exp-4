@@ -368,6 +368,32 @@ jsPlumb.ready(function () {
     console.error("Auto Connect button not found! Looking for '.pill-btn' with text 'Auto Connect'.");
   }
 
+
+  // Reset button - remove ALL connections
+const resetBtn = Array.from(document.querySelectorAll('.pill-btn'))
+  .find(btn => btn.textContent.trim() === 'Reset');
+
+if (resetBtn) {
+  resetBtn.addEventListener('click', function () {
+
+    // Remove all connections safely
+    if (typeof jsPlumb.deleteEveryConnection === "function") {
+      jsPlumb.deleteEveryConnection();
+    } else {
+      jsPlumb.getAllConnections().forEach(conn => {
+        jsPlumb.deleteConnection(conn);
+      });
+    }
+
+    // Force repaint so no ghost wires remain
+    jsPlumb.repaintEverything();
+
+    console.log("Reset: all connections removed");
+  });
+} else {
+  console.error("Reset button not found!");
+}
+
   // Lock every point to its initial coordinates so resizing the window cannot drift them
   const pinnedSelectors = [
     ".point",

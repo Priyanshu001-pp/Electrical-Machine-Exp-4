@@ -137,7 +137,7 @@ h3 {
 
 .starter-body {
     display: block;
-    width: 111.11%;
+    width: 102.11%;
     height: auto;
 }
 
@@ -174,7 +174,7 @@ h3 {
 
 .labeld{
      position: absolute;
-    top: -45px;
+    top: 245px;
 }
 
 .terminal{
@@ -383,22 +383,22 @@ h3 {
 
 .motor-box img
  {
-    width:100%;
-    height: 100%; 
+    width:130%;
+    height: 130%; 
     position: relative;
     z-index: 1;
 }
 
 
 .generator-body {
-    width: 100%;
-    height: 120%;
+    width: 130%;
+    height: 36vh;
 }
 
 .generator-rotor {
     position: absolute;
-    width: 47%;
-    height: 58%;
+    width: 62%;
+    height: 65%;
     /* inset: 50% auto auto 50%;
     transform: translate(-50%, -50%); */
 }
@@ -641,7 +641,7 @@ h3 {
 }
 
 img {
-    max-width: 100%;
+    max-width: 150%;
     height: auto;
     display: block;
 }
@@ -883,4 +883,141 @@ img {
 #s3 { left: 170px; top: 150px; }
 #s4 { left: 220px; top: 150px; }
 
+.instructions-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 
+/* Hidden by default */
+.instructions-panel {
+  position: absolute;
+  right: 110%;
+  top: 0;
+  width: 520px;
+  background: #f8f2e7;
+  border: 3px solid #111;
+  padding: 14px;
+  border-radius: 6px;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+  display: none;
+  z-index: 9999;
+}
+
+/* Show on hover */
+.instructions-wrapper:hover .instructions-panel {
+  display: block;
+}
+
+/* Table styling */
+.conn-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.conn-table th,
+.conn-table td {
+  border: 2px solid #111;
+  padding: 4px 6px;
+  text-align: center;
+}
+
+/* Steps list */
+.steps-list {
+  margin-top: 10px;
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+.steps-list li {
+  margin-bottom: 6px;
+}
+/* Allow instruction popup to escape sidebar */
+.right-column,
+.right-column .pill-stack {
+  overflow: visible !important;
+}
+
+
+.nob1{
+  position: absolute;
+  bottom: 282px;
+  left: 70px;
+  width: 38px;      
+  height: 30px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+
+.nob2{
+  position: absolute;
+  bottom: 108px;
+  left: 70px;
+  width: 38px;      
+  height: 30px;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+
+.instructions-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Hidden by default */
+.instructions-panel {
+  position: absolute;
+  right: 110%;
+  top: 0;
+  width: 520px;
+  background: #f8f2e7;
+  border: 3px solid #111;
+  padding: 14px;
+  border-radius: 6px;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+  display: none;
+  z-index: 9999;
+}
+
+/* Show on hover */
+.instructions-wrapper:hover .instructions-panel {
+  display: block;
+}
+
+/* Table styling */
+.conn-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.conn-table th,
+.conn-table td {
+  border: 2px solid #111;
+  padding: 4px 6px;
+  text-align: center;
+}
+
+/* Steps list */
+.steps-list {
+  margin-top: 10px;
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+.steps-list li {
+  margin-bottom: 6px;
+}
+/* Allow instruction popup to escape sidebar */
+.right-column,
+.right-column .pill-stack {
+  overflow: visible !important;
+}
