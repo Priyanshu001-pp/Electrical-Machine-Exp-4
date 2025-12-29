@@ -88,6 +88,8 @@
    filter: saturate(1.04);
  }
 
+ 
+
  .point-R:active,
  .point-B:active,
  .point-L:active,
@@ -114,12 +116,12 @@
  .point-F2:active,
  .point-L2:active  {
    transform: translateY(0);
-   box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.55),
+   box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.89),
      inset 0 -3px 8px rgba(0, 0, 0, 0.12),
      0 6px 12px rgba(0, 0, 0, 0.18);
  }
 
- #pointR {
+ #pointR {              /*Endpoint move*/
    position: absolute;
    left: 75px;
    top: 185px;
@@ -175,22 +177,22 @@ top: 176px;
  #pointH {
   position: absolute;
    left: 85px;
-   top: 442px;
+   top: 387px;
  }
  #pointI {
  position: absolute;
   left: 285px;
-  top: 442px;
+  top: 387px;
  }
  #pointJ {
   position: absolute;
    left: 85px;
-   top: 616px;
+   top: 556px;
  }
  #pointK {
  position: absolute;
   left: 285px;
- top: 616px;
+ top: 556px;
  }
 
 #pointA1 {
@@ -249,7 +251,7 @@ top: 176px;
   top: 290px;
 }
 
- .point-R {
+ .point-R {                 /*Endpoint button*/
    position: absolute;
    width: 24px;
    height: 24px;
@@ -339,7 +341,7 @@ top: 176px;
    width: 24px;
    height: 24px;
    left: 73px;
-   top: 458px;
+   top: 406px;
 }
 .point-I {
   font-weight: bold;
@@ -347,7 +349,7 @@ top: 176px;
    width: 24px;
    height: 24px;
    left:  272px;
-  top: 458px;
+  top: 406px;
 }
 .point-J {
    font-weight: bold;
@@ -355,7 +357,7 @@ top: 176px;
    width: 24px;
    height: 24px;
    left: 73px;
-   top: 634px;
+   top: 574px;
 }
 .point-K {
   font-weight: bold;
@@ -363,7 +365,7 @@ top: 176px;
    width: 24px;
    height: 24px;
    left:  272px;
-   top: 633px;
+   top: 574px;
 }
 .point-A1 {
    font-weight: bold;
@@ -470,5 +472,24 @@ top: 176px;
    left: 184px;
    top: 210px;
 }
+
+/* ===== FIX: motor image should not block endpoints ===== */
+.motor-box img,
+.generator-box img {
+  pointer-events: none;
+}
+
+
+/* ===== FIX FOR jsPlumb ENDPOINT HOVER ISSUE ===== */
+/* .point-H:hover,
+.point-I:hover,
+.point-J:hover,
+.point-K:hover {
+  transform: none !important;   
+  box-shadow:
+    0 0 0 2px rgba(255, 140, 0, 0.6),
+    inset 0 2px 6px rgba(255, 255, 255, 0.7);
+  filter: saturate(1.05);
+} */
 
 

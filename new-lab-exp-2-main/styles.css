@@ -220,24 +220,24 @@ h3 {
 .rheostat-img-1{
    position: relative;
     width: 295px;
-    bottom: 65px;
+    bottom: 120px;
 }
 
 .rheostat-img-2{
     position: relative;
     width: 295px;
-    bottom: 220px;
+    bottom: 280px;
 }
 
 .rheostat-label1{
     position: relative;
-    top: 32px;
+    top: 120px;
     text-align: center;
     left: 35px;
 }
 .rheostat-label2{
     position: relative;
-    top: -126px;
+    top: -20px;
     text-align: center;
     left: 9px;
 }
@@ -383,10 +383,11 @@ h3 {
 
 .motor-box img
  {
-    width:130%;
-    height: 130%; 
-    position: relative;
-    z-index: 1;
+    width: 200px;          /* any value */
+  height: 203px;         /* SAME value */
+  border-radius: 50%;
+  object-fit: cover;
+
 }
 
 
@@ -397,8 +398,8 @@ h3 {
 
 .generator-rotor {
     position: absolute;
-    width: 62%;
-    height: 65%;
+    width: 58%;
+    height: 58%;
     /* inset: 50% auto auto 50%;
     transform: translate(-50%, -50%); */
 }
@@ -944,7 +945,7 @@ img {
 
 .nob1{
   position: absolute;
-  bottom: 282px;
+  bottom: 335px;
   left: 70px;
   width: 38px;      
   height: 30px;
@@ -955,7 +956,7 @@ img {
 
 .nob2{
   position: absolute;
-  bottom: 108px;
+  bottom: 168px;
   left: 70px;
   width: 38px;      
   height: 30px;

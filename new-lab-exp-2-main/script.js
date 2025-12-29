@@ -14,7 +14,7 @@ jsPlumb.ready(function () {
     isSource: true,
     isTarget: true,
     maxConnections: -1,
-    connector: ["Bezier", { curviness: 65 }]
+    connector: ["Bezier", { curviness: 200}]
   };
   const container = document.querySelector(".top-row");
   if (container) {
@@ -33,8 +33,10 @@ jsPlumb.ready(function () {
     pointD: [1, 0.5, 1, 0],
     pointE: [0, 0.5, -1, 0],
     pointG: [1, 0.5, 1, 0],
-    pointH: [0, 0.5, -1, 0],
-    pointI: [1, 0.5, 1, 0],
+    pointH: [0.5, 0.5, 0, 0],
+    pointI: [0.5, 0.5, 0, 0],  /* Center */
+    // pointH: [0, 0.5, -1, 0],
+    // pointI: [1, 0.5, 1, 0],
     pointJ: [0, 0.5, -1, 0],
     pointK: [1, 0.5, 1, 0],
     pointA1: [0, 0.5, -1, 0],
@@ -127,13 +129,27 @@ jsPlumb.ready(function () {
     return [a, b].sort().join("-");
   }
 
-  function getSeenConnectionKeys() {
-    const seen = new Set();
-    jsPlumb.getAllConnections().forEach(conn => {
-      seen.add(connectionKey(conn.sourceId, conn.targetId));
-    });
-    return seen;
-  }
+  // function getSeenConnectionKeys() {
+  //   const seen = new Set();
+  //   jsPlumb.getAllConnections().forEach(conn => {
+  //     seen.add(connectionKey(conn.sourceId, conn.targetId));
+  //   });
+  //   return seen;
+  // }
+
+ function isPairConnected(a, b, connections) {
+  return connections.some(conn => {
+    const srcId = conn.source && conn.source.id;
+    const tgtId = conn.target && conn.target.id;
+
+    return (
+      (srcId === a && tgtId === b) ||
+      (srcId === b && tgtId === a)
+    );
+  });
+}
+
+/*ends*/
 
   function connectRequiredPair(req, seenKeys, index = -1) {
     const [a, b] = req.split("-");
@@ -291,33 +307,90 @@ jsPlumb.ready(function () {
   // });
 
   // Check button - Robust selection by text content (no ID needed)
+  let guideStepIndex = 0;
   const checkBtns = document.querySelectorAll('.pill-btn');
   const checkBtn = Array.from(checkBtns).find(btn => btn.textContent.trim() === 'Check Connections');
   if (checkBtn) {
     console.log("Check button found and wired."); // Debug log
-    checkBtn.addEventListener("click", function () {
-      const connections = jsPlumb.getAllConnections();
-      const seenKeys = new Set();
+    
+   checkBtn.addEventListener("click", function () {
+  const connections = jsPlumb.getAllConnections();
 
-      connections.forEach(conn => {
-        const key = [conn.sourceId, conn.targetId].sort().join("-");
-        seenKeys.add(key);
-      });
+  // 🔍 find first missing step IN ORDER
+  const nextMissing = requiredPairs.find(pair => {
+    const [a, b] = pair.split("-");
+    return !isPairConnected(a, b, connections);
+  });
 
-      const missing = [];
-      requiredConnections.forEach(req => {
-        if (!seenKeys.has(req)) missing.push(req);
-      });
+  // ✅ sab complete
+  if (!nextMissing) {
+    alert("✅ Connections are correct");
+    return;
+  }
 
-      if (!missing.length) {
-        alert("Connection is correct");
-        return;
-      }
+  const [a, b] = nextMissing.split("-");
+  const stepNumber = requiredPairs.indexOf(nextMissing) + 1;
 
-      let message = "Connection not correct";
-      message += `\nMissing ${missing.length} required connection(s).`;
-      alert(message);
-    });
+  alert(
+    `Step ${stepNumber}:\n` +
+    `Connect → ${a} ↔ ${b}`
+  );
+});
+
+
+
+//    checkBtn.addEventListener("click", function () {
+//   const connections = jsPlumb.getAllConnections();
+
+//   /* 🟡 CASE 1: Ek bhi wire nahi */
+//   if (connections.length === 0) {
+
+//     if (guideStepIndex >= requiredPairs.length) {
+//       alert("ℹ️ All steps shown.\nNow start connecting the wires.");
+//       guideStepIndex = 0;
+//       return;
+//     }
+
+//     const pair = requiredPairs[guideStepIndex];
+//     const [a, b] = pair.split("-");
+
+//     alert(
+//       `⚠️ No connections found!\n\n` +
+//       `Step ${guideStepIndex + 1}:\n` +
+//       `Connect → ${a} ↔ ${b}`
+//     );
+
+//     guideStepIndex++;
+//     return;
+//   }
+
+//   /* 🟢 CASE 2: Kuch wire lagi hui hain → existing logic */
+//   const seenKeys = new Set();
+//   connections.forEach(conn => {
+//     const key = [conn.sourceId, conn.targetId].sort().join("-");
+//     seenKeys.add(key);
+//   });
+
+//   const missing = [];
+//   requiredConnections.forEach(req => {
+//     if (!seenKeys.has(req)) missing.push(req);
+//   });
+
+//   if (!missing.length) {
+//     alert("✅ Connection is correct");
+//     guideStepIndex = 0; // reset guide when correct
+//     return;
+//   }
+
+//   let message = "❌ Connections not correct\n\nMissing connections:\n";
+//   missing.forEach(pair => {
+//     const [a, b] = pair.split("-");
+//     message += `• ${a} ↔ ${b}\n`;
+//   });
+
+//   alert(message);
+// });
+
   } else {
     console.error("Check button not found! Looking for '.pill-btn' with text 'Check Connections'. Add it or check HTML.");
   }
@@ -354,6 +427,7 @@ jsPlumb.ready(function () {
 
         if (missing.length) {
           console.warn("Auto Connect: retrying missing connection(s):", missing);
+          
           runBatch(() => {
             const seenNow = getSeenConnectionKeys();
             missing.forEach(req => connectRequiredPair(req, seenNow));
