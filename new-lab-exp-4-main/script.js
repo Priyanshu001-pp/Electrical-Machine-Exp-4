@@ -1,4 +1,5 @@
 jsPlumb.ready(function () {
+   let mcbReady = false;
   const ringSvg =
     'data:image/svg+xml;utf8,' +
     encodeURIComponent(`
@@ -137,6 +138,9 @@ jsPlumb.ready(function () {
   //   return seen;
   // }
 
+
+  
+
  function isPairConnected(a, b, connections) {
   return connections.some(conn => {
     const srcId = conn.source && conn.source.id;
@@ -149,7 +153,13 @@ jsPlumb.ready(function () {
   });
 }
 
-/*ends*/
+function areAllConnectionsCorrect() {
+  const connections = jsPlumb.getAllConnections();
+
+  return requiredPairs.every(([a, b]) =>
+    isPairConnected(a, b, connections)
+  );
+}
 
   function connectRequiredPair(req, seenKeys, index = -1) {
     const [a, b] = req.split("-");
@@ -321,7 +331,8 @@ jsPlumb.ready(function () {
     const [a, b] = pair.split("-");
     return !isPairConnected(a, b, connections);
   });
-//all done
+
+  // ✅ sab complete
   if (!nextMissing) {
     alert("Connections are correct");
     return;
@@ -487,8 +498,8 @@ if (resetBtn) {
       });
     });
   }
-  function lockPointsToBase() {
-    if (!basePositions.size) {
+  function lockPointsToBase(remeasure = false) {
+    if (remeasure || !basePositions.size) {
       captureBasePositions();
     }
     basePositions.forEach((base, el) => {
@@ -508,5 +519,5 @@ if (resetBtn) {
   } else {
     window.addEventListener("load", initPinnedPoints);
   }
-  window.addEventListener("resize", lockPointsToBase);
+  window.addEventListener("resize", () => lockPointsToBase(true));
 });
