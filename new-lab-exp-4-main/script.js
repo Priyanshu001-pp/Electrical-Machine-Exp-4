@@ -130,36 +130,71 @@ jsPlumb.ready(function () {
     return [a, b].sort().join("-");
   }
 
-  // function getSeenConnectionKeys() {
-  //   const seen = new Set();
-  //   jsPlumb.getAllConnections().forEach(conn => {
-  //     seen.add(connectionKey(conn.sourceId, conn.targetId));
-  //   });
-  //   return seen;
-  // }
+  function getSeenConnectionKeys() {
+    const seen = new Set();
+    jsPlumb.getAllConnections().forEach(conn => {
+      seen.add(connectionKey(conn.sourceId, conn.targetId));
+    });
+    return seen;
+  }
 
-
-  
-
- function isPairConnected(a, b, connections) {
+function isPairConnected(a, b, connections) {
   return connections.some(conn => {
-    const srcId = conn.source && conn.source.id;
-    const tgtId = conn.target && conn.target.id;
+    const ids = [
+      conn.sourceId,
+      conn.targetId,
+      conn.source?.id,
+      conn.target?.id
+    ].filter(Boolean);
 
-    return (
-      (srcId === a && tgtId === b) ||
-      (srcId === b && tgtId === a)
-    );
+    return ids.includes(a) && ids.includes(b);
   });
 }
 
+
+
+//   function isPairConnected(a, b, connections) {
+//   return connections.some(conn => {
+//     const srcId = conn.sourceId || conn.source?.id;
+//     const tgtId = conn.targetId || conn.target?.id;
+
+//     return (
+//       (srcId === a && tgtId === b) ||
+//       (srcId === b && tgtId === a)
+//     );
+//   });
+// }
+
+  
+
+//  function isPairConnected(a, b, connections) {
+//   return connections.some(conn => {
+//     const srcId = conn.source && conn.source.id;
+//     const tgtId = conn.target && conn.target.id;
+
+//     return (
+//       (srcId === a && tgtId === b) ||
+//       (srcId === b && tgtId === a)
+//     );
+//   });
+// }
+
 function areAllConnectionsCorrect() {
   const connections = jsPlumb.getAllConnections();
-
-  return requiredPairs.every(([a, b]) =>
-    isPairConnected(a, b, connections)
-  );
+  return requiredPairs.every(pair => {
+    const [a, b] = pair.split("-");
+    return isPairConnected(a, b, connections);
+  });
 }
+
+
+// function areAllConnectionsCorrect() {
+//   const connections = jsPlumb.getAllConnections();
+
+//   return requiredPairs.every(([a, b]) =>
+//     isPairConnected(a, b, connections)
+//   );
+// }
 
   function connectRequiredPair(req, seenKeys, index = -1) {
     const [a, b] = req.split("-");
@@ -306,15 +341,7 @@ function areAllConnectionsCorrect() {
 });
 
     
-  // document.querySelectorAll(".point").forEach(p => {
-  //   p.style.cursor = "pointer";
-  //   p.addEventListener("click", function () {
-  //     const id = this.id;
-  //     jsPlumb.getConnections({ source: id }).concat(jsPlumb.getConnections({ target: id }))
-  //       .forEach(c => jsPlumb.deleteConnection(c));
-  //     jsPlumb.repaintEverything();
-  //   });
-  // });
+
 
   // Check button - Robust selection by text content (no ID needed)
   let guideStepIndex = 0;
@@ -322,88 +349,82 @@ function areAllConnectionsCorrect() {
   const checkBtn = Array.from(checkBtns).find(btn => btn.textContent.trim() === 'Check Connections');
   if (checkBtn) {
     console.log("Check button found and wired."); // Debug log
-    
-   checkBtn.addEventListener("click", function () {
+
+
+    // Replace your checkBtn.addEventListener with this DEBUG VERSION:
+
+checkBtn.addEventListener("click", function () {
   const connections = jsPlumb.getAllConnections();
 
-  // 🔍 find first missing step IN ORDER
-  const nextMissing = requiredPairs.find(pair => {
-    const [a, b] = pair.split("-");
-    return !isPairConnected(a, b, connections);
+  // 🔍 DEBUG: Log all current connections
+  console.log("=== ALL CONNECTIONS ===");
+  connections.forEach(conn => {
+    const srcId = conn.sourceId || (conn.source && conn.source.id);
+    const tgtId = conn.targetId || (conn.target && conn.target.id);
+    console.log(`${srcId} ↔ ${tgtId}`);
   });
 
-  // ✅ sab complete
-  if (!nextMissing) {
-    alert("Connections are correct");
+  // Find all missing connections IN ORDER
+  const missing = [];
+  const completed = [];
+  
+  requiredPairs.forEach(pair => {
+    const [a, b] = pair.split("-");
+    const isConnected = isPairConnected(a, b, connections);
+  
+    if (!isConnected) {
+      missing.push(pair);
+      console.log(`❌ Missing: ${a} ↔ ${b}`);
+    } else {
+      completed.push(pair);
+      console.log(`✅Connected: ${a} ↔ ${b}`);
+    }
+  });
+
+  // ✅ All connections correct
+  if (missing.length === 0) {
+    alert("All connections are correct!\n\nCompleted all 10 steps!");
     return;
   }
 
+  // ⚠️ Show the FIRST missing connection (in order)
+  const nextMissing = missing[0];
   const [a, b] = nextMissing.split("-");
   const stepNumber = requiredPairs.indexOf(nextMissing) + 1;
+  const completedCount = requiredPairs.length - missing.length;
 
-  alert(
-    `Step ${stepNumber}:\n` +
-    `Connect → ${a} ↔ ${b}`
-  );
+  let message = `⚠️ Connection Required!\n\n`;
+  message += `Step ${stepNumber} of ${requiredPairs.length}:\n`;
+  message += `Connect → ${a} ↔ ${b}\n\n`;
+  message += `Progress: ${completedCount}/${requiredPairs.length} completed\n`;
+  message += `Remaining: ${missing.length}`;
+
+  alert(message);
+  
+  // 🔍 Show debug info in console
+  console.log("=== MISSING STEPS ===");
+  missing.forEach((pair, idx) => {
+    const step = requiredPairs.indexOf(pair) + 1;
+    console.log(`Step ${step}: ${pair}`);
+  });
 });
-
-
-
-//    checkBtn.addEventListener("click", function () {
-//   const connections = jsPlumb.getAllConnections();
-
-//   /* 🟡 CASE 1: Ek bhi wire nahi */
-//   if (connections.length === 0) {
-
-//     if (guideStepIndex >= requiredPairs.length) {
-//       alert("ℹ️ All steps shown.\nNow start connecting the wires.");
-//       guideStepIndex = 0;
-//       return;
-//     }
-
-//     const pair = requiredPairs[guideStepIndex];
-//     const [a, b] = pair.split("-");
-
-//     alert(
-//       `⚠️ No connections found!\n\n` +
-//       `Step ${guideStepIndex + 1}:\n` +
-//       `Connect → ${a} ↔ ${b}`
-//     );
-
-//     guideStepIndex++;
-//     return;
-//   }
-
-//   /* 🟢 CASE 2: Kuch wire lagi hui hain → existing logic */
-//   const seenKeys = new Set();
-//   connections.forEach(conn => {
-//     const key = [conn.sourceId, conn.targetId].sort().join("-");
-//     seenKeys.add(key);
-//   });
-
-//   const missing = [];
-//   requiredConnections.forEach(req => {
-//     if (!seenKeys.has(req)) missing.push(req);
-//   });
-
-//   if (!missing.length) {
-//     alert("✅ Connection is correct");
-//     guideStepIndex = 0; // reset guide when correct
-//     return;
-//   }
-
-//   let message = "❌ Connections not correct\n\nMissing connections:\n";
-//   missing.forEach(pair => {
-//     const [a, b] = pair.split("-");
-//     message += `• ${a} ↔ ${b}\n`;
-//   });
-
-//   alert(message);
-// });
-
-  } else {
-    console.error("Check button not found! Looking for '.pill-btn' with text 'Check Connections'. Add it or check HTML.");
   }
+
+// Also add this helper function if it doesn't exist:
+// function isPairConnected(a, b, connections) {
+//   return connections.some(conn => {
+//     const srcId = conn.sourceId || (conn.source && conn.source.id);
+//     const tgtId = conn.targetId || (conn.target && conn.target.id);
+
+//     return (
+//       (srcId === a && tgtId === b) ||
+//       (srcId === b && tgtId === a)
+//     );
+//   });
+// }
+//   }
+
+  
 
   // Auto Connect button - creates all required connections automatically
   const autoConnectBtn = Array.from(checkBtns).find(btn => btn.textContent.trim() === 'Auto Connect');
