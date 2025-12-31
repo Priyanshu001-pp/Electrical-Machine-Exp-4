@@ -129,13 +129,13 @@ jsPlumb.ready(function () {
     return [a, b].sort().join("-");
   }
 
-  // function getSeenConnectionKeys() {
-  //   const seen = new Set();
-  //   jsPlumb.getAllConnections().forEach(conn => {
-  //     seen.add(connectionKey(conn.sourceId, conn.targetId));
-  //   });
-  //   return seen;
-  // }
+  function getSeenConnectionKeys() {
+    const seen = new Set();
+    jsPlumb.getAllConnections().forEach(conn => {
+      seen.add(connectionKey(conn.sourceId, conn.targetId));
+    });
+    return seen;
+  }
 
  function isPairConnected(a, b, connections) {
   return connections.some(conn => {
@@ -468,46 +468,67 @@ if (resetBtn) {
   console.error("Reset button not found!");
 }
 
-  // Lock every point to its initial coordinates so resizing the window cannot drift them
+  // Pin endpoints and knobs with percentage offsets so zoom/resize cannot push them out of view
   const pinnedSelectors = [
     ".point",
     ".point-R", ".point-B", ".point-L", ".point-F", ".point-A",
     ".point-C", ".point-D", ".point-E", ".point-G", ".point-H", ".point-I", ".point-J", ".point-K",
     ".point-A1", ".point-F1", ".point-A2", ".point-F2", ".point-A3", ".point-Z3", ".point-A4", ".point-Z4",
-    ".point-L1", ".point-L2"
+    ".point-L1", ".point-L2",
+    ".nob1", ".nob2"
   ];
-  const basePositions = new Map();
-  function captureBasePositions() {
-    basePositions.clear();
-    document.querySelectorAll(pinnedSelectors.join(", ")).forEach(el => {
-      const parent = el.offsetParent;
-      if (!parent) return;
-      basePositions.set(el, {
-        left: el.offsetLeft,
-        top: el.offsetTop
-      });
-    });
+  const pinContainerSelector = ".rheostat, .meters, .meter-panel, .mcb-starter-section, .motor-box, .generator-box, .workspace, .left-column, .center-column, .top-row, .panel";
+  const pinnedElements = [];
+
+  function findPinContainer(el) {
+    return el.closest(pinContainerSelector) || document.querySelector(".panel") || document.body;
   }
-  function lockPointsToBase() {
-    if (!basePositions.size) {
-      captureBasePositions();
+
+  function pinElementToPercent(el) {
+    const container = findPinContainer(el);
+    const containerRect = container.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
+    if (!containerRect.width || !containerRect.height) return;
+
+    if (container !== document.body && getComputedStyle(container).position === "static") {
+      container.style.position = "relative";
     }
-    basePositions.forEach((base, el) => {
-      el.style.left = `${base.left}px`;
-      el.style.top = `${base.top}px`;
+
+    const leftPct = ((rect.left - containerRect.left) / containerRect.width) * 100;
+    const topPct = ((rect.top - containerRect.top) / containerRect.height) * 100;
+
+    el.style.left = `${leftPct}%`;
+    el.style.top = `${topPct}%`;
+    el.style.right = "auto";
+    el.style.bottom = "auto";
+
+    pinnedElements.push(el);
+  }
+
+  function pinAllElements() {
+    pinnedElements.length = 0;
+    const seen = new Set();
+    document.querySelectorAll(pinnedSelectors.join(", ")).forEach(el => {
+      if (seen.has(el)) return;
+      seen.add(el);
+      pinElementToPercent(el);
     });
+
     if (window.jsPlumb) {
       jsPlumb.repaintEverything();
     }
   }
-  const initPinnedPoints = () => {
-    captureBasePositions();
-    lockPointsToBase();
+
+  const repaintConnections = () => {
+    if (window.jsPlumb) {
+      jsPlumb.repaintEverything();
+    }
   };
+
   if (document.readyState === "complete") {
-    initPinnedPoints();
+    pinAllElements();
   } else {
-    window.addEventListener("load", initPinnedPoints);
+    window.addEventListener("load", pinAllElements);
   }
-  window.addEventListener("resize", lockPointsToBase);
+  window.addEventListener("resize", repaintConnections);
 });
