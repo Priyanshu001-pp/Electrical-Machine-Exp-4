@@ -1,5 +1,52 @@
 jsPlumb.ready(function () {
+  let mcbState = "OFF";   // 🔥 ADD THIS
    let mcbReady = false;
+  const mcbImg = document.querySelector(".mcb-toggle");
+
+  function turnMCBOff(reason = "") {
+  if (mcbState === "OFF") return;
+
+  mcbState = "OFF";
+  mcbReady = false;
+
+  if (mcbImg) {
+    mcbImg.src = "images/mcb-off.png";
+  }
+
+  console.log("MCB OFF", reason);
+
+  if (reason) {
+    alert("⚠️ MCB turned OFF!\n\nReason: " + reason);
+  }
+}
+
+
+if (mcbImg) {
+  mcbImg.style.cursor = "pointer";
+
+  mcbImg.addEventListener("click", function () {
+
+    if (mcbState === "ON") {
+      alert("⚡ MCB is already ON");
+      return;
+    }
+
+    if (!areAllConnectionsCorrect()) {
+      alert("❌ Wiring incorrect!\n\nPlease complete all connections first.");
+      return;
+    }
+
+    mcbState = "ON";
+    mcbReady = true;
+
+    this.src = "images/mcb-on.png";
+
+    alert("✅ MCB turned ON.\nSupply is now available.");
+    console.log("MCB ON");
+  });
+}
+
+
   const ringSvg =
     'data:image/svg+xml;utf8,' +
     encodeURIComponent(`
@@ -313,6 +360,8 @@ function areAllConnectionsCorrect() {
           jsPlumb.getConnections({ source: pointId }).concat(jsPlumb.getConnections({ target: pointId }))
             .forEach(c => jsPlumb.deleteConnection(c));
           jsPlumb.repaintEverything();
+          turnMCBOff("Wire removed from " + pointId);
+          
         }
       }
     });
@@ -335,8 +384,9 @@ function areAllConnectionsCorrect() {
 
     // Remove only this point's connection
     jsPlumb.deleteConnection(conns[0]);
-
     jsPlumb.repaintEverything();
+    turnMCBOff("Wire disconnected");
+
   });
 });
 
@@ -491,9 +541,10 @@ if (resetBtn) {
     }
 
     // Force repaint so no ghost wires remain
-    jsPlumb.repaintEverything();
+        jsPlumb.repaintEverything();
+     turnMCBOff("Reset pressed");
 
-    console.log("Reset: all connections removed");
+     console.log("Reset: all connections removed");
   });
 } else {
   console.error("Reset button not found!");
