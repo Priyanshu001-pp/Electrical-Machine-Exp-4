@@ -3,7 +3,125 @@ jsPlumb.ready(function () {
    let mcbReady = false;
   const mcbImg = document.querySelector(".mcb-toggle");
 
+  // ===== STARTER HANDLE STATE =====
+const starterHandle = document.querySelector(".starter-handle");
+
+// ===== FIELD RESISTANCE STATE =====
+let fieldLocked = false;
+let fieldDragging = false;
+let fieldStartX = 0;
+
+// percentage based position
+let fieldCurrentPercent = 15;   // start position = 15%
+
+const FIELD_MIN = 15;   // left limit
+const FIELD_MAX = 45;   // 🔥 center se pehle auto-lock
+
+const fieldKnob = document.querySelector(".nob1");
+
+
+// ===== STARTER FLAGS =====
+
+let starterDragging = false;
+let starterEngaged = false;
+
+let startMouseX = 0;
+
+// starter movement limits
+const START_X = 0;        // left start
+const END_X = 90;        // right end
+const CURVE_HEIGHT = 25; // curve depth
+
+  
+
+  // ===== STEP-4: ARMATURE RESISTANCE / SPEED SLIDER LOGIC =====
+  const armatureKnob = document.querySelector(".nob2");
+const voltNeedle = document.querySelector(".meter-needle1");
+const ampNeedle  = document.querySelector(".meter-needle3");
+const rotor      = document.getElementById("gr");
+
+const KNOB_START_X = 28;   // CSS me .nob2 ka left
+let armatureX = KNOB_START_X;
+
+let isDragging = false;
+
+const MIN_X = 28;
+const MAX_X = 252;
+
+let startX = 0;       // mouse start position
+let knobStartX = 0;  // knob ki position jab mouse dabaya
+
+if (starterHandle) {
+  starterHandle.style.cursor = "not-allowed";
+}
+
+
+if (armatureKnob) {
+
+  armatureKnob.style.cursor = "not-allowed";
+
+  armatureKnob.addEventListener("mousedown", (e) => {
+  if (mcbState !== "ON" || !starterEngaged) {
+  alert("⚠️ First turn ON MCB and Starter");
+  return;
+}
+
+
+  isDragging = true;
+
+  // 🔒 mouse aur knob ki starting position save karo
+  startX = e.clientX;
+  knobStartX = armatureX;
+
+  armatureKnob.style.cursor = "grabbing";
+  e.preventDefault();
+});
+
+  document.addEventListener("mouseup", () => {
+    isDragging = false;
+    armatureKnob.style.cursor = "grab";
+  });
+
+  document.addEventListener("mousemove", (e) => {
+  if (!isDragging || mcbState !== "ON") return;
+
+  // 🖱️ mouse ne kitna move kiya
+  const deltaX = e.clientX - startX;
+
+  // 🎯 knob = jaha tha + mouse movement
+  armatureX = knobStartX + deltaX;
+
+  // 🔒 limits
+  armatureX = Math.max(MIN_X, Math.min(MAX_X, armatureX));
+
+  // 🎛️ knob ko move karo (relative movement)
+  armatureKnob.style.transform =
+    `translateX(${armatureX - KNOB_START_X}px)`;
+
+  // 🔢 percentage
+  const percent = (armatureX - MIN_X) / (MAX_X - MIN_X);
+
+  // 🔬 LAB VALUES
+  const current = percent * 10;   // 0–10 A
+  const rpm = percent * 1500;     // 0–1500 RPM
+
+  // 🎯 Ammeter
+  const ampAngle = -70 + (current / 10) * 140;
+  ampNeedle.style.transform =
+    `translate(-30%, -90%) rotate(${ampAngle}deg)`;
+
+  // 🎯 Voltmeter (constant)
+  voltNeedle.style.transform =
+    `translate(-60%, -90%) rotate(-20deg)`;
+
+  // 🔄 Rotor
+  rotor.style.transform =
+    `translate(-50%, -50%) rotate(${rpm}deg)`;
+});
+
+}
   function turnMCBOff(reason = "") {
+    const fieldKnob = document.querySelector(".nob1");
   if (mcbState === "OFF") return;
 
   mcbState = "OFF";
@@ -13,12 +131,54 @@ jsPlumb.ready(function () {
     mcbImg.src = "images/mcb-off.png";
   }
 
+  // 🔥 RESET ARMATURE RHEOSTAT (STEP-4)
+ armatureX = KNOB_START_X;
+isDragging = false;
+
+  if (armatureKnob) {
+    armatureKnob.style.transform = "translateX(0px)";
+    armatureKnob.style.cursor = "not-allowed";
+  }
+
+  if (ampNeedle) {
+    ampNeedle.style.transform =
+      "translate(-30%, -90%) rotate(-70deg)";
+  }
+
+  if (voltNeedle) {
+    voltNeedle.style.transform =
+      "translate(-60%, -90%) rotate(-70deg)";
+  }
+
+  if (rotor) {
+    rotor.style.transform =
+      "translate(-50%, -50%) rotate(0deg)";
+  }
+
+  // ===== RESET STARTER HANDLE =====
+starterEngaged = false;
+starterDragging = false;
+
+if (starterHandle) {
+  starterHandle.style.transform = "translate(0px, 0px)";
+  starterHandle.style.cursor = "not-allowed";
+}
+
+// ===== RESET FIELD RESISTANCE (nob1) =====
+if (fieldKnob) {
+  fieldKnob.style.left = "15%";   // same as CSS start
+  fieldKnob.style.transform = "translate(-50%, -50%)";
+  fieldKnob.style.cursor = "not-allowed";
+}
+
+
   console.log("MCB OFF", reason);
 
   if (reason) {
     alert("⚠️ MCB turned OFF!\n\nReason: " + reason);
   }
 }
+
 
 
 if (mcbImg) {
@@ -41,9 +201,147 @@ if (mcbImg) {
 
     this.src = "images/mcb-on.png";
 
-    alert("✅ MCB turned ON.\nSupply is now available.");
+    if (starterHandle) {
+  starterHandle.style.cursor = "grab";
+}
+
+
+    alert("✅ MCB turned ON");
     console.log("MCB ON");
   });
+}
+
+// ===== STARTER HANDLE DRAG (CURVE PATH) =====
+if (starterHandle) {
+
+  starterHandle.addEventListener("mousedown", (e) => {
+    if (mcbState !== "ON" || starterEngaged) return;
+
+    starterDragging = true;
+    startMouseX = e.clientX;
+
+    starterHandle.style.cursor = "grabbing";
+    e.preventDefault();
+  });
+
+  document.addEventListener("mouseup", () => {
+    starterDragging = false;
+    if (!starterEngaged) {
+      starterHandle.style.cursor = "grab";
+    }
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!starterDragging || starterEngaged) return;
+
+    const deltaX = e.clientX - startMouseX;
+
+    let moveX = Math.max(START_X, Math.min(END_X, deltaX));
+
+    const progress = moveX / END_X;
+    const curveY = Math.sin(progress * Math.PI) * CURVE_HEIGHT;
+
+    starterHandle.style.transform =
+      `translate(${moveX}px, ${-curveY}px)`;
+
+    // 🔥 END POSITION → starter ON
+    if (moveX >= END_X - 2) {
+      engageStarter();
+    }
+  });
+
+}
+
+// ===== FIELD RESISTANCE DRAG START =====
+if (fieldKnob) {
+  fieldKnob.addEventListener("mousedown", (e) => {
+
+    if (mcbState !== "ON" || !starterEngaged || fieldLocked) return;
+
+    fieldDragging = true;
+    fieldStartX = e.clientX;
+
+    fieldKnob.style.cursor = "grabbing";
+    e.preventDefault();
+  });
+}
+
+document.addEventListener("mousemove", (e) => {
+  if (!fieldDragging || fieldLocked) return;
+
+  const deltaX = e.clientX - fieldStartX;
+
+  // convert px → %
+  let percentMove = (deltaX / 300) * 100; 
+  let newPercent = fieldCurrentPercent + percentMove;
+
+  // 🔒 limits
+  newPercent = Math.max(FIELD_MIN, Math.min(FIELD_MAX, newPercent));
+
+  fieldKnob.style.left = `${newPercent}%`;
+
+  // 🔥 AUTO-LOCK CONDITION (center se pehle)
+  if (newPercent >= FIELD_MAX - 1) {
+    fieldCurrentPercent = FIELD_MAX;
+    lockFieldResistance();
+  }
+});
+
+document.addEventListener("mouseup", () => {
+  if (!fieldDragging) return;
+
+  fieldDragging = false;
+
+  // agar user ne chhod diya aur lock abhi nahi hua
+  if (!fieldLocked) {
+    fieldCurrentPercent =
+      parseFloat(fieldKnob.style.left) || FIELD_MIN;
+
+    lockFieldResistance();
+  }
+});
+
+
+function engageStarter() {
+  starterEngaged = true;
+  starterDragging = false;
+
+  starterHandle.style.transform =
+    `translate(${END_X}px, 0px)`;
+  starterHandle.style.cursor = "default";
+
+  console.log("✅ Starter ON");
+
+  unlockFieldResistance(); 
+
+  // 🔓 Starter ON ke baad armature unlock
+if (armatureKnob) {
+  armatureKnob.style.cursor = "grab";
+}
+
+}
+
+
+function unlockFieldResistance() {
+  const fieldKnob = document.querySelector(".nob1");
+  if (!fieldKnob) return;
+
+  fieldLocked = false;
+  fieldKnob.style.cursor = "grab";
+
+  console.log("🔓 Field resistance unlocked");
+}
+
+
+function lockFieldResistance() {
+  const fieldKnob = document.querySelector(".nob1");
+  if (!fieldKnob) return;
+
+  fieldKnob.style.left = "50%";
+  fieldKnob.style.transform = "translate(-50%, -50%)";
+  fieldKnob.style.cursor = "not-allowed";
+
+  console.log("🔒 Field resistance fixed at middle");
 }
 
 

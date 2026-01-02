@@ -983,7 +983,20 @@ img {
   object-fit: contain;
   z-index: 5;
 }
+
 .nob2 {
+  position: absolute;
+  left: 28px;                 /* JS control karega */
+  top: -19%;                  /* center vertically */
+  /* transform: translateY(-50%); */
+  width: clamp(34px, 4vw, 46px);
+  height: clamp(28px, 3vw, 36px);
+  object-fit: contain;
+  z-index: 5;
+  cursor: grab;
+}
+
+/* .nob2 {
   position: absolute;
   left: 15%;
   top: -10%;
@@ -992,7 +1005,7 @@ img {
   height: clamp(28px, 3vw, 36px);
   object-fit: contain;
   z-index: 5;
-}
+} */
 
 
 .instructions-wrapper {
