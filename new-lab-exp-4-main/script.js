@@ -15,7 +15,7 @@ let fieldStartX = 0;
 let fieldCurrentPercent = 15;   // start position = 15%
 
 const FIELD_MIN = 15;   // left limit
-const FIELD_MAX = 45;   // 🔥 center se pehle auto-lock
+const FIELD_MAX = 85;   // 🔥 center se pehle auto-lock
 
 const fieldKnob = document.querySelector(".nob1");
 
@@ -39,6 +39,63 @@ const CURVE_HEIGHT = 25; // curve depth
 const voltNeedle = document.querySelector(".meter-needle1");
 const ampNeedle  = document.querySelector(".meter-needle3");
 const rotor      = document.getElementById("gr");
+
+// ===== CONTINUOUS ROTOR STATE =====
+let rotorAngle = 0;
+let rotorRunning = false;
+let lastFrameTime = null;
+
+// 🔬 EXACT LAB OBSERVATION TABLE
+const armatureTable = [
+  { voltage: 132, rpm: 1085 },
+  { voltage: 139, rpm: 1170 },
+  { voltage: 152, rpm: 1501 },
+  { voltage: 166, rpm: 1900 },
+  { voltage: 176, rpm: 1507 },
+  { voltage: 198, rpm: 1680 },
+  { voltage: 220, rpm: 1889 }
+];
+
+
+// ===== ROTOR SPEED STATES =====
+let fieldRPM = 1085;      // 🔥 Base speed from field resistance
+let armatureRPM = 0;     // 🔧 Extra speed from armature resistance
+
+function runRotor(timestamp) {
+  if (!rotorRunning) {
+    lastFrameTime = null;
+    return;
+  }
+
+  if (!lastFrameTime) lastFrameTime = timestamp;
+  const deltaTime = (timestamp - lastFrameTime) / 1000; // seconds
+  lastFrameTime = timestamp;
+
+  // RPM → degree per second
+  const degPerSecond = (fieldRPM + armatureRPM) * 6;
+
+  rotorAngle += degPerSecond * deltaTime;
+
+  rotor.style.transform =
+    `translate(-50%, -50%) rotate(${rotorAngle}deg)`;
+
+  requestAnimationFrame(runRotor);
+}
+
+
+function setFieldDefaultMeters() {
+  // Ammeter = 0.8 A
+  const ampAngle = -70 + (7.4 / 10) * 140;
+  ampNeedle.style.transform =
+    `translate(-30%, -90%) rotate(${ampAngle}deg)`;
+
+  // Voltmeter = 132 V
+  const voltAngle = -70 + (45 / 150) * 140;
+  voltNeedle.style.transform =
+    `translate(-60%, -90%) rotate(${voltAngle}deg)`;
+}
+
+// `translate(-60%, -90%) rotate(${voltAngle}deg)`;
 
 const KNOB_START_X = 28;   // CSS me .nob2 ka left
 let armatureX = KNOB_START_X;
@@ -85,6 +142,13 @@ if (armatureKnob) {
   document.addEventListener("mousemove", (e) => {
   if (!isDragging || mcbState !== "ON") return;
 
+   // total steps = table length (7)
+  const totalSteps = armatureTable.length;
+
+// ek step ki width
+   const stepWidth = (MAX_X - MIN_X) / (totalSteps - 1);
+
+
   // 🖱️ mouse ne kitna move kiya
   const deltaX = e.clientX - startX;
 
@@ -98,25 +162,35 @@ if (armatureKnob) {
   armatureKnob.style.transform =
     `translateX(${armatureX - KNOB_START_X}px)`;
 
-  // 🔢 percentage
-  const percent = (armatureX - MIN_X) / (MAX_X - MIN_X);
+ // 🔢 STEP-BASED LOGIC (7 fixed steps, smooth knob)
+const rawStep = (armatureX - MIN_X) / stepWidth;
 
-  // 🔬 LAB VALUES
-  const current = percent * 10;   // 0–10 A
-  const rpm = percent * 1500;     // 0–1500 RPM
+const stepIndex = Math.floor(rawStep + 0.5);
 
-  // 🎯 Ammeter
-  const ampAngle = -70 + (current / 10) * 140;
-  ampNeedle.style.transform =
-    `translate(-30%, -90%) rotate(${ampAngle}deg)`;
+const safeIndex = Math.max(
+  0,
+  Math.min(stepIndex, armatureTable.length - 1)
+);
 
-  // 🎯 Voltmeter (constant)
-  voltNeedle.style.transform =
-    `translate(-60%, -90%) rotate(-20deg)`;
+const row = armatureTable[safeIndex];
 
-  // 🔄 Rotor
-  rotor.style.transform =
-    `translate(-50%, -50%) rotate(${rpm}deg)`;
+
+// 🎯 Voltmeter from table
+const voltAngle =
+  -70 + (row.voltage / 220) * 140;
+
+voltNeedle.style.transform =
+  `translate(-60%, -90%) rotate(${voltAngle}deg)`;
+
+// 🎯 RPM from table (absolute)
+armatureRPM = row.rpm - fieldRPM;
+
+// 🔄 Start rotor if armature knob is moved
+if (!rotorRunning && mcbState === "ON" && starterEngaged) {
+  rotorRunning = true;
+  requestAnimationFrame(runRotor);
+}
+
 });
 
 }
@@ -147,12 +221,24 @@ isDragging = false;
 
   if (voltNeedle) {
     voltNeedle.style.transform =
-      "translate(-60%, -90%) rotate(-70deg)";
+      "translate(-65%, -90%) rotate(-70deg)";
   }
 
   if (rotor) {
-    rotor.style.transform =
-      "translate(-50%, -50%) rotate(0deg)";
+
+
+ rotorRunning = false;
+rotorAngle = 0;
+lastFrameTime = null;
+
+     fieldRPM = 1085;
+  armatureRPM = 0;
+
+
+rotor.style.transform =
+  "translate(-50%, -50%) rotate(0deg)";
+
+
   }
 
   // ===== RESET STARTER HANDLE =====
@@ -166,6 +252,11 @@ if (starterHandle) {
 
 // ===== RESET FIELD RESISTANCE (nob1) =====
 if (fieldKnob) {
+
+   fieldLocked = false;
+  fieldDragging = false;
+  fieldCurrentPercent = FIELD_MIN;
+
   fieldKnob.style.left = "15%";   // same as CSS start
   fieldKnob.style.transform = "translate(-50%, -50%)";
   fieldKnob.style.cursor = "not-allowed";
@@ -271,35 +362,51 @@ document.addEventListener("mousemove", (e) => {
 
   const deltaX = e.clientX - fieldStartX;
 
-  // convert px → %
-  let percentMove = (deltaX / 300) * 100; 
+  let percentMove = (deltaX / 300) * 100;
   let newPercent = fieldCurrentPercent + percentMove;
 
-  // 🔒 limits
   newPercent = Math.max(FIELD_MIN, Math.min(FIELD_MAX, newPercent));
 
   fieldKnob.style.left = `${newPercent}%`;
 
-  // 🔥 AUTO-LOCK CONDITION (center se pehle)
-  if (newPercent >= FIELD_MAX - 1) {
-    fieldCurrentPercent = FIELD_MAX;
-    lockFieldResistance();
-  }
+// 🔥 FIELD → BASE RPM (default ≈1085)
+const fieldPercent =
+  (newPercent - FIELD_MIN) / (FIELD_MAX - FIELD_MIN);
+
+// Field RPM range: 900 → 1085
+fieldRPM = 900 + fieldPercent * 185;
+
+
+// existing meter behavior
+setFieldDefaultMeters();
+
+// 🔄 START ROTOR ONLY WHEN FIELD IS MOVED
+if (!rotorRunning && mcbState === "ON" && starterEngaged) {
+  rotorRunning = true;
+  requestAnimationFrame(runRotor);
+}
+
+
 });
 
+
 document.addEventListener("mouseup", () => {
-  if (!fieldDragging) return;
+ if (!fieldDragging || fieldLocked) return;
 
   fieldDragging = false;
 
-  // agar user ne chhod diya aur lock abhi nahi hua
-  if (!fieldLocked) {
-    fieldCurrentPercent =
-      parseFloat(fieldKnob.style.left) || FIELD_MIN;
+  // 🔒 jahan user chhoda wahi fix
+  fieldCurrentPercent =
+    parseFloat(fieldKnob.style.left) || FIELD_MIN;
 
-    lockFieldResistance();
-  }
+  fieldLocked = true;
+  fieldKnob.style.cursor = "not-allowed";
+
+  setFieldDefaultMeters();
+
+  console.log("Field resistance fixed at:", fieldCurrentPercent + "%");
 });
+
 
 
 function engageStarter() {
@@ -319,6 +426,8 @@ if (armatureKnob) {
   armatureKnob.style.cursor = "grab";
 }
 
+
+
 }
 
 
@@ -337,11 +446,10 @@ function lockFieldResistance() {
   const fieldKnob = document.querySelector(".nob1");
   if (!fieldKnob) return;
 
-  fieldKnob.style.left = "50%";
-  fieldKnob.style.transform = "translate(-50%, -50%)";
+  fieldLocked = true;                 // 🔒 lock
   fieldKnob.style.cursor = "not-allowed";
 
-  console.log("🔒 Field resistance fixed at middle");
+  console.log("🔒 Field resistance locked at user position");
 }
 
 
