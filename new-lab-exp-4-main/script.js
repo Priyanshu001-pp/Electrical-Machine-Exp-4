@@ -3,6 +3,82 @@ jsPlumb.ready(function () {
    let mcbReady = false;
   const mcbImg = document.querySelector(".mcb-toggle");
 
+  let currentVoltage = 0;
+let currentRPM = 0;
+
+
+  /* =====================================
+   OBSERVATION TABLE (JS GENERATED)
+   ===================================== */
+
+const observationContainer = document.getElementById("observation-container");
+
+let observationBody;
+let observationCount = 0;
+
+function createObservationTable() {
+
+  observationContainer.innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>S No.</th>
+          <th>Armature Voltage (V)</th>
+          <th>Speed (RPM)</th>
+        </tr>
+      </thead>
+      <tbody id="observationBody">
+        <tr class="placeholder-row">
+          <td colspan="3">No readings added yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+
+  observationBody = document.getElementById("observationBody");
+}
+
+
+function addObservationRow() {
+
+  if (currentVoltage === 0 || currentRPM === 0) {
+    alert("⚠️ Pehle armature rheostat ko kisi step par set karo");
+    return;
+  }
+
+  // 🔒 Duplicate check
+  const rows = observationBody.querySelectorAll("tr");
+
+  for (let row of rows) {
+    const cells = row.querySelectorAll("td");
+    if (cells.length === 3) {
+      const v = parseInt(cells[1].textContent);
+      const r = parseInt(cells[2].textContent);
+
+      if (v === currentVoltage && r === currentRPM) {
+        alert("⚠️ Ye reading already observation table me hai");
+        return;
+      }
+    }
+  }
+
+  // Placeholder remove
+  const placeholder = observationBody.querySelector(".placeholder-row");
+  if (placeholder) placeholder.remove();
+
+  const serial = observationBody.querySelectorAll("tr").length + 1;
+
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${serial}</td>
+    <td>${currentVoltage}</td>
+    <td>${currentRPM}</td>
+  `;
+
+  observationBody.appendChild(tr);
+}
+
+
   // ===== STARTER HANDLE STATE =====
 const starterHandle = document.querySelector(".starter-handle");
 
@@ -52,9 +128,25 @@ const armatureTable = [
   { voltage: 152, rpm: 1501 },
   { voltage: 166, rpm: 1900 },
   { voltage: 176, rpm: 1507 },
-  { voltage: 198, rpm: 1680 },
+  { voltage: 198, rpm: 1690 },
   { voltage: 220, rpm: 1889 }
 ];
+
+
+function updateVoltmeterByArmature(stepIndex) {
+  const row = armatureTable[stepIndex];
+
+  currentVoltage = row.voltage;
+  currentRPM = row.rpm;
+
+  const voltAngle =
+    -70 + (row.voltage / 220) * 68;
+
+  voltNeedle.style.transform =
+    `translate(-60%, -90%) rotate(${voltAngle}deg)`;
+
+  armatureRPM = row.rpm - fieldRPM;
+}
 
 
 // ===== ROTOR SPEED STATES =====
@@ -84,16 +176,11 @@ function runRotor(timestamp) {
 
 
 function setFieldDefaultMeters() {
-  // Ammeter = 0.8 A
   const ampAngle = -70 + (7.4 / 10) * 140;
   ampNeedle.style.transform =
     `translate(-30%, -90%) rotate(${ampAngle}deg)`;
-
-  // Voltmeter = 132 V
-  const voltAngle = -70 + (45 / 150) * 140;
-  voltNeedle.style.transform =
-    `translate(-60%, -90%) rotate(${voltAngle}deg)`;
 }
+
 
 // `translate(-60%, -90%) rotate(${voltAngle}deg)`;
 
@@ -104,6 +191,10 @@ let isDragging = false;
 
 const MIN_X = 28;
 const MAX_X = 252;
+
+const TOTAL_STEPS = armatureTable.length;   // = 7
+const STEP_WIDTH = (MAX_X - MIN_X) / (TOTAL_STEPS - 1);
+
 
 let startX = 0;       // mouse start position
 let knobStartX = 0;  // knob ki position jab mouse dabaya
@@ -134,63 +225,42 @@ if (armatureKnob) {
   e.preventDefault();
 });
 
-  document.addEventListener("mouseup", () => {
-    isDragging = false;
-    armatureKnob.style.cursor = "grab";
-  });
+ document.addEventListener("mouseup", () => {
+  if (!isDragging) return;
+
+  isDragging = false;
+  armatureKnob.style.cursor = "grab";
+
+  // 🔒 SNAP TO NEAREST STEP
+  const rawStep = (armatureX - MIN_X) / STEP_WIDTH;
+  const stepIndex = Math.round(rawStep);
+
+  const safeIndex = Math.max(
+    0,
+    Math.min(stepIndex, armatureTable.length - 1)
+  );
+
+  // 🎯 exact X position
+  armatureX = MIN_X + safeIndex * STEP_WIDTH;
+
+  armatureKnob.style.transform =
+    `translateX(${armatureX - KNOB_START_X}px)`;
+
+  updateVoltmeterByArmature(safeIndex);
+
+});
+
 
   document.addEventListener("mousemove", (e) => {
   if (!isDragging || mcbState !== "ON") return;
 
-   // total steps = table length (7)
-  const totalSteps = armatureTable.length;
-
-// ek step ki width
-   const stepWidth = (MAX_X - MIN_X) / (totalSteps - 1);
-
-
-  // 🖱️ mouse ne kitna move kiya
   const deltaX = e.clientX - startX;
-
-  // 🎯 knob = jaha tha + mouse movement
   armatureX = knobStartX + deltaX;
 
-  // 🔒 limits
   armatureX = Math.max(MIN_X, Math.min(MAX_X, armatureX));
 
-  // 🎛️ knob ko move karo (relative movement)
   armatureKnob.style.transform =
     `translateX(${armatureX - KNOB_START_X}px)`;
-
- // 🔢 STEP-BASED LOGIC (7 fixed steps, smooth knob)
-const rawStep = (armatureX - MIN_X) / stepWidth;
-
-const stepIndex = Math.floor(rawStep + 0.5);
-
-const safeIndex = Math.max(
-  0,
-  Math.min(stepIndex, armatureTable.length - 1)
-);
-
-const row = armatureTable[safeIndex];
-
-
-// 🎯 Voltmeter from table
-const voltAngle =
-  -70 + (row.voltage / 220) * 140;
-
-voltNeedle.style.transform =
-  `translate(-60%, -90%) rotate(${voltAngle}deg)`;
-
-// 🎯 RPM from table (absolute)
-armatureRPM = row.rpm - fieldRPM;
-
-// 🔄 Start rotor if armature knob is moved
-if (!rotorRunning && mcbState === "ON" && starterEngaged) {
-  rotorRunning = true;
-  requestAnimationFrame(runRotor);
-}
-
 });
 
 }
@@ -221,7 +291,7 @@ isDragging = false;
 
   if (voltNeedle) {
     voltNeedle.style.transform =
-      "translate(-65%, -90%) rotate(-70deg)";
+      "translate(-70%, -90%) rotate(-10deg)";
   }
 
   if (rotor) {
@@ -256,6 +326,7 @@ if (fieldKnob) {
    fieldLocked = false;
   fieldDragging = false;
   fieldCurrentPercent = FIELD_MIN;
+  updateVoltmeterByArmature(0);
 
   fieldKnob.style.left = "15%";   // same as CSS start
   fieldKnob.style.transform = "translate(-50%, -50%)";
@@ -360,6 +431,7 @@ if (fieldKnob) {
 document.addEventListener("mousemove", (e) => {
   if (!fieldDragging || fieldLocked) return;
 
+
   const deltaX = e.clientX - fieldStartX;
 
   let percentMove = (deltaX / 300) * 100;
@@ -379,6 +451,10 @@ fieldRPM = 900 + fieldPercent * 185;
 
 // existing meter behavior
 setFieldDefaultMeters();
+
+if (mcbState === "ON") {
+  updateVoltmeterByArmature(0);
+}
 
 // 🔄 START ROTOR ONLY WHEN FIELD IS MOVED
 if (!rotorRunning && mcbState === "ON" && starterEngaged) {
@@ -425,7 +501,6 @@ function engageStarter() {
 if (armatureKnob) {
   armatureKnob.style.cursor = "grab";
 }
-
 
 
 }
@@ -946,6 +1021,15 @@ if (resetBtn) {
       });
     }
 
+    // ===== ADD TABLE BUTTON =====
+const addTableBtn = Array.from(document.querySelectorAll(".pill-btn"))
+  .find(btn => btn.textContent.trim() === "Add Table");
+
+if (addTableBtn) {
+  addTableBtn.addEventListener("click", addObservationRow);
+}
+
+
     // Force repaint so no ghost wires remain
         jsPlumb.repaintEverything();
      turnMCBOff("Reset pressed");
@@ -998,4 +1082,8 @@ if (resetBtn) {
     window.addEventListener("load", initPinnedPoints);
   }
   window.addEventListener("resize", () => lockPointsToBase(true));
+
+  createObservationTable();
+
+
 });
