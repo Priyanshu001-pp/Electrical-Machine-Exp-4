@@ -121,6 +121,9 @@ let rotorAngle = 0;
 let rotorRunning = false;
 let lastFrameTime = null;
 
+// ===== ROTOR VISUAL SPEED (NOT RPM) =====
+let rotorSpeed = 0;
+
 // 🔬 EXACT LAB OBSERVATION TABLE
 const armatureTable = [
   { voltage: 132, rpm: 1085 },
@@ -134,45 +137,53 @@ const armatureTable = [
 
 
 function updateVoltmeterByArmature(stepIndex) {
+
   const row = armatureTable[stepIndex];
 
+ // ✅ DISPLAY VALUES (ONLY FOR TABLE & METERS)
   currentVoltage = row.voltage;
   currentRPM = row.rpm;
+
+  // ✅ ROTOR VISUAL SPEED (REAL CONTROL)
+  rotorSpeed = ARMATURE_ROTATION_SPEED[stepIndex];
+
 
   const voltAngle =
     -70 + (row.voltage / 220) * 68;
 
   voltNeedle.style.transform =
     `translate(-60%, -90%) rotate(${voltAngle}deg)`;
-
-  armatureRPM = row.rpm - fieldRPM;
 }
 
 
+
+const ARMATURE_ROTATION_SPEED = [
+  3,   // Step 1
+  5,   // Step 2
+  7,   // Step 3
+  9,   // Step 4
+  11,  // Step 5
+  15,  // Step 6
+  17   // Step 7
+];
+
+
 // ===== ROTOR SPEED STATES =====
-let fieldRPM = 1085;      // 🔥 Base speed from field resistance
-let armatureRPM = 0;     // 🔧 Extra speed from armature resistance
+// let fieldRPM = 1085;      // 🔥 Base speed from field resistance
+// let armatureRPM = 0;     // 🔧 Extra speed from armature resistance
 
-function runRotor(timestamp) {
-  if (!rotorRunning) {
-    lastFrameTime = null;
-    return;
-  }
 
-  if (!lastFrameTime) lastFrameTime = timestamp;
-  const deltaTime = (timestamp - lastFrameTime) / 1000; // seconds
-  lastFrameTime = timestamp;
+function runRotor() {
+  if (!rotorRunning) return;
 
-  // RPM → degree per second
-  const degPerSecond = (fieldRPM + armatureRPM) * 6;
-
-  rotorAngle += degPerSecond * deltaTime;
+  rotorAngle += rotorSpeed; // 🔥 STEP BASED VISUAL SPEED
 
   rotor.style.transform =
     `translate(-50%, -50%) rotate(${rotorAngle}deg)`;
 
   requestAnimationFrame(runRotor);
 }
+
 
 
 function setFieldDefaultMeters() {
@@ -209,7 +220,7 @@ if (armatureKnob) {
   armatureKnob.style.cursor = "not-allowed";
 
   armatureKnob.addEventListener("mousedown", (e) => {
-  if (mcbState !== "ON" || !starterEngaged) {
+  if (mcbState !== "ON" || !starterEngaged || !fieldLocked) {
   alert("⚠️ First turn ON MCB and Starter");
   return;
 }
@@ -247,6 +258,13 @@ if (armatureKnob) {
     `translateX(${armatureX - KNOB_START_X}px)`;
 
   updateVoltmeterByArmature(safeIndex);
+
+  // 🔄 START ROTOR FROM ARMATURE STEP
+if (!rotorRunning && mcbState === "ON" && starterEngaged) {
+  rotorRunning = true;
+  requestAnimationFrame(runRotor);
+}
+
 
 });
 
@@ -291,7 +309,7 @@ isDragging = false;
 
   if (voltNeedle) {
     voltNeedle.style.transform =
-      "translate(-70%, -90%) rotate(-10deg)";
+      "translate(-70%, -90%) rotate(-70deg)";
   }
 
   if (rotor) {
@@ -299,6 +317,7 @@ isDragging = false;
 
  rotorRunning = false;
 rotorAngle = 0;
+rotorSpeed = 0;
 lastFrameTime = null;
 
      fieldRPM = 1085;
@@ -326,7 +345,6 @@ if (fieldKnob) {
    fieldLocked = false;
   fieldDragging = false;
   fieldCurrentPercent = FIELD_MIN;
-  updateVoltmeterByArmature(0);
 
   fieldKnob.style.left = "15%";   // same as CSS start
   fieldKnob.style.transform = "translate(-50%, -50%)";
@@ -446,7 +464,7 @@ const fieldPercent =
   (newPercent - FIELD_MIN) / (FIELD_MAX - FIELD_MIN);
 
 // Field RPM range: 900 → 1085
-fieldRPM = 900 + fieldPercent * 185;
+// fieldRPM = 900 + fieldPercent * 185;
 
 
 // existing meter behavior
@@ -454,12 +472,6 @@ setFieldDefaultMeters();
 
 if (mcbState === "ON") {
   updateVoltmeterByArmature(0);
-}
-
-// 🔄 START ROTOR ONLY WHEN FIELD IS MOVED
-if (!rotorRunning && mcbState === "ON" && starterEngaged) {
-  rotorRunning = true;
-  requestAnimationFrame(runRotor);
 }
 
 
@@ -478,7 +490,20 @@ document.addEventListener("mouseup", () => {
   fieldLocked = true;
   fieldKnob.style.cursor = "not-allowed";
 
+  if (armatureKnob) {
+  armatureKnob.style.cursor = "grab";
+}
+
   setFieldDefaultMeters();
+
+  // 🔥 INITIAL ARMATURE STEP = STEP 1
+updateVoltmeterByArmature(0);
+
+// 🔄 START ROTOR IF READY
+if (!rotorRunning && mcbState === "ON" && starterEngaged) {
+  rotorRunning = true;
+  requestAnimationFrame(runRotor);
+}
 
   console.log("Field resistance fixed at:", fieldCurrentPercent + "%");
 });
@@ -496,11 +521,6 @@ function engageStarter() {
   console.log("✅ Starter ON");
 
   unlockFieldResistance(); 
-
-  // 🔓 Starter ON ke baad armature unlock
-if (armatureKnob) {
-  armatureKnob.style.cursor = "grab";
-}
 
 
 }
