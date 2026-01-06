@@ -14,7 +14,7 @@ let currentRPM = 0;
 const observationContainer = document.getElementById("observation-container");
 
 let observationBody;
-let observationCount = 0;
+// let observationCount = 0;
 
 function createObservationTable() {
 
@@ -56,7 +56,7 @@ function addObservationRow() {
       const r = parseInt(cells[2].textContent);
 
       if (v === currentVoltage && r === currentRPM) {
-        alert("⚠️ Ye reading already observation table me hai");
+        alert("⚠️ This reading is already in the observation table.");
         return;
       }
     }
@@ -372,6 +372,10 @@ if (fieldKnob) {
   if (reason) {
     alert("⚠️ MCB turned OFF!\n\nReason: " + reason);
   }
+
+  // 🔁 Reset observation table on MCB OFF
+  createObservationTable();
+
 }
 
 
@@ -703,44 +707,32 @@ function lockFieldResistance() {
 
 function isPairConnected(a, b, connections) {
   return connections.some(conn => {
-    const ids = [
-      conn.sourceId,
-      conn.targetId,
-      conn.source?.id,
-      conn.target?.id
-    ].filter(Boolean);
+    const src = conn.sourceId;
+    const tgt = conn.targetId;
 
-    return ids.includes(a) && ids.includes(b);
+    return (
+      (src === a && tgt === b) ||
+      (src === b && tgt === a)
+    );
   });
 }
 
 
+  // Required connections: unsorted list for iteration order in auto-connect, sorted Set for checking
 
-//   function isPairConnected(a, b, connections) {
-//   return connections.some(conn => {
-//     const srcId = conn.sourceId || conn.source?.id;
-//     const tgtId = conn.targetId || conn.target?.id;
+const requiredPairs = [
+  "pointR-pointL",
+  "pointB-pointD",
+  "pointB-pointA2",
+  "pointB-pointF2",
+  "pointF-pointE", 
+  "pointA-pointJ",  
+  "pointG-pointH",  
+  "pointI-pointF1",
+  "pointC-pointA1",  
+  "pointA1-pointK"
+];
 
-//     return (
-//       (srcId === a && tgtId === b) ||
-//       (srcId === b && tgtId === a)
-//     );
-//   });
-// }
-
-  
-
-//  function isPairConnected(a, b, connections) {
-//   return connections.some(conn => {
-//     const srcId = conn.source && conn.source.id;
-//     const tgtId = conn.target && conn.target.id;
-
-//     return (
-//       (srcId === a && tgtId === b) ||
-//       (srcId === b && tgtId === a)
-//     );
-//   });
-// }
 
 function areAllConnectionsCorrect() {
   const connections = jsPlumb.getAllConnections();
@@ -844,19 +836,8 @@ function areAllConnectionsCorrect() {
     console.log(`Wire from ${sourceId} set to ${wireColor}`); // Debug log (remove if not needed)
   });
 
-  // Required connections: unsorted list for iteration order in auto-connect, sorted Set for checking
-  const requiredPairs = [
-    "pointR-pointL",
-    "pointB-pointD",
-    "pointB-pointA2",
-    "pointB-pointF2",
-    "pointF-pointE", 
-    "pointA-pointJ",  
-    "pointG-pointH",  
-    "pointI-pointF1",
-    "pointC-pointA1",  
-    "pointA1-pointK"
-  ];
+
+ 
   const requiredConnections = new Set(requiredPairs.map(pair => {
     const [a, b] = pair.split("-");
     return [a, b].sort().join("-");
@@ -955,9 +936,20 @@ checkBtn.addEventListener("click", function () {
 
   // ⚠️ Show the FIRST missing connection (in order)
   const nextMissing = missing[0];
+  const completedCount = requiredPairs.length - missing.length;
+  const allowedPair = requiredPairs[completedCount];
+
+if (nextMissing !== allowedPair) {
+  alert(
+    "⚠️ First, complete the previous step\n\n" +
+    "Required: " + allowedPair
+  );
+  return;
+}
+
   const [a, b] = nextMissing.split("-");
   const stepNumber = requiredPairs.indexOf(nextMissing) + 1;
-  const completedCount = requiredPairs.length - missing.length;
+ 
 
   let message = `⚠️ Connection Required!\n\n`;
   message += `Step ${stepNumber} of ${requiredPairs.length}:\n`;
@@ -1056,14 +1048,6 @@ if (resetBtn) {
       });
     }
 
-    // ===== ADD TABLE BUTTON =====
-const addTableBtn = Array.from(document.querySelectorAll(".pill-btn"))
-  .find(btn => btn.textContent.trim() === "Add Table");
-
-if (addTableBtn) {
-  addTableBtn.addEventListener("click", addObservationRow);
-}
-
 
     // Force repaint so no ghost wires remain
         jsPlumb.repaintEverything();
@@ -1119,6 +1103,14 @@ if (addTableBtn) {
   window.addEventListener("resize", () => lockPointsToBase(true));
 
   createObservationTable();
+
+     // ===== ADD TABLE BUTTON =====
+const addTableBtn = Array.from(document.querySelectorAll(".pill-btn"))
+  .find(btn => btn.textContent.trim() === "Add Table");
+
+if (addTableBtn) {
+  addTableBtn.addEventListener("click", addObservationRow);
+}
 
 
 });

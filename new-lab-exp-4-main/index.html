@@ -8,6 +8,8 @@
       <script src="https://unpkg.com/jsplumb/dist/js/jsplumb.min.js"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="style2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
 </head>
 <body>
     <main class="panel">
@@ -170,7 +172,7 @@
                     </div>
                     </div>
                     <div class="center-actions">
-                                <button class="pill-btn">Add Table</button></br>
+                               
                                 <button class="pill-btn">Reset</button></br>
                                 <button class="pill-btn">Print</button></br>
                                 </div>
@@ -181,7 +183,12 @@
             <aside class="right-column">
     <div class="pill-stack" id="pill-stack">
          <div class="instructions-wrapper">
-  <button class="pill-btn instructions-btn">Instructions</button>
+
+             <button class="pill-btn instructions-btn">
+      <i class="fa-solid fa-circle-info"style="font-size:16px;"></i>&nbsp;&nbsp;
+  <span>Instructions</span>
+</button>
+  <!-- <button class="pill-btn instructions-btn">Instructions</button> -->
 
   <div class="instructions-panel">
     <h4>STEP 1: Make connections as per instructions below:</h4>
@@ -207,9 +214,27 @@
   </div>
 </div>
          
-        <button class="pill-btn">Check Connections</button>
+
+        <button class="pill-btn">
+        <i class="fa-solid fa-check" style="font-size:16px;"></i>&nbsp;&nbsp;
+        <span>Check</span>
+         </button>
+         
         <button class="pill-btn">Speaking</button>
-        <button class="pill-btn">Auto Connect</button>
+
+        <!-- <button class="pill-btn">Auto Connect</button> -->
+
+         <button class="pill-btn" id="auto">
+            <i class="fa-solid fa-link" style="font-size:16px;"></i>&nbsp;&nbsp;
+            <span >Auto Connect </span>
+        </button>
+
+        <!-- <button class="pill-btn">Add Table</button></br> -->
+
+           <button class="pill-btn obs-add-btn" id="addTableBtn" type="button">
+            <i class="fa-solid fa-table" style="font-size:16px;"></i>&nbsp;&nbsp;
+            <span>Add Table</span>
+        </button>
 
         
         <section class="data-section">
