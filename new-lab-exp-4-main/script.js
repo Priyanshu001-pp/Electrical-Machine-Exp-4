@@ -115,6 +115,8 @@ const CURVE_HEIGHT = 25; // curve depth
 const voltNeedle = document.querySelector(".meter-needle1");
 const ampNeedle  = document.querySelector(".meter-needle3");
 const rotor      = document.getElementById("gr");
+const rpmDisplay = document.getElementById("rpmDisplay");
+
 
 // ===== CONTINUOUS ROTOR STATE =====
 let rotorAngle = 0;
@@ -129,7 +131,7 @@ const armatureTable = [
   { voltage: 132, rpm: 1085 },
   { voltage: 139, rpm: 1170 },
   { voltage: 152, rpm: 1501 },
-  { voltage: 166, rpm: 1900 },
+  { voltage: 166, rpm: 1400 },
   { voltage: 176, rpm: 1507 },
   { voltage: 198, rpm: 1690 },
   { voltage: 220, rpm: 1889 }
@@ -153,6 +155,12 @@ function updateVoltmeterByArmature(stepIndex) {
 
   voltNeedle.style.transform =
     `translate(-60%, -90%) rotate(${voltAngle}deg)`;
+
+    
+  // 🔥 RPM DIGITAL DISPLAY UPDATE
+  if (rpmDisplay) {
+    rpmDisplay.textContent = currentRPM;
+  }
 }
 
 
@@ -283,6 +291,13 @@ if (!rotorRunning && mcbState === "ON" && starterEngaged) {
 
 }
   function turnMCBOff(reason = "") {
+
+   // 🔥 RESET RPM DISPLAY
+  currentRPM = 0;
+  if (rpmDisplay) {
+    rpmDisplay.textContent = "0";
+  }
+
     const fieldKnob = document.querySelector(".nob1");
   if (mcbState === "OFF") return;
 

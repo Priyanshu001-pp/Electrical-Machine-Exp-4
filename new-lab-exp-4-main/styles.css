@@ -1068,4 +1068,20 @@
     }
 
 
+.rpm-display {
+  position: absolute;
+  top: 39%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 36px;
+  background: black;
+  color: #ff2b2b;
+  font-family: "Digital-7", monospace;
+  font-size: 26px;
+  text-align: center;
+  line-height: 36px;
+  border-radius: 4px;
+  letter-spacing: 2px;
+}
 
