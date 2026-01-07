@@ -18,7 +18,7 @@
                 <div class="mcb-starter-section">
                     <div class="mcb-block">
                         <img class="mcb-toggle" src="images/mcb-off.png" alt="MCB">
-                        <h3 class="mcb-label">MCB</h3>
+                        <h3 class="mcb-label">DC SUPPLY</h3>
                     </div>
                     <!-- MCB -->
 <div id="mcb">
@@ -173,8 +173,6 @@
                     </div>
                     <div class="center-actions">
                                
-                                <button class="pill-btn">Reset</button></br>
-                                <button class="pill-btn">Print</button></br>
                                 </div>
               
                 
@@ -220,7 +218,7 @@
         <span>Check</span>
          </button>
          
-        <button class="pill-btn">Speaking</button>
+        <button class="pill-btn">TAP TO LISTEN</button>
 
         <!-- <button class="pill-btn">Auto Connect</button> -->
 
@@ -238,8 +236,14 @@
 
         
         <section class="data-section">
+  <!-- <h3 class="obs-title">OBSERVATION TABLE</h3>
+  <div id="observation-container"></div> -->
+
+  <div class="data-table-wrapper">
   <h3 class="obs-title">OBSERVATION TABLE</h3>
   <div id="observation-container"></div>
+</div>
+
 </section>
 
 
@@ -272,10 +276,35 @@
             <div class="graph-header">
                 <h3>Output Graph</h3>
                 <div class="center-actions">
-            <button class="pill-btn">Report</button>
-            <button class="pill-btn">Graph</button>
+
+
+            
             </div>
-                <span class="graph-caption">Auto-generated from readings</span>
+             
+                  <!-- <button class="pill-btn">Graph</button> -->
+
+            <button class="pill-btn" id="plotGraphBtn">
+            <i class="fa-solid fa-chart-area"  style="font-size:16px;"></i>&nbsp;&nbsp;
+            <span>Graph</span>
+        </button>
+
+                      <!-- <button class="pill-btn">Reset</button></br> -->
+                                       <button class="pill-btn" id="resetBtn">
+            <i class="fa-solid fa-arrows-rotate"  style="font-size:16px;"></i>&nbsp;&nbsp;
+            <span>Reset</span>
+        </button>
+
+            <!-- <button class="pill-btn">Report</button> -->
+             <button class="pill-btn">
+            <i class="fa-solid fa-file" style="font-size:16px;"></i>&nbsp;&nbsp;
+            <span>Report</span>
+        </button>                  
+
+                                <!-- <button class="pill-btn">Print</button></br> -->
+                                     <button class="pill-btn">
+            <i class="fa-solid fa-print" style="font-size:16px;"></i>&nbsp;&nbsp;
+            <span>Print</span>
+        </button></br>
             
             </div>
             

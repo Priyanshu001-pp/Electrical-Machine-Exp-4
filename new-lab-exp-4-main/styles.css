@@ -530,23 +530,87 @@
     .obs-title {
         margin-bottom: 10px;
         text-align: center;
+        margin-left: 20px;
     }
 
 
-    .data-table {
+/* .data-table {
+    width: 100%;
+    border: 3px solid #111;
+    background: #e5dfd3;
+    border-collapse: collapse;
+} */
+
+
+    /* .data-table {
         width: 100%;
         border: 3px solid #111;
         background: #e5dfd3;
         display: grid;
         grid-template-rows: auto repeat(5, 1fr);
-    }
+    } */
 
-    .table-header,
+/* 🔒 FIX: HTML <table> ke liye proper borders */
+/* .data-table table {
+  width: 100%;
+  border-collapse: collapse;
+} */
+
+.data-table {
+  width: 100%;
+  border: 3px solid #111;        /* 🔥 single outer border */
+  border-collapse: collapse;    /* 🔥 sab borders merge */
+  background: #f3efe6;
+}
+
+
+/* .data-table th,
+.data-table td {
+    border: 2px solid #111;
+    padding: 8px;
+    text-align: center;
+    font-weight: 700;
+    background: #d7d0c4;
+} */
+
+.data-table th,
+.data-table td {
+  border: 1.5px solid #111;   /* inner grid lines */
+  padding: 6px 10px;
+  text-align: center;
+  font-weight: 600;
+  background: #e8dcc6;
+}
+
+
+/* 
+.data-table th,
+.data-table td {
+  border: 2px solid #111;
+  padding: 6px;
+  text-align: center;
+} */
+
+/* 
+.data-table-wrapper {
+  width: 100%;
+  border: 3px solid #111;
+  background: #d7d0c4;
+  padding: 6px;
+} */
+.data-table-wrapper {
+  width: 100%;
+  background: transparent;
+  padding: 0;
+}
+
+
+    /* .table-header,
     .table-row {
         display: grid;
         grid-template-columns: 1fr 1.2fr 1.2fr;
         border-bottom: 2px solid #111;
-    }
+    } */
 
     .table-header span {
         padding: 8px;
@@ -572,7 +636,7 @@
         border-right: none;
     }
     
-    .right-column .pill-stack,
+    /* .right-column .pill-stack,
     .pill-stack {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -582,7 +646,20 @@
         min-width: 260px;
         margin-top: 20px;
         align-items: start;
-    }
+    } */
+
+    .right-column .pill-stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 40px;
+    height: 400px;
+    width: 10%;
+    max-width: 280px;
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px; /* For scrollbar space */
+    align-items: center;
+}
 
     .pill-btn {
         position: relative;
@@ -702,7 +779,7 @@
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        gap: 12px;
+        gap: 64px;
         margin-bottom: clamp(10px, 1.5vw, 16px);
     }
 
@@ -719,7 +796,6 @@
     .graph-canvas {
         position: relative;
         height: clamp(200px, 28vw, 320px);
-        border: 3px solid #111;
         background: linear-gradient(180deg, #f3efe6, #e5dfd3);
         background-image:
             repeating-linear-gradient(to right, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 60px),
@@ -830,8 +906,8 @@
         position: absolute;
         width: 35px;
         height: auto;
-        left: 52%;
-        top: 53%;
+        left: 55%;
+        top: 50%;
         transform-origin: 50% 90%;
         transform: translate(-60%, -90%) rotate(-71deg);
     }
@@ -1084,4 +1160,3 @@
   border-radius: 4px;
   letter-spacing: 2px;
 }
-

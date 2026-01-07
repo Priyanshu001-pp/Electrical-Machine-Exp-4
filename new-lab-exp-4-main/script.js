@@ -28,10 +28,7 @@ function createObservationTable() {
         </tr>
       </thead>
       <tbody id="observationBody">
-        <tr class="placeholder-row">
-          <td colspan="3">No readings added yet.</td>
-        </tr>
-      </tbody>
+</tbody>
     </table>
   `;
 
@@ -42,7 +39,7 @@ function createObservationTable() {
 function addObservationRow() {
 
   if (currentVoltage === 0 || currentRPM === 0) {
-    alert("⚠️ Pehle armature rheostat ko kisi step par set karo");
+    alert("⚠️ First, set the armature rheostat to a specific step.");
     return;
   }
 
@@ -116,6 +113,15 @@ const voltNeedle = document.querySelector(".meter-needle1");
 const ampNeedle  = document.querySelector(".meter-needle3");
 const rotor      = document.getElementById("gr");
 const rpmDisplay = document.getElementById("rpmDisplay");
+
+
+if (voltNeedle) {
+  voltNeedle.style.transition = "transform 0.8s ease-in-out";
+}
+
+if (ampNeedle) {
+  ampNeedle.style.transition = "transform 0.6s ease-in-out";
+}
 
 
 // ===== CONTINUOUS ROTOR STATE =====
@@ -893,7 +899,7 @@ function areAllConnectionsCorrect() {
   // Check button - Robust selection by text content (no ID needed)
   let guideStepIndex = 0;
   const checkBtns = document.querySelectorAll('.pill-btn');
-  const checkBtn = Array.from(checkBtns).find(btn => btn.textContent.trim() === 'Check Connections');
+  const checkBtn = Array.from(checkBtns).find(btn => btn.textContent.trim() === 'Check');
   if (checkBtn) {
     console.log("Check button found and wired."); // Debug log
 
@@ -1114,3 +1120,6 @@ if (addTableBtn) {
 
 
 });
+
+
+

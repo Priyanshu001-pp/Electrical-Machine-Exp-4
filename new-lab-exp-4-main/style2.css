@@ -166,12 +166,12 @@ top: 176px;
 
  #pointE {
    position: absolute;
-   left: 176px;
+   left: 58px;
 top: 176px;
  }
  #pointG {
  position: absolute;
-  left: 56px;
+  left: 165px;
 top: 176px;
  }
 #pointH{
@@ -324,7 +324,7 @@ top: 176px;
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 260px;
+   left: 280px;
  top: 190px;
 }
 .point-G {
@@ -332,7 +332,7 @@ top: 176px;
    position: absolute;
    width: 24px;
    height: 24px;
-   left:  385px;
+   left:  392px;
  top: 190px;
 }
 .point-H{
