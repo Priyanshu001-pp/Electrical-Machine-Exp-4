@@ -138,14 +138,15 @@ function drawGraph() {
 
   loadPlotly().then(() => {
 
-    const trace = {
-      x: xValues,
-      y: yValues,
-      mode: "lines+markers",
-      type: "scatter",
-      marker: { size: 8 },
-      line: { width: 3 }
-    };
+  const trace = {
+ x: xValues,
+y: yValues,
+  mode: "lines+markers",
+  type: "scatter",
+  marker: { color: "#1b6fb8", size: 8 },
+  line: { color: "#1b6fb8", width: 3 }
+};
+
 
    const layout = {
   title: {
@@ -153,30 +154,41 @@ function drawGraph() {
     font: { size: 16 }
   },
 
-  margin: { l: 80, r: 30, t: 50, b: 70 },
+margin: { l: 120, r: 30, t: 60, b: 100 },
 
-  xaxis: {
-    title: "<b>Armature Voltage (V)</b>",
-    tickmode: "array",
-    tickvals: xValues,
-    showgrid: true,
-    gridcolor: "#d0d0d0",
-    zeroline: false,
-    showline: false
-  },
+//margin: { l: 80, r: 30, t: 50, b: 70 },
 
-  yaxis: {
-    title: "<b>Speed (RPM)</b>",
-    tickmode: "array",
-    tickvals: yValues,
-    showgrid: true,
-    gridcolor: "#d0d0d0",
-    zeroline: false,
-    showline: false
-  },
 
-  paper_bgcolor: "#d7d0c4",   // lab manual off-white
-  plot_bgcolor: "#f8f6f2"
+xaxis: {
+  title: "<b>Armature Voltage (V)</b>",
+  type: "category",          // 🔥 IMPORTANT
+  categoryorder: "array",    // 🔥 IMPORTANT
+  categoryarray: xValues.map(String),
+
+  showgrid: true,
+  gridcolor: "#ffffff",      // 🔥 white vertical lines
+  zeroline: false,
+  showline: false
+},
+
+
+yaxis: {
+  title: "<b>Speed (RPM)</b>",
+  type: "category",               // 🔥 IMPORTANT
+  categoryorder: "array",
+  categoryarray: yValues.map(String),
+
+  showgrid: true,
+  gridcolor: "#ffffff",
+  zeroline: false,
+  showline: false
+},
+
+
+
+ paper_bgcolor: "rgba(0,0,0,0)",
+plot_bgcolor: "rgba(0,0,0,0)"
+
 };
 
 
