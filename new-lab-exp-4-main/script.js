@@ -7,6 +7,12 @@ jsPlumb.ready(function () {
 let currentRPM = 0;
 
 
+// ===== GRAPH DATA STORE =====
+const graphReadings = [];
+const MIN_GRAPH_POINTS = 5;
+
+
+
   /* =====================================
    OBSERVATION TABLE (JS GENERATED)
    ===================================== */
@@ -73,7 +79,114 @@ function addObservationRow() {
   `;
 
   observationBody.appendChild(tr);
+
+  // ===== STORE DATA FOR GRAPH =====
+graphReadings.push({
+  voltage: currentVoltage,
+  rpm: currentRPM
+});
+
+// Enable graph button if minimum readings reached
+updateGraphButtonState();
+
 }
+
+function updateGraphButtonState() {
+  const plotGraphBtn = document.getElementById("plotGraphBtn");
+  if (!plotGraphBtn) return;
+
+  plotGraphBtn.disabled = graphReadings.length < MIN_GRAPH_POINTS;
+
+}
+
+
+// ===== GRAPH DRAW FUNCTION =====
+
+function drawGraph() {
+
+  if (graphReadings.length < MIN_GRAPH_POINTS) {
+    alert("⚠️ Please add at least 5 readings to plot the graph.");
+    return;
+  }
+
+  // Sort readings by voltage
+  const sorted = [...graphReadings].sort((a, b) => a.voltage - b.voltage);
+
+  const xValues = sorted.map(r => r.voltage);
+  const yValues = sorted.map(r => r.rpm);
+
+  // Hide SVG container
+  const graphBars = document.getElementById("graphBars");
+  if (graphBars) graphBars.style.display = "none";
+
+  // Show Plotly container
+  const graphPlot = document.getElementById("graphPlot");
+  if (!graphPlot) return;
+  graphPlot.style.display = "block";
+
+  // Load Plotly dynamically
+  function loadPlotly() {
+    if (window.Plotly) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "https://cdn.plot.ly/plotly-3.0.1.min.js";
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  loadPlotly().then(() => {
+
+    const trace = {
+      x: xValues,
+      y: yValues,
+      mode: "lines+markers",
+      type: "scatter",
+      marker: { size: 8 },
+      line: { width: 3 }
+    };
+
+   const layout = {
+  title: {
+    text: "<b>Speed (RPM) vs Armature Voltage (V)</b>",
+    font: { size: 16 }
+  },
+
+  margin: { l: 80, r: 30, t: 50, b: 70 },
+
+  xaxis: {
+    title: "<b>Armature Voltage (V)</b>",
+    tickmode: "array",
+    tickvals: xValues,
+    showgrid: true,
+    gridcolor: "#d0d0d0",
+    zeroline: false,
+    showline: false
+  },
+
+  yaxis: {
+    title: "<b>Speed (RPM)</b>",
+    tickmode: "array",
+    tickvals: yValues,
+    showgrid: true,
+    gridcolor: "#d0d0d0",
+    zeroline: false,
+    showline: false
+  },
+
+  paper_bgcolor: "#d7d0c4",   // lab manual off-white
+  plot_bgcolor: "#f8f6f2"
+};
+
+
+    Plotly.newPlot(graphPlot, [trace], layout, {
+      responsive: true,
+      displaylogo: false
+    });
+  });
+}
+
 
 
   // ===== STARTER HANDLE STATE =====
@@ -1059,6 +1172,28 @@ if (resetBtn) {
         jsPlumb.repaintEverything();
      turnMCBOff("Reset pressed");
 
+     // ===== RESET GRAPH =====
+graphReadings.length = 0;
+updateGraphButtonState();
+
+const graphContainer = document.getElementById("graphBars");
+if (!graphContainer) return;
+
+graphContainer.innerHTML = "";
+
+const graphPlot = document.getElementById("graphPlot");
+if (graphPlot) {
+  graphPlot.innerHTML = "";
+  graphPlot.style.display = "none";
+}
+
+const graphBarsReset = document.getElementById("graphBars");
+if (graphBarsReset) {
+  graphBarsReset.style.display = "block";
+}
+
+
+
      console.log("Reset: all connections removed");
   });
 } else {
@@ -1118,8 +1253,11 @@ if (addTableBtn) {
   addTableBtn.addEventListener("click", addObservationRow);
 }
 
+// ===== GRAPH BUTTON =====
+const plotGraphBtn = document.getElementById("plotGraphBtn");
+if (plotGraphBtn) {
+  plotGraphBtn.addEventListener("click", drawGraph);
+}
+
 
 });
-
-
-
