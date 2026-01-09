@@ -160,28 +160,31 @@ margin: { l: 120, r: 30, t: 60, b: 100 },
 
 
 xaxis: {
-  title: "<b>Armature Voltage (V)</b>",
-  type: "category",          // 🔥 IMPORTANT
-  categoryorder: "array",    // 🔥 IMPORTANT
+  title: {
+    text: "Armature Voltage (V)",
+    standoff: 40,
+    font: {
+      color: "#2c1a0a",
+      size: 14,
+        family: "Arial Black" 
+    }
+  },
+  type: "category",
   categoryarray: xValues.map(String),
-
-  showgrid: true,
-  gridcolor: "#ffffff",      // 🔥 white vertical lines
-  zeroline: false,
-  showline: false
 },
 
-
 yaxis: {
-  title: "<b>Speed (RPM)</b>",
-  type: "category",               // 🔥 IMPORTANT
-  categoryorder: "array",
+  title: {
+    text: "Speed (RPM)",
+    standoff: 50,
+    font: {
+      color: "#2c1a0a",
+      size: 14,
+        family: "Arial Black" 
+    }
+  },
+  type: "category",
   categoryarray: yValues.map(String),
-
-  showgrid: true,
-  gridcolor: "#ffffff",
-  zeroline: false,
-  showline: false
 },
 
 
@@ -192,10 +195,12 @@ plot_bgcolor: "rgba(0,0,0,0)"
 };
 
 
-    Plotly.newPlot(graphPlot, [trace], layout, {
-      responsive: true,
-      displaylogo: false
-    });
+  Plotly.newPlot(graphPlot, [trace], layout, {
+  responsive: true,
+  displaylogo: false
+}).then(() => {
+  Plotly.Plots.resize(graphPlot);
+});
   });
 }
 

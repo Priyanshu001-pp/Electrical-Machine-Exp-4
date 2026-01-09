@@ -800,7 +800,7 @@
         background-image:
             repeating-linear-gradient(to right, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 60px),
             repeating-linear-gradient(to top, rgba(0, 0, 0, 0.07) 0 1px, transparent 1px 60px);
-        overflow: hidden;
+        overflow: visible;
     }
 
 
@@ -817,6 +817,16 @@
         height: 2px;
         width: 100%;
     }
+    #graphPlot {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+.graph-bars {
+  z-index: 2;
+}
+
 
     .graph-bars {
         position: absolute;
