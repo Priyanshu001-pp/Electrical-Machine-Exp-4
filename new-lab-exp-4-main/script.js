@@ -575,6 +575,19 @@ if (fieldKnob) {
   // 🔁 Reset observation table on MCB OFF
   createObservationTable();
 
+    // 🔁 Reset auto-connect & guided check state
+autoConnectUsed = false;
+
+// 🔥 Reset guided steps ONLY on full reset / manual MCB OFF
+if (
+  reason === "" ||
+  reason === "Reset pressed"
+) {
+  currentStepIndex = 0;
+}
+
+
+
 }
 
 
@@ -920,6 +933,23 @@ function isPairConnected(a, b, connections) {
   });
 }
 
+// Check if connection between src and tgt is allowed up to the given index in requiredPairs
+function isConnectionAllowed(src, tgt, uptoIndex) {
+  const key = [src, tgt].sort().join("-");
+  for (let i = 0; i <= uptoIndex; i++) {
+    const [a, b] = requiredPairs[i].split("-");
+    if ([a, b].sort().join("-") === key) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+
+let autoConnectUsed = false;
+
+let lastRemovedPair = null;   // 🔥 remembers user-removed wire
 
   // Required connections: unsorted list for iteration order in auto-connect, sorted Set for checking
 
@@ -937,6 +967,8 @@ const requiredPairs = [
 ];
 
 
+// Auto-connect all required pairs
+
 function areAllConnectionsCorrect() {
   const connections = jsPlumb.getAllConnections();
   return requiredPairs.every(pair => {
@@ -944,6 +976,46 @@ function areAllConnectionsCorrect() {
     return isPairConnected(a, b, connections);
   });
 }
+
+
+function getFirstMissingStepIndex() {
+  const connections = jsPlumb.getAllConnections();
+
+  // 🔥 1️⃣ If user removed a known required pair, report that first
+  if (lastRemovedPair) {
+    const index = requiredPairs.indexOf(lastRemovedPair);
+    if (index !== -1) {
+      const [a, b] = requiredPairs[index].split("-");
+      if (!isPairConnected(a, b, connections)) {
+        return index;
+      }
+    }
+  }
+
+  // 🔁 2️⃣ Otherwise, fall back to normal sequential logic
+  for (let i = 0; i < requiredPairs.length; i++) {
+    const [a, b] = requiredPairs[i].split("-");
+    if (!isPairConnected(a, b, connections)) {
+      return i;
+    }
+  }
+
+  return requiredPairs.length;
+}
+
+
+// function getFirstMissingStepIndex() {
+//   const connections = jsPlumb.getAllConnections();
+
+//   for (let i = 0; i < requiredPairs.length; i++) {
+//     const [a, b] = requiredPairs[i].split("-");
+//     if (!isPairConnected(a, b, connections)) {
+//       return i;   // 🔥 FIRST missing step
+//     }
+//   }
+//   return requiredPairs.length;
+// }
+
 
 
 // function areAllConnectionsCorrect() {
@@ -1057,9 +1129,18 @@ function areAllConnectionsCorrect() {
         const pointEl = document.getElementById(pointId);
         if (pointEl) {
           // Remove all connections where this point is source or target
-          jsPlumb.getConnections({ source: pointId }).concat(jsPlumb.getConnections({ target: pointId }))
-            .forEach(c => jsPlumb.deleteConnection(c));
+         forEach(c => {
+                  lastRemovedPair = [c.sourceId, c.targetId].sort().join("-");
+                  jsPlumb.deleteConnection(c);
+                 });
+
+
+
           jsPlumb.repaintEverything();
+
+  autoConnectUsed = false; 
+currentStepIndex = getFirstMissingStepIndex();    
+
           turnMCBOff("Wire removed from " + pointId);
           
         }
@@ -1083,8 +1164,15 @@ function areAllConnectionsCorrect() {
     if (conns.length === 0) return;
 
     // Remove only this point's connection
-    jsPlumb.deleteConnection(conns[0]);
+   lastRemovedPair = [conns[0].sourceId, conns[0].targetId].sort().join("-");
+jsPlumb.deleteConnection(conns[0]);
+
     jsPlumb.repaintEverything();
+ 
+    autoConnectUsed = false;   // 🔥 ADD THIS
+  currentStepIndex = getFirstMissingStepIndex();
+
+
     turnMCBOff("Wire disconnected");
 
   });
@@ -1105,6 +1193,95 @@ function areAllConnectionsCorrect() {
 
 checkBtn.addEventListener("click", function () {
   const connections = jsPlumb.getAllConnections();
+
+  // ✅ AUTO CONNECT MODE CHECK
+if (autoConnectUsed) {
+  if (areAllConnectionsCorrect()) {
+    showPopup(
+      "🎉 All wiring connections are correct and completed!",
+      "Success"
+    );
+  } else {
+    showPopup(
+      "❌ Wiring incorrect!\n\nPlease review connections.",
+      "Wiring Error"
+    );
+  }
+  return;
+}
+
+  // 🔒 STEP-BY-STEP GUIDED CHECK
+if (currentStepIndex >= requiredPairs.length) {
+  showPopup(
+    "🎉 All connections are already completed successfully!",
+    "Completed"
+  );
+  return;
+}
+
+// First, validate that no incorrect connections exist
+for (let conn of connections) {
+  const src = conn.sourceId;
+  const tgt = conn.targetId;
+
+  if (!isConnectionAllowed(src, tgt, currentStepIndex)) {
+    showPopup(
+      `❌ Wrong connection detected!\n\nIncorrect: ${src} ↔ ${tgt}`,
+      "Wrong Connection"
+    );
+    return;
+  }
+}
+
+// Next, ensure all previous steps are completed
+for (let i = 0; i < currentStepIndex; i++) {
+  const [a, b] = requiredPairs[i].split("-");
+  if (!isPairConnected(a, b, connections)) {
+    showPopup(
+      `⚠️ Previous step missing!\n\nRequired: ${a} ↔ ${b}`,
+      "Step Order Error"
+    );
+    return;
+  }
+}
+
+// Finally, check the current step
+const [currA, currB] = requiredPairs[currentStepIndex].split("-");
+const stepNo = currentStepIndex + 1;
+
+if (!isPairConnected(currA, currB, connections)) {
+  showPopup(
+    `🔧 Step ${stepNo} pending\n\nConnect: ${currA} ↔ ${currB}`,
+    "Connection Required"
+  );
+  return;
+}
+
+
+currentStepIndex++;
+lastRemovedPair = null;
+
+// 🔔 Show NEXT step instruction immediately
+if (currentStepIndex < requiredPairs.length) {
+  const [nextA, nextB] = requiredPairs[currentStepIndex].split("-");
+  const nextStepNo = currentStepIndex + 1;
+
+  showPopup(
+    `🔧 Step ${nextStepNo} pending\n\nConnect: ${nextA} ↔ ${nextB}`,
+    "Connection Required"
+  );
+  return;
+}
+
+
+if (currentStepIndex === requiredPairs.length) {
+  showPopup(
+    "🎉 All wiring steps completed!\n\nYou may now proceed.",
+    "All Steps Completed"
+  );
+}
+  return;
+
 
   // 🔍 DEBUG: Log all current connections
   console.log("=== ALL CONNECTIONS ===");
@@ -1197,6 +1374,11 @@ if (nextMissing !== allowedPair) {
   const autoConnectBtn = Array.from(checkBtns).find(btn => btn.textContent.trim() === 'Auto Connect');
   if (autoConnectBtn) {
     autoConnectBtn.addEventListener("click", function () {
+
+             autoConnectUsed = true;
+           currentStepIndex = requiredPairs.length;
+
+
       const runBatch = typeof jsPlumb.batch === "function" ? jsPlumb.batch.bind(jsPlumb) : (fn => fn());
 
       runBatch(function () {
@@ -1261,6 +1443,10 @@ if (resetBtn) {
     // Force repaint so no ghost wires remain
         jsPlumb.repaintEverything();
      turnMCBOff("Reset pressed");
+// Reset state variables
+     autoConnectUsed = false;
+currentStepIndex = 0;
+
 
      // ===== RESET GRAPH =====
 graphReadings.length = 0;
@@ -1334,6 +1520,8 @@ if (graphBarsReset) {
   window.addEventListener("resize", () => lockPointsToBase(true));
 
   createObservationTable();
+  currentStepIndex = 0;   // 🔁 Reset guided steps
+
 
      // ===== ADD TABLE BUTTON =====
 const addTableBtn = Array.from(document.querySelectorAll(".pill-btn"))
