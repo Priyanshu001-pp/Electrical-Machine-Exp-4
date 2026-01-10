@@ -12,6 +12,53 @@ const graphReadings = [];
 const MIN_GRAPH_POINTS = 5;
 
 
+// ===== POPUP MODAL FUNCTION =====
+function showPopup(message, title = "Alert") {
+  const modal = document.getElementById("warningModal");
+  const box = modal.querySelector(".modal-box");
+  const msg = document.getElementById("modalMessage");
+  const ttl = document.getElementById("modalTitle");
+  const sound = document.getElementById("alertSound");
+
+  ttl.textContent = title;
+  msg.textContent = message;
+
+  box.classList.add("danger");
+  modal.classList.add("show");
+
+  if (sound) {
+    sound.currentTime = 0;
+    sound.play();
+  }
+}
+
+// function closeModal() {
+//   const modal = document.getElementById("warningModal");
+//   const sound = document.getElementById("alertSound");
+
+//   modal.classList.remove("show");
+//   if (sound) sound.pause();
+// }
+
+function closeModal() {
+  const modal = document.getElementById("warningModal");
+  const box = modal.querySelector(".modal-box");
+  const sound = document.getElementById("alertSound");
+
+  box.classList.add("closing");
+
+  setTimeout(() => {
+    modal.classList.remove("show");
+    box.classList.remove("closing");
+  }, 500);
+
+  if (sound) sound.pause();
+}
+
+
+window.closeModal = closeModal;
+
+
 
   /* =====================================
    OBSERVATION TABLE (JS GENERATED)
@@ -45,7 +92,11 @@ function createObservationTable() {
 function addObservationRow() {
 
   if (currentVoltage === 0 || currentRPM === 0) {
-    alert("⚠️ First, set the armature rheostat to a specific step.");
+    showPopup(
+  "⚠️ First, set the armature rheostat to a specific step.",
+  "Step Required"
+);
+
     return;
   }
 
@@ -59,7 +110,10 @@ function addObservationRow() {
       const r = parseInt(cells[2].textContent);
 
       if (v === currentVoltage && r === currentRPM) {
-        alert("⚠️ This reading is already in the observation table.");
+       showPopup(
+  "⚠️ This reading is already in the observation table.",
+  "Duplicate Entry"
+);
         return;
       }
     }
@@ -95,7 +149,7 @@ function updateGraphButtonState() {
   const plotGraphBtn = document.getElementById("plotGraphBtn");
   if (!plotGraphBtn) return;
 
-  plotGraphBtn.disabled = graphReadings.length < MIN_GRAPH_POINTS;
+  plotGraphBtn.disabled = false;
 
 }
 
@@ -105,7 +159,10 @@ function updateGraphButtonState() {
 function drawGraph() {
 
   if (graphReadings.length < MIN_GRAPH_POINTS) {
-    alert("⚠️ Please add at least 5 readings to plot the graph.");
+    showPopup(
+  "⚠️ Please add at least 5 readings to plot the graph.",
+  "Insufficient Data"
+);
     return;
   }
 
@@ -365,7 +422,10 @@ if (armatureKnob) {
 
   armatureKnob.addEventListener("mousedown", (e) => {
   if (mcbState !== "ON" || !starterEngaged || !fieldLocked) {
-  alert("⚠️ First turn ON MCB and Starter");
+ showPopup(
+  "⚠️ First turn ON MCB and Starter",
+  "Step Violation"
+);
   return;
 }
 
@@ -506,7 +566,10 @@ if (fieldKnob) {
   console.log("MCB OFF", reason);
 
   if (reason) {
-    alert("⚠️ MCB turned OFF!\n\nReason: " + reason);
+    showPopup(
+  "⚠️ MCB turned OFF!\n\nReason: " + reason,
+  "MCB OFF"
+);
   }
 
   // 🔁 Reset observation table on MCB OFF
@@ -522,12 +585,16 @@ if (mcbImg) {
   mcbImg.addEventListener("click", function () {
 
     if (mcbState === "ON") {
-      alert("⚡ MCB is already ON");
+      showPopup("⚡ MCB is already ON", "MCB Status");
       return;
     }
 
     if (!areAllConnectionsCorrect()) {
-      alert("❌ Wiring incorrect!\n\nPlease complete all connections first.");
+      showPopup(
+  "❌ Wiring incorrect!\n\nPlease complete all connections first.",
+  "Wiring Error"
+);
+
       return;
     }
 
@@ -541,7 +608,7 @@ if (mcbImg) {
 }
 
 
-    alert("✅ MCB turned ON");
+    showPopup("✅ MCB turned ON", "Power ON");
     console.log("MCB ON");
   });
 }
@@ -1066,7 +1133,11 @@ checkBtn.addEventListener("click", function () {
 
   // ✅ All connections correct
   if (missing.length === 0) {
-    alert("All connections are correct!\n\nCompleted all 10 steps!");
+    showPopup(
+  "All connections are correct!\n\nCompleted all 10 steps!",
+  "Success"
+);
+
     return;
   }
 
@@ -1076,10 +1147,10 @@ checkBtn.addEventListener("click", function () {
   const allowedPair = requiredPairs[completedCount];
 
 if (nextMissing !== allowedPair) {
-  alert(
-    "⚠️ First, complete the previous step\n\n" +
-    "Required: " + allowedPair
-  );
+  showPopup(
+  "⚠️ First, complete the previous step\n\nRequired: " + allowedPair,
+  "Step Order Error"
+);
   return;
 }
 
@@ -1087,13 +1158,15 @@ if (nextMissing !== allowedPair) {
   const stepNumber = requiredPairs.indexOf(nextMissing) + 1;
  
 
-  let message = `⚠️ Connection Required!\n\n`;
-  message += `Step ${stepNumber} of ${requiredPairs.length}:\n`;
-  message += `Connect → ${a} ↔ ${b}\n\n`;
-  message += `Progress: ${completedCount}/${requiredPairs.length} completed\n`;
-  message += `Remaining: ${missing.length}`;
+  let message = `You must make all connections to continue.\n\n`;
+  // let message = `⚠️ Connections Required!\n\n`;
+  // message += `Step ${stepNumber} of ${requiredPairs.length}:\n`;
+  // message += `Connect → ${a} ↔ ${b}\n\n`;
+  // message += `Progress: ${completedCount}/${requiredPairs.length} completed\n`;
+  // message += `Remaining: ${missing.length}`;
 
-  alert(message);
+ showPopup(message, "Connection Required");
+
   
   // 🔍 Show debug info in console
   console.log("=== MISSING STEPS ===");
