@@ -6,6 +6,12 @@ jsPlumb.ready(function () {
   let currentVoltage = 0;
 let currentRPM = 0;
 
+let currentStepIndex = 0;
+
+let checkClickedAfterCompletion = false;
+
+
+
 
 // ===== GRAPH DATA STORE =====
 const graphReadings = [];
@@ -54,6 +60,12 @@ function closeModal() {
 
   if (sound) sound.pause();
 }
+
+function isModalOpen() {
+  const modal = document.getElementById("warningModal");
+  return modal && modal.classList.contains("show");
+}
+
 
 
 window.closeModal = closeModal;
@@ -497,6 +509,7 @@ if (!rotorRunning && mcbState === "ON" && starterEngaged) {
     const fieldKnob = document.querySelector(".nob1");
   if (mcbState === "OFF") return;
 
+
   mcbState = "OFF";
   mcbReady = false;
 
@@ -531,8 +544,7 @@ rotorAngle = 0;
 rotorSpeed = 0;
 lastFrameTime = null;
 
-     fieldRPM = 1085;
-  armatureRPM = 0;
+  
 
 
 rotor.style.transform =
@@ -597,10 +609,25 @@ if (mcbImg) {
 
   mcbImg.addEventListener("click", function () {
 
-    if (mcbState === "ON") {
-      showPopup("⚡ MCB is already ON", "MCB Status");
-      return;
-    }
+   // 🔁 TOGGLE OFF IF MCB IS ALREADY ON
+if (mcbState === "ON") {
+  turnMCBOff("MCB turned OFF manually");
+  showPopup(
+    "⚠️ MCB has been turned OFF.",
+    "MCB OFF"
+  );
+  return;
+}
+
+
+if (!checkClickedAfterCompletion) {
+  showPopup(
+    "⚠️ Please click 'Check Connections' first.",
+    "Verification Required"
+  );
+  return;
+}
+
 
     if (!areAllConnectionsCorrect()) {
       showPopup(
@@ -702,12 +729,14 @@ const fieldPercent =
 // fieldRPM = 900 + fieldPercent * 185;
 
 
-// existing meter behavior
-setFieldDefaultMeters();
+// // existing meter behavior
+// setFieldDefaultMeters();
 
-if (mcbState === "ON") {
-  updateVoltmeterByArmature(0);
-}
+// if (mcbState === "ON") {
+//   updateVoltmeterByArmature(0);
+// }
+
+
 
 
 });
@@ -1121,18 +1150,35 @@ function getFirstMissingStepIndex() {
   // Click on label buttons (e.g., .point-R) to remove connections from corresponding point
   document.querySelectorAll('[class^="point-"]').forEach(btn => {
     btn.style.cursor = "pointer"; // Ensure pointer cursor
-    btn.addEventListener("click", function () {
-      const className = this.className;
+
+ btn.addEventListener("click", function () {
+
+  if (isModalOpen()) return;   // 🛑 ADD THIS LINE
+
+  const className = this.className;
+
+
       const match = className.match(/point-([A-Za-z0-9]+)/);
       if (match) {
         const pointId = "point" + match[1];
         const pointEl = document.getElementById(pointId);
         if (pointEl) {
-          // Remove all connections where this point is source or target
-         forEach(c => {
-                  lastRemovedPair = [c.sourceId, c.targetId].sort().join("-");
-                  jsPlumb.deleteConnection(c);
-                 });
+     
+  // 🔥 Remove ONLY connections related to this point
+const relatedConnections = jsPlumb.getAllConnections().filter(c =>
+  c.sourceId === pointId || c.targetId === pointId
+);
+
+if (relatedConnections.length === 0) return;
+
+// remove ONLY one connection (latest / first)
+const conn = relatedConnections[0];
+
+lastRemovedPair = [conn.sourceId, conn.targetId].sort().join("-");
+jsPlumb.deleteConnection(conn);
+
+
+
 
 
 
@@ -1142,7 +1188,7 @@ function getFirstMissingStepIndex() {
 currentStepIndex = getFirstMissingStepIndex();    
 
           turnMCBOff("Wire removed from " + pointId);
-          
+
         }
       }
     });
@@ -1153,8 +1199,13 @@ currentStepIndex = getFirstMissingStepIndex();
       document.querySelectorAll(".point").forEach(p => {
   p.style.cursor = "pointer";
 
-  p.addEventListener("click", function () {
-    const id = this.id;
+ p.addEventListener("click", function () {
+
+  if (isModalOpen()) return;   // 🛑 ADD THIS LINE
+
+  const id = this.id;
+
+  
 
     // Get connections only related to this point
     const conns = jsPlumb.getAllConnections().filter(conn =>
@@ -1166,6 +1217,7 @@ currentStepIndex = getFirstMissingStepIndex();
     // Remove only this point's connection
    lastRemovedPair = [conns[0].sourceId, conns[0].targetId].sort().join("-");
 jsPlumb.deleteConnection(conns[0]);
+
 
     jsPlumb.repaintEverything();
  
@@ -1197,6 +1249,7 @@ checkBtn.addEventListener("click", function () {
   // ✅ AUTO CONNECT MODE CHECK
 if (autoConnectUsed) {
   if (areAllConnectionsCorrect()) {
+    checkClickedAfterCompletion = true; 
     showPopup(
       "🎉 All wiring connections are correct and completed!",
       "Success"
@@ -1216,6 +1269,9 @@ if (currentStepIndex >= requiredPairs.length) {
     "🎉 All connections are already completed successfully!",
     "Completed"
   );
+
+  checkClickedAfterCompletion = true; 
+
   return;
 }
 
@@ -1273,14 +1329,15 @@ if (currentStepIndex < requiredPairs.length) {
   return;
 }
 
-
 if (currentStepIndex === requiredPairs.length) {
   showPopup(
     "🎉 All wiring steps completed!\n\nYou may now proceed.",
     "All Steps Completed"
   );
-}
+
+  checkClickedAfterCompletion = true; // ✅ SET FLAG
   return;
+}
 
 
   // 🔍 DEBUG: Log all current connections
@@ -1378,6 +1435,8 @@ if (nextMissing !== allowedPair) {
              autoConnectUsed = true;
            currentStepIndex = requiredPairs.length;
 
+           checkClickedAfterCompletion = false;
+
 
       const runBatch = typeof jsPlumb.batch === "function" ? jsPlumb.batch.bind(jsPlumb) : (fn => fn());
 
@@ -1446,6 +1505,7 @@ if (resetBtn) {
 // Reset state variables
      autoConnectUsed = false;
 currentStepIndex = 0;
+checkClickedAfterCompletion = false;
 
 
      // ===== RESET GRAPH =====
