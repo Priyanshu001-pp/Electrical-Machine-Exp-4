@@ -1316,3 +1316,29 @@
 }
 
 
+/* ===============================
+   🎯 PIXEL-PERFECT AMMETER SIZE
+   =============================== */
+
+/* Ammeter image stays centered */
+/* .ammeter-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+} */
+
+/* 🔥 Ammeter visual normalization */
+/* .ammeter-face img {
+  width: 114%;      
+  height: auto;
+  max-height: none;
+} */
+/* STEP 3: Increase ammeter size safely */
+.ammeter-card .ammeter-inner {
+  transform: scale(1.07);        /* 🔼 change this value */
+  transform-origin: center;
+}
+
