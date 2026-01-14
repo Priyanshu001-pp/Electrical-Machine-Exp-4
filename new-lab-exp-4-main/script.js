@@ -1,4 +1,5 @@
 jsPlumb.ready(function () {
+
   let mcbState = "OFF";   // 🔥 ADD THIS
    let mcbReady = false;
   const mcbImg = document.querySelector(".mcb-toggle");
@@ -609,6 +610,8 @@ if (mcbImg) {
 
   mcbImg.addEventListener("click", function () {
 
+
+
    // 🔁 TOGGLE OFF IF MCB IS ALREADY ON
 if (mcbState === "ON") {
   turnMCBOff("MCB turned OFF manually");
@@ -641,7 +644,10 @@ if (!checkClickedAfterCompletion) {
     mcbState = "ON";
     mcbReady = true;
 
+
+
     this.src = "images/mcb-on.png";
+    
 
     if (starterHandle) {
   starterHandle.style.cursor = "grab";
@@ -781,6 +787,12 @@ function engageStarter() {
   starterHandle.style.transform =
     `translate(${END_X}px, 0px)`;
   starterHandle.style.cursor = "default";
+
+  
+  // ✅ STORE START TIME HERE (ONLY ONCE)
+  if (!localStorage.getItem("experimentStartTime")) {
+    localStorage.setItem("experimentStartTime", Date.now());
+  }
 
   console.log("✅ Starter ON");
 
@@ -1502,6 +1514,13 @@ if (resetBtn) {
     // Force repaint so no ghost wires remain
         jsPlumb.repaintEverything();
      turnMCBOff("Reset pressed");
+ localStorage.removeItem("experimentStartTime");
+localStorage.removeItem("experimentEndTime");
+localStorage.removeItem("reportStartTime");
+localStorage.removeItem("reportEndTime");
+localStorage.removeItem("reportDuration");
+
+
 // Reset state variables
      autoConnectUsed = false;
 currentStepIndex = 0;
@@ -1596,6 +1615,81 @@ const plotGraphBtn = document.getElementById("plotGraphBtn");
 if (plotGraphBtn) {
   plotGraphBtn.addEventListener("click", drawGraph);
 }
+
+
+
+
+// ===== REPORT BUTTON =====
+
+const reportBtn = Array.from(document.querySelectorAll(".pill-btn"))
+  .find(btn => btn.textContent.trim() === "Report");
+
+reportBtn.addEventListener("click", () => {
+
+  // 🚨 SAFETY CHECK: EXPERIMENT STARTED OR NOT
+const startTimeCheck = localStorage.getItem("experimentStartTime");
+if (!startTimeCheck) {
+  showPopup(
+    "⚠️ Experiment has not started yet.\nPlease start the motor before generating report.",
+    "Report Error"
+  );
+  return;
+}
+
+
+  if (graphReadings.length === 0) {
+    showPopup("⚠️ No observation data available for report.", "Report Error");
+    return;
+  }
+
+  // ===== TIME STORE =====
+// ===== TIME STORE (FINAL & CORRECT) =====
+// ===== STORE EXPERIMENT END TIME =====
+const endTime = Date.now();
+localStorage.setItem("experimentEndTime", endTime);
+
+// ===== CALCULATE TOTAL DURATION =====
+const startTime = parseInt(localStorage.getItem("experimentStartTime"));
+
+const durationMs = endTime - startTime;
+const durationMinutes = Math.round((durationMs / 60000) * 10) / 10;
+
+// ===== STORE READABLE VALUES FOR REPORT =====
+localStorage.setItem(
+  "reportStartTime",
+  new Date(startTime).toLocaleTimeString()
+);
+
+localStorage.setItem(
+  "reportEndTime",
+  new Date(endTime).toLocaleTimeString()
+);
+
+localStorage.setItem("reportDuration", durationMinutes);
+
+
+
+
+  // ===== DATA STORE =====
+  localStorage.setItem(
+    "experimentReport",
+    JSON.stringify(graphReadings)
+  );
+
+  localStorage.setItem(
+    "tableData",
+    JSON.stringify(
+      graphReadings.map((row, index) => ({
+        count: index + 1,
+        voltage: row.voltage,
+        rpm: row.rpm
+      }))
+    )
+  );
+
+  window.open("report.html", "_blank");
+});
+
 
 
 });
