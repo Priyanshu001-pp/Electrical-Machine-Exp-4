@@ -1,5 +1,36 @@
 jsPlumb.ready(function () {
 
+
+  // =====================
+// 🔊 VOICE ENGINE (GLOBAL)
+// =====================
+window.labSpeech = {
+  enabled: true,
+
+  speak(text) {
+    if (!this.enabled) return;
+    if (!("speechSynthesis" in window)) return;
+
+    speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.9;
+
+    const voices = speechSynthesis.getVoices();
+    utterance.voice =
+      voices.find(v => v.lang.startsWith("en-IN")) ||
+      voices.find(v => v.lang.startsWith("en")) ||
+      voices[0];
+
+    speechSynthesis.speak(utterance);
+  },
+
+  stop() {
+    speechSynthesis.cancel();
+  }
+};
+
+
   let mcbState = "OFF";   // 🔥 ADD THIS
    let mcbReady = false;
   const mcbImg = document.querySelector(".mcb-toggle");
@@ -11,7 +42,31 @@ let currentStepIndex = 0;
 
 let checkClickedAfterCompletion = false;
 
+// =====================
+// 🎧 VOICE GUIDE CONTROL
+// =====================
 
+  let guideActive = false ;
+
+  const speakBtn = Array.from(document.querySelectorAll(".pill-btn"))
+  .find(btn => btn.textContent.trim() === "Tap To Listen");
+
+if (speakBtn) {
+  speakBtn.addEventListener("click", () => {
+    guideActive = !guideActive;
+
+    if (guideActive) {
+      labSpeech.speak("Voice guidance enabled.");
+      speakBtn.textContent = "Stop Listening";
+    } else {
+      labSpeech.stop();
+      speakBtn.textContent = "Tap To Listen";
+    }
+  });
+}
+
+
+window.isGuideActive = () => guideActive;
 
 
 // ===== GRAPH DATA STORE =====
@@ -367,6 +422,13 @@ function updateVoltmeterByArmature(stepIndex) {
   if (rpmDisplay) {
     rpmDisplay.textContent = currentRPM;
   }
+
+  if (isGuideActive()) {
+  labSpeech.speak(
+    `Voltage is ${currentVoltage} volts and speed is ${currentRPM} RPM.`
+  );
+}
+
 }
 
 
@@ -656,6 +718,12 @@ if (!checkClickedAfterCompletion) {
 
     showPopup("✅ MCB turned ON", "Power ON");
     console.log("MCB ON");
+    if (isGuideActive()) {
+  labSpeech.speak(
+    "MCB is turned on. Now engage the starter."
+  );
+}
+
   });
 }
 
@@ -760,6 +828,13 @@ document.addEventListener("mouseup", () => {
   fieldLocked = true;
   fieldKnob.style.cursor = "not-allowed";
 
+  if (isGuideActive()) {
+  labSpeech.speak(
+    "Field resistance is set. You can now adjust the armature rheostat."
+  );
+}
+
+
   if (armatureKnob) {
   armatureKnob.style.cursor = "grab";
 }
@@ -796,6 +871,13 @@ function engageStarter() {
 
   console.log("✅ Starter ON");
 
+  if (isGuideActive()) {
+  labSpeech.speak(
+    "Starter is engaged. Now adjust the field resistance."
+  );
+}
+
+
   unlockFieldResistance(); 
 
 
@@ -819,6 +901,12 @@ function lockFieldResistance() {
 
   fieldLocked = true;                 // 🔒 lock
   fieldKnob.style.cursor = "not-allowed";
+
+  if (isGuideActive()) {
+  labSpeech.speak(
+    "Field resistance is set. You can now adjust the armature rheostat."
+  );
+}
 
   console.log("🔒 Field resistance locked at user position");
 }
@@ -1272,7 +1360,7 @@ if (autoConnectUsed) {
       "Wiring Error"
     );
   }
-  return;
+ 
 }
 
   // 🔒 STEP-BY-STEP GUIDED CHECK
@@ -1284,7 +1372,7 @@ if (currentStepIndex >= requiredPairs.length) {
 
   checkClickedAfterCompletion = true; 
 
-  return;
+  
 }
 
 // First, validate that no incorrect connections exist
@@ -1297,9 +1385,15 @@ for (let conn of connections) {
       `❌ Wrong connection detected!\n\nIncorrect: ${src} ↔ ${tgt}`,
       "Wrong Connection"
     );
+     if (isGuideActive()) {
+    labSpeech.speak(
+      `Wrong connection detected. You connected ${src} to ${tgt}. Please follow the correct sequence.`
+    );
+  }
     return;
   }
 }
+
 
 // Next, ensure all previous steps are completed
 for (let i = 0; i < currentStepIndex; i++) {
@@ -1322,7 +1416,13 @@ if (!isPairConnected(currA, currB, connections)) {
     `🔧 Step ${stepNo} pending\n\nConnect: ${currA} ↔ ${currB}`,
     "Connection Required"
   );
-  return;
+
+if (isGuideActive()) {
+  labSpeech.speak(
+    `Step ${stepNo}. Please connect ${currA} to ${currB}.`
+  );
+  }
+    return;
 }
 
 
@@ -1338,8 +1438,24 @@ if (currentStepIndex < requiredPairs.length) {
     `🔧 Step ${nextStepNo} pending\n\nConnect: ${nextA} ↔ ${nextB}`,
     "Connection Required"
   );
+
+  // 🔊 ADD THIS (FIX)
+  if (isGuideActive()) {
+    labSpeech.speak(
+      `Step ${nextStepNo}. Please connect ${nextA} to ${nextB}.`
+    );
+  }
+
   return;
 }
+
+
+if (isGuideActive()) {
+  labSpeech.speak(
+    `Good. Now step ${nextStepNo}. Connect ${nextA} to ${nextB}.`
+  );
+}
+
 
 if (currentStepIndex === requiredPairs.length) {
   showPopup(
@@ -1347,9 +1463,24 @@ if (currentStepIndex === requiredPairs.length) {
     "All Steps Completed"
   );
 
+ // 🔊 ADD ONLY THIS
+  if (isGuideActive()) {
+    labSpeech.speak(
+      "All wiring steps completed. You may now proceed."
+    );
+  }
+
+
   checkClickedAfterCompletion = true; // ✅ SET FLAG
   return;
 }
+
+if (isGuideActive()) {
+  labSpeech.speak(
+    "All wiring connections are completed successfully. Please click on the check button."
+  );
+}
+
 
 
   // 🔍 DEBUG: Log all current connections
@@ -1499,7 +1630,15 @@ const resetBtn = Array.from(document.querySelectorAll('.pill-btn'))
   .find(btn => btn.textContent.trim() === 'Reset');
 
 if (resetBtn) {
+
   resetBtn.addEventListener('click', function () {
+
+      labSpeech.stop();
+      guideActive = false;
+
+      if (speakBtn) {
+  speakBtn.textContent = "Tap To Listen";
+}
 
     // Remove all connections safely
     if (typeof jsPlumb.deleteEveryConnection === "function") {
