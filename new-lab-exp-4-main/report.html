@@ -117,6 +117,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    text-align:center;
     margin-bottom: 30px;
     }
 
@@ -221,11 +222,10 @@
     <body>
 
     <div class="header-row">
+         <img src="images/logo.png" alt="Lab Logo">
     <h1>Virtual Lab Simulation Report</h1>
-    <img src="assets/logo.jpg" alt="Lab Logo">
     </div>
     
-
     
 
     <script>
@@ -239,18 +239,18 @@
     </script>
 
     <div class="section">
-        <p><span class="label">Experiment Title:</span>Speed Control of DC Shunt Motor by Armature Voltage Control</p>
+        <p><span class="label">Experiment Title:</span> Speed Control of DC Shunt Motor by Armature Voltage Control</p>
         <p><span class="label">Date:</span> <span id="dateField"></span></p>
         <div style="display: flex;flex-direction: row;justify-content: space-between">
         <div>
-            <span class="label" id="start">Start Time:</span> 
+            <span id="start">Start Time:</span> 
         </div>
         <div>
-            <span class="label" id="end">End Time:</span> 
+            <span id="end">End Time:</span> 
         </div>
 
         <div>
-            <span class="label" id="total">Total Time Spent:</span> 
+            <span id="total">Total Time Spent:</span> 
         </div>
         </div>
         
@@ -263,7 +263,7 @@
         <p style="text-align: justify;">The aim of this experiment is to study the speed control of a DC shunt motor by armature voltage control method and to plot the graph between armature voltage and motor speed.
     </p>
 
-        <h3>Procedure Summary</h3>
+        <h3>Simulation Summary</h3>
         <p style="text-align: justify;">Connections were made as per the circuit diagram. The DC motor was started using the starter. Armature voltage was varied gradually using the rheostat. For each voltage setting, the corresponding motor speed was noted. Readings were recorded in the observation table and a graph between armature voltage and speed was plotted.</p>
 
         <h3>Components</h3>
@@ -283,14 +283,14 @@
         <!-- <li>Field Resistance: Ω</li>
         <li>Armature Resistance:  Ω</li> -->
         <li>Voltmeter Range: 0 to 410 V</li>
-        <li>Ammeter Range: 0 to 1 V</li>
-        <li>Speed Range: 0 to 1500 RPM</li>
+        <li>Ammeter Range: 0 to 1 A</li>
+        <li>Speed Range: 0 to 2000 RPM</li>
         </ul>
     </div>
 
     
     <div class="section">
-    <h3 style="text-align:center">Observation Table</h3>
+    <h3 style="text-align:center"><b>Observation Table</b></h3>
 
     <table id="myTable" width="250" border="5" style="text-align:center">
         <thead>
@@ -309,7 +309,7 @@
 
 
     <div class="section">
-    <h3 style="text-align:center">Graph</h3>
+    <h3 style="text-align:center"><b>Graph</b></h3>
 
     <div id="myDiv2"
         style="width:600px;height:300px;margin:auto;">
@@ -380,10 +380,20 @@
 
     
 
-    document.getElementById('start').textContent = 'Start Time: ' + startTime;
-    document.getElementById('end').textContent = 'End Time: ' + endTime;
+    // document.getElementById('start').textContent = '<b>Start Time:</b>' + startTime;
+    // document.getElementById('end').textContent = '<b>End Time:</b>' + endTime;
 
-        document.getElementById('total').textContent = 'Total Time Spent: ' + duration + ' minutes';
+    //     document.getElementById('total').textContent = '<b>Total Time Spent:</b>' + duration + ' minutes';
+
+              document.getElementById('start').innerHTML =
+                                  '<b>Start Time:</b> ' + startTime;
+
+                document.getElementById('end').innerHTML =
+                                   '<b>End Time:</b> ' + endTime;
+
+                document.getElementById('total').innerHTML =
+                                    '<b>Total Time Spent:</b> ' + duration + ' minutes';
+
 
     report_graph() 
     function report_graph() {
