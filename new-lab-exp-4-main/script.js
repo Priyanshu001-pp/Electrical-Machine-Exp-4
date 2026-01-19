@@ -42,28 +42,132 @@ let currentStepIndex = 0;
 
 let checkClickedAfterCompletion = false;
 
+let guideActive = false ;
+  let introSpoken = false;
+
+function speakCurrentStep() {
+  if (!guideActive) return;
+
+  // 1️⃣ Check clicked, DC OFF
+  if (checkClickedAfterCompletion && mcbState === "OFF") {
+    labSpeech.speak(
+      "Connections are already verified. Now turn on the DC supply."
+    );
+    return;
+  }
+
+  // 2️⃣ DC ON, starter OFF
+  if (mcbState === "ON" && !starterEngaged) {
+    labSpeech.speak(
+      "DC supply is already on. Now turn on the starter by moving the handle from left to right."
+    );
+    return;
+  }
+
+  // 3️⃣ Starter ON, field NOT set
+  if (starterEngaged && !fieldLocked) {
+    labSpeech.speak(
+      "Starter is already on. Now set the field resistance."
+    );
+    return;
+  }
+
+  // 4️⃣ Field set (your required unified condition ✅)
+  if (starterEngaged && fieldLocked) {
+    labSpeech.speak(
+      `Field resistance is already set. The armature voltage is ${currentVoltage} volts and the speed is ${currentRPM} RPM. Now adjust the armature rheostat to take readings.`
+    );
+    return;
+  }
+
+  // 5️⃣ Wiring complete but Check NOT clicked
+  if (
+    currentStepIndex >= requiredPairs.length &&
+    !checkClickedAfterCompletion
+  ) {
+    labSpeech.speak(
+      "The connections are now complete. Click the Check button to confirm them."
+    );
+    return;
+  }
+
+  // 6️⃣ Normal wiring steps
+  const [a, b] = requiredPairs[currentStepIndex].split("-");
+  const stepNo = currentStepIndex + 1;
+
+  labSpeech.speak(
+    `Step ${stepNo}. Please connect point ${a.replace("point", "")} to point ${b.replace("point", "")}.`
+  );
+}
+
+
 // =====================
 // 🎧 VOICE GUIDE CONTROL
 // =====================
 
-  let guideActive = false ;
+  
+
 
   const speakBtn = Array.from(document.querySelectorAll(".pill-btn"))
   .find(btn => btn.textContent.trim() === "Tap To Listen");
 
-if (speakBtn) {
+  if (speakBtn) {
   speakBtn.addEventListener("click", () => {
+
     guideActive = !guideActive;
 
     if (guideActive) {
-      labSpeech.speak("Voice guidance enabled.");
       speakBtn.textContent = "Stop Listening";
+
+    // ✅ If Auto Connect already completed, SKIP intro
+if (completedByAutoConnect) {
+  speakCurrentStep();
+  return;
+}
+
+// 🔊 Normal first-time intro flow
+if (!introSpoken) {
+  labSpeech.speak("Let's connect the components.");
+  introSpoken = true;
+
+  setTimeout(() => {
+    if (guideActive) speakCurrentStep();
+  }, 2000);
+
+} else {
+  speakCurrentStep();
+}
+
     } else {
       labSpeech.stop();
       speakBtn.textContent = "Tap To Listen";
     }
   });
 }
+
+
+// if (guideActive) {
+//   speakBtn.textContent = "Stop Listening";
+
+//   // 🔊 INTRO VOICE (ONLY FIRST TIME)
+//   if (!introSpoken) {
+//     labSpeech.speak("Let's connect the components.");
+
+//     introSpoken = true;
+
+//     // 🔁 AFTER INTRO, SPEAK FIRST STEP
+//     setTimeout(() => {
+//       if (guideActive) speakCurrentStep();
+//     }, 2000); // 2 sec pause after intro
+//   } else {
+//     speakCurrentStep();
+//   }
+
+// } else {
+//   labSpeech.stop();
+//   speakBtn.textContent = "Tap To Listen";
+// }
+
 
 
 window.isGuideActive = () => guideActive;
@@ -425,7 +529,7 @@ function updateVoltmeterByArmature(stepIndex) {
 
   if (isGuideActive()) {
   labSpeech.speak(
-    `Voltage is ${currentVoltage} volts and speed is ${currentRPM} RPM.`
+    `Voltage is ${currentVoltage} volts and speed is ${currentRPM} RPM. Now adjust the armature rheostat to take readings.`
   );
 }
 
@@ -563,6 +667,8 @@ if (!rotorRunning && mcbState === "ON" && starterEngaged) {
 }
   function turnMCBOff(reason = "") {
 
+    completedByAutoConnect = false;   // ✅ RESET AUTO CONNECT STATE
+
    // 🔥 RESET RPM DISPLAY
   currentRPM = 0;
   if (rpmDisplay) {
@@ -642,7 +748,7 @@ if (fieldKnob) {
 
   if (reason) {
     showPopup(
-  "⚠️ MCB turned OFF!\n\nReason: " + reason,
+  "⚠️ DC SUPPLY TURNED OFF!\n\nReason: " + reason,
   "MCB OFF"
 );
   }
@@ -678,7 +784,7 @@ if (mcbImg) {
 if (mcbState === "ON") {
   turnMCBOff("MCB turned OFF manually");
   showPopup(
-    "⚠️ MCB has been turned OFF.",
+    "⚠️ DC SUPPLY has been turned OFF.",
     "MCB OFF"
   );
   return;
@@ -716,11 +822,11 @@ if (!checkClickedAfterCompletion) {
 }
 
 
-    showPopup("✅ MCB turned ON", "Power ON");
+    showPopup("✅ DC SUPPLY is turned ON", "Power ON");
     console.log("MCB ON");
     if (isGuideActive()) {
   labSpeech.speak(
-    "MCB is turned on. Now engage the starter."
+    "DC SUPPLY is turned on. Now turn on the starter by moving the handle from left to right."
   );
 }
 
@@ -873,7 +979,7 @@ function engageStarter() {
 
   if (isGuideActive()) {
   labSpeech.speak(
-    "Starter is engaged. Now adjust the field resistance."
+    "Starter is on. Now set the field rheostat."
   );
 }
 
@@ -1079,6 +1185,7 @@ function isConnectionAllowed(src, tgt, uptoIndex) {
 let autoConnectUsed = false;
 
 let lastRemovedPair = null;   // 🔥 remembers user-removed wire
+let completedByAutoConnect = false;
 
   // Required connections: unsorted list for iteration order in auto-connect, sorted Set for checking
 
@@ -1092,7 +1199,8 @@ const requiredPairs = [
   "pointG-pointH",  
   "pointI-pointF1",
   "pointC-pointA1",  
-  "pointA1-pointK"
+  "pointA1-pointK",
+  "pointK-pointC",
 ];
 
 
@@ -1231,15 +1339,45 @@ function getFirstMissingStepIndex() {
   }
 
   // Dynamic wire color based on source anchor side (left: blue, right: red) - Now sets on connection for consistency
-  jsPlumb.bind("connection", function(info) {
-    const sourceId = info.sourceId;
-    const sourceAnchor = anchors[sourceId];
-    const isLeftSide = sourceAnchor && sourceAnchor[0] === 0; // x=0 is left side
-    const wireColor = isLeftSide ? "blue" : "red";
-    info.connection.setPaintStyle({ stroke: wireColor, strokeWidth: 4 });
-    console.log(`Wire from ${sourceId} set to ${wireColor}`); // Debug log (remove if not needed)
-  });
+jsPlumb.bind("connection", function (info) {
 
+  // existing color logic
+  const src = info.sourceId;
+  const tgt = info.targetId;
+
+  if (!guideActive) return;
+
+  const [expectedA, expectedB] =
+    requiredPairs[currentStepIndex].split("-");
+
+  const isCorrect =
+    (src === expectedA && tgt === expectedB) ||
+    (src === expectedB && tgt === expectedA);
+
+ if (!isCorrect) {
+
+  // 🧠 Extract readable point names
+  const wrongFrom = src.replace("point", "");
+  const wrongTo   = tgt.replace("point", "");
+
+  const rightFrom = expectedA.replace("point", "");
+  const rightTo   = expectedB.replace("point", "");
+
+  // 🔊 Speak in 3 clear steps
+  labSpeech.speak(
+    `Wrong connection. You connected point ${wrongFrom} to point ${wrongTo}. Please connect point ${rightFrom} to point ${rightTo}.`
+  );
+
+  return;
+}
+
+
+    // ✅ MOVE TO NEXT STEP
+         currentStepIndex++;
+
+    // 🔊 SPEAK NEXT STEP AUTOMATICALLY
+  speakCurrentStep();
+});
 
  
   const requiredConnections = new Set(requiredPairs.map(pair => {
@@ -1354,6 +1492,12 @@ if (autoConnectUsed) {
       "🎉 All wiring connections are correct and completed!",
       "Success"
     );
+    
+    if (guideActive) {
+      labSpeech.speak(
+        "The connections are correct. Now turn on the DC supply."
+      );
+    }
   } else {
     showPopup(
       "❌ Wiring incorrect!\n\nPlease review connections.",
@@ -1385,11 +1529,6 @@ for (let conn of connections) {
       `❌ Wrong connection detected!\n\nIncorrect: ${src} ↔ ${tgt}`,
       "Wrong Connection"
     );
-     if (isGuideActive()) {
-    labSpeech.speak(
-      `Wrong connection detected. You connected ${src} to ${tgt}. Please follow the correct sequence.`
-    );
-  }
     return;
   }
 }
@@ -1417,11 +1556,6 @@ if (!isPairConnected(currA, currB, connections)) {
     "Connection Required"
   );
 
-if (isGuideActive()) {
-  labSpeech.speak(
-    `Step ${stepNo}. Please connect ${currA} to ${currB}.`
-  );
-  }
     return;
 }
 
@@ -1438,23 +1572,9 @@ if (currentStepIndex < requiredPairs.length) {
     `🔧 Step ${nextStepNo} pending\n\nConnect: ${nextA} ↔ ${nextB}`,
     "Connection Required"
   );
-
-  // 🔊 ADD THIS (FIX)
-  if (isGuideActive()) {
-    labSpeech.speak(
-      `Step ${nextStepNo}. Please connect ${nextA} to ${nextB}.`
-    );
-  }
-
   return;
 }
 
-
-if (isGuideActive()) {
-  labSpeech.speak(
-    `Good. Now step ${nextStepNo}. Connect ${nextA} to ${nextB}.`
-  );
-}
 
 
 if (currentStepIndex === requiredPairs.length) {
@@ -1463,24 +1583,16 @@ if (currentStepIndex === requiredPairs.length) {
     "All Steps Completed"
   );
 
- // 🔊 ADD ONLY THIS
-  if (isGuideActive()) {
+  checkClickedAfterCompletion = true; // ✅ SET FLAG
+
+    // 🔊 ADD THIS
+  if (guideActive) {
     labSpeech.speak(
-      "All wiring steps completed. You may now proceed."
+      "The connections are correct. Now turn on the DC supply."
     );
   }
-
-
-  checkClickedAfterCompletion = true; // ✅ SET FLAG
   return;
 }
-
-if (isGuideActive()) {
-  labSpeech.speak(
-    "All wiring connections are completed successfully. Please click on the check button."
-  );
-}
-
 
 
   // 🔍 DEBUG: Log all current connections
@@ -1618,6 +1730,15 @@ if (nextMissing !== allowedPair) {
         }
 
         console.log(`Auto Connect: required=${requiredConnections.size}, missing after retry=${missing.length}`);
+         
+        completedByAutoConnect = true;
+        // 🔊 SPEAK AFTER AUTO CONNECT COMPLETES
+                  if (guideActive) {
+                   labSpeech.speak(
+                "The connections are now complete. Click the Check button to confirm them."
+                   );
+                     }
+
       });
     });
   } else {
@@ -1664,6 +1785,8 @@ localStorage.removeItem("reportDuration");
      autoConnectUsed = false;
 currentStepIndex = 0;
 checkClickedAfterCompletion = false;
+introSpoken = false;
+completedByAutoConnect = false;   
 
 
      // ===== RESET GRAPH =====
