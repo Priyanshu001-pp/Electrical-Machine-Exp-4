@@ -1,232 +1,238 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
     <meta charset="UTF-8" />
     <title>Simulation Report</title>
-    
+
     <style>
-    /* Base Styles */
-    body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #eef2f7;
-    color: #2c3e50;
-    margin: 40px auto;
-    max-width: 900px;
-    padding: 40px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    border: 1px solid #d3d3d3;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    line-height: 1.6;
-    transition: all 0.3s ease-in-out;
-    }
+        /* Base Styles */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            color: #2c3e50;
+            margin: 40px auto;
+            max-width: 900px;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #d3d3d3;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            line-height: 1.6;
+            transition: all 0.3s ease-in-out;
+        }
 
-    /* Headings */
-    h1, h2, h3 {
-    color: #2c3e50;
-    margin-top: 0;
-    font-weight: 600;
-    }
+        /* Headings */
+        h1,
+        h2,
+        h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-weight: 600;
+        }
 
-    h1 {
-    font-size: 28px;
-    margin-bottom: 10px;
-    border-bottom: 3px solid #3498db;
-    padding-bottom: 8px;
-    }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 8px;
+        }
 
-    h2 {
-    font-size: 22px;
-    margin-bottom: 10px;
-    color: #34495e;
-    }
+        h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #34495e;
+        }
 
-    h3 {
-    font-size: 18px;
-    margin-bottom: 8px;
-    }
+        h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
 
-    /* Sections */
-    .section {
-    background-color: #fafafa;
-    padding: 20px;
-    margin-bottom: 35px;
-    border-radius: 8px;
-    border-left: 5px solid #3498db;
-    }
+        /* Sections */
+        .section {
+            background-color: #fafafa;
+            padding: 20px;
+            margin-bottom: 35px;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+        }
 
-    /* Labels */
-    .label {
-    font-weight: bold;
-    color: #2a2a2a;
-    }
+        /* Labels */
+        .label {
+            font-weight: bold;
+            color: #2a2a2a;
+        }
 
-    /* Lists */
-    ul {
-    padding-left: 20px;
-    margin-top: 10px;
-    }
+        /* Lists */
+        ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
 
-    .two-column-list {
-    column-count: 2;
-    column-gap: 40px;
-    list-style-position: inside;
-    margin-top: 10px;
-    }
+        .two-column-list {
+            column-count: 2;
+            column-gap: 40px;
+            list-style-position: inside;
+            margin-top: 10px;
+        }
 
-    /* Observation Table */
-    table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    background-color: white;
-    border-radius: 6px;
-    overflow: hidden;
-    }
+        /* Observation Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            background-color: white;
+            border-radius: 6px;
+            overflow: hidden;
+        }
 
-    th, td {
-    border: 1px solid #e0e0e0;
-    padding: 12px;
-    text-align: center;
-    font-size: 15px;
-    }
+        th,
+        td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: center;
+            font-size: 15px;
+        }
 
-    th {
-    background-color: #3498db;
-    color: white;
-    font-weight: 600;
-    }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
 
-    tr:nth-child(even) {
-    background-color: #f5faff;
-    }
+        tr:nth-child(even) {
+            background-color: #f5faff;
+        }
 
-    /* Graph Section */
-    .graph {
-    text-align: center;
-    margin-top: 30px;
-    padding: 20px;
-    border: 1px solid #dcdcdc;
-    border-radius: 10px;
-    background: #fefefe;
-    }
+        /* Graph Section */
+        .graph {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #dcdcdc;
+            border-radius: 10px;
+            background: #fefefe;
+        }
 
-    /* Logo and Title Row */
-    .header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align:center;
-    margin-bottom: 30px;
-    }
+        /* Logo and Title Row */
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-    .header-row img {
-    width: 120px;
-    height: auto;
-    }
+        .header-row img {
+            width: 120px;
+            height: auto;
+        }
 
-    .header-row h1 {
-    flex: 1;
-    }
+        .header-row h1 {
+            flex: 1;
+        }
 
-    /* Buttons */
-    .print-btn {
-    margin-top: 30px;
-    padding: 12px 28px;
-    font-size: 16px;
-    background: linear-gradient(to right, #3498db, #2980b9);
-    color: white;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    }
+        /* Buttons */
+        .print-btn {
+            margin-top: 30px;
+            padding: 12px 28px;
+            font-size: 16px;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-    .print-btn:hover {
-    background: linear-gradient(to right, #2980b9, #1c6ea4);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-    }
+        .print-btn:hover {
+            background: linear-gradient(to right, #2980b9, #1c6ea4);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
 
-    /* Responsive Design */
-    @media screen and (max-width: 600px) {
-    .two-column-list {
-        column-count: 1;
-    }
+        /* Responsive Design */
+        @media screen and (max-width: 600px) {
+            .two-column-list {
+                column-count: 1;
+            }
 
-    .header-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+            .header-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
 
-    .header-row img {
-        margin-top: 10px;
-    }
+            .header-row img {
+                margin-top: 10px;
+            }
 
-    .section {
-        padding: 15px;
-    }
+            .section {
+                padding: 15px;
+            }
 
-    table, th, td {
-        font-size: 14px;
-    }
-    }
+            table,
+            th,
+            td {
+                font-size: 14px;
+            }
+        }
 
-    /* Print */
-    @page {
-    size: A4 portrait;
-    margin: 20mm;
-    }
+        /* Print */
+        @page {
+            size: A4 portrait;
+            margin: 20mm;
+        }
 
-    @media print {
-    body {
-        width: auto;
-        margin: 0;
-        box-shadow: none;
-        border: none;
-        padding: 0;
-        font-size: 12pt;
-    }
+        @media print {
+            body {
+                width: auto;
+                margin: 0;
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                font-size: 12pt;
+            }
 
-    .print-btn {
-        display: none;
-    }
+            .print-btn {
+                display: none;
+            }
 
-    .page-break {
-        page-break-before: always;
-        break-before: page;
-    }
+            .page-break {
+                page-break-before: always;
+                break-before: page;
+            }
 
-    .section {
-        page-break-inside: avoid;
-    }
+            .section {
+                page-break-inside: avoid;
+            }
 
-    table {
-        page-break-inside: auto;
-    }
+            table {
+                page-break-inside: auto;
+            }
 
-    tr, td, th {
-        page-break-inside: avoid;
-        page-break-after: auto;
-    }
-    }
-
-
+            tr,
+            td,
+            th {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+        }
     </style>
 
     <script src="https://cdn.plot.ly/plotly-3.0.1.min.js" charset="utf-8"></script>
-    </head>
+</head>
 
 
-    <body>
+<body>
 
     <div class="header-row">
-         <img src="images/logo.png" alt="Lab Logo">
-    <h1>Virtual Lab Simulation Report</h1>
+        <img src="images/logo.png" alt="Lab Logo">
+        <h1>Virtual Lab Simulation Report</h1>
     </div>
-    
-    
+
+
 
     <script>
         const today = new Date();
@@ -235,85 +241,88 @@
         const year = today.getFullYear();
 
         const formattedDate = `${day}-${month}-${year}`;
-        
+
     </script>
 
     <div class="section">
         <p><span class="label">Experiment Title:</span> Speed Control of DC Shunt Motor by Armature Voltage Control</p>
         <p><span class="label">Date:</span> <span id="dateField"></span></p>
         <div style="display: flex;flex-direction: row;justify-content: space-between">
-        <div>
-            <span id="start">Start Time:</span> 
-        </div>
-        <div>
-            <span id="end">End Time:</span> 
+            <div>
+                <span id="start">Start Time:</span>
+            </div>
+            <div>
+                <span id="end">End Time:</span>
+            </div>
+
+            <div>
+                <span id="total">Total Time Spent:</span>
+            </div>
         </div>
 
-        <div>
-            <span id="total">Total Time Spent:</span> 
-        </div>
-        </div>
-        
     </div>
 
     <div class="section">
         <h2>Summary</h2>
 
         <h3>Aim</h3>
-        <p style="text-align: justify;">The aim of this experiment is to study the speed control of a DC shunt motor by armature voltage control method and to plot the graph between armature voltage and motor speed.
-    </p>
+        <p style="text-align: justify;">The aim of this experiment is to study the speed control of a DC shunt motor by
+            armature voltage control method and to plot the graph between armature voltage and motor speed.
+        </p>
 
         <h3>Simulation Summary</h3>
-        <p style="text-align: justify;">Connections were made as per the circuit diagram. The DC motor was started using the starter. Armature voltage was varied gradually using the rheostat. For each voltage setting, the corresponding motor speed was noted. Readings were recorded in the observation table and a graph between armature voltage and speed was plotted.</p>
+        <p style="text-align: justify;">Connections were made as per the circuit diagram. The DC motor was started using
+            the starter. Armature voltage was varied gradually using the rheostat. For each voltage setting, the
+            corresponding motor speed was noted. Readings were recorded in the observation table and a graph between
+            armature voltage and speed was plotted.</p>
 
         <h3>Components</h3>
         <ul class="two-column-list ">
-        <li>DC Power Supply</li>
-        <li>Starter</li>
-        <li>Field Rheostat</li>
-        <li>Armature Rheostat</li>
-        <li>DC Shunt Motor</li>
-        <li>DC Voltmeter</li>
-        <li>DC Ammeter</li>
-        <li>RPM Indicator</li>
+            <li>DC Power Supply</li>
+            <li>Starter</li>
+            <li>Field Rheostat</li>
+            <li>Armature Rheostat</li>
+            <li>DC Shunt Motor</li>
+            <li>DC Voltmeter</li>
+            <li>DC Ammeter</li>
+            <li>RPM Indicator</li>
         </ul>
 
         <h3>Key Parameters</h3>
         <ul class="two-column-list ">
-        <!-- <li>Field Resistance: Ω</li>
+            <!-- <li>Field Resistance: Ω</li>
         <li>Armature Resistance:  Ω</li> -->
-        <li>Voltmeter Range: 0 to 410 V</li>
-        <li>Ammeter Range: 0 to 1 A</li>
-        <li>Speed Range: 0 to 2000 RPM</li>
+            <li>Voltmeter Range: 0 to 410 V</li>
+            <li>Ammeter Range: 0 to 1 A</li>
+            <li>Speed Range: 0 to 2000 RPM</li>
         </ul>
     </div>
 
-    
+
     <div class="section">
-    <h3 style="text-align:center"><b>Observation Table</b></h3>
+        <h3 style="text-align:center"><b>Observation Table</b></h3>
 
-    <table id="myTable" width="250" border="5" style="text-align:center">
-        <thead>
-        <tr>
-            <th width="25"><b>S.No.</b></th>
-            <th width="25"><b>Armature Voltage (V)</b></th>
-            <th width="25"><b>Speed (RPM)</b></th>
-        </tr>
-        </thead>
+        <table id="myTable" width="250" border="5" style="text-align:center">
+            <thead>
+                <tr>
+                    <th width="25"><b>S.No.</b></th>
+                    <th width="25"><b>Armature Voltage (V)</b></th>
+                    <th width="25"><b>Speed (RPM)</b></th>
+                </tr>
+            </thead>
 
-        <tbody>
-        <!-- JS will insert rows here -->
-        </tbody>
-    </table>
+            <tbody>
+                <!-- JS will insert rows here -->
+            </tbody>
+        </table>
     </div>
 
 
     <div class="section">
-    <h3 style="text-align:center"><b>Graph</b></h3>
+        <h3 style="text-align:center"><b>Graph</b></h3>
 
-    <div id="myDiv2"
-        style="width:600px;height:300px;margin:auto;">
-    </div>
+        <div id="myDiv2" style="width:600px;height:300px;margin:auto;">
+        </div>
     </div>
 
 
@@ -332,102 +341,103 @@
 
     <script>
 
-    document.getElementById("dateField").innerText = formattedDate;
+        document.getElementById("dateField").innerText = formattedDate;
 
-    var serializedData = localStorage.getItem('experimentReport');
-    var reportData = serializedData ? JSON.parse(serializedData) : [];
+        var serializedData = localStorage.getItem('experimentReport');
+        var reportData = serializedData ? JSON.parse(serializedData) : [];
 
-            var xValues = reportData.map(d => d.voltage);
-            var yValues = reportData.map(d => d.rpm);
+        var xValues = reportData.map(d => d.voltage);
+        var yValues = reportData.map(d => d.rpm);
 
-                var trace2 = {
-                            x: xValues,
-                            y: yValues,
-                            mode: "lines+markers",
-                            type: "scatter"
-                                };
+        var trace2 = {
+            x: xValues,
+            y: yValues,
+            mode: "lines+markers",
+            type: "scatter"
+        };
 
-    // ✅ READ FINAL TIME DATA (display only)
-    const startTime =
-    localStorage.getItem("reportStartTime") || "N/A";
+        // ✅ READ FINAL TIME DATA (display only)
+        const startTime =
+            localStorage.getItem("reportStartTime") || "N/A";
 
-    const endTime =
-    localStorage.getItem("reportEndTime") || "N/A";
+        const endTime =
+            localStorage.getItem("reportEndTime") || "N/A";
 
-    const duration =
-    localStorage.getItem("reportDuration") || "0";
-
-
-
-
-    // Reference to the table in the second file
-    let table = document.getElementById("myTable");
-    let tbody = table.querySelector("tbody");   
-
-
-    // Get data from localStorage
-    // Rebuild rows from stored data
-    let tableData = JSON.parse(localStorage.getItem("tableData")) || [];
-
-    tableData.forEach(item => {
-    let row = tbody.insertRow(-1);
-    row.insertCell(0).innerHTML = item.count;
-    row.insertCell(1).innerHTML = item.voltage;
-    row.insertCell(2).innerHTML = item.rpm;
-    });
+        const duration =
+            localStorage.getItem("reportDuration") || "0";
 
 
 
-    
 
-    // document.getElementById('start').textContent = '<b>Start Time:</b>' + startTime;
-    // document.getElementById('end').textContent = '<b>End Time:</b>' + endTime;
-
-    //     document.getElementById('total').textContent = '<b>Total Time Spent:</b>' + duration + ' minutes';
-
-              document.getElementById('start').innerHTML =
-                                  '<b>Start Time:</b> ' + startTime;
-
-                document.getElementById('end').innerHTML =
-                                   '<b>End Time:</b> ' + endTime;
-
-                document.getElementById('total').innerHTML =
-                                    '<b>Total Time Spent:</b> ' + duration + ' minutes';
+        // Reference to the table in the second file
+        let table = document.getElementById("myTable");
+        let tbody = table.querySelector("tbody");
 
 
-    report_graph() 
-    function report_graph() {
-        
+        // Get data from localStorage
+        // Rebuild rows from stored data
+        let tableData = JSON.parse(localStorage.getItem("tableData")) || [];
+
+        tableData.forEach(item => {
+            let row = tbody.insertRow(-1);
+            row.insertCell(0).innerHTML = item.count;
+            row.insertCell(1).innerHTML = item.voltage;
+            row.insertCell(2).innerHTML = item.rpm;
+        });
+
+
+
+
+
+        // document.getElementById('start').textContent = '<b>Start Time:</b>' + startTime;
+        // document.getElementById('end').textContent = '<b>End Time:</b>' + endTime;
+
+        //     document.getElementById('total').textContent = '<b>Total Time Spent:</b>' + duration + ' minutes';
+
+        document.getElementById('start').innerHTML =
+            '<b>Start Time:</b> ' + startTime;
+
+        document.getElementById('end').innerHTML =
+            '<b>End Time:</b> ' + endTime;
+
+        document.getElementById('total').innerHTML =
+            '<b>Total Time Spent:</b> ' + duration + ' minutes';
+
+
+        report_graph()
+        function report_graph() {
+
             var data = [trace2];
             var layout = {
                 title: {
-                text: 'Armature Voltage (V) vs Speed (RPM)'
+                    text: 'Armature Voltage (V) vs Speed (RPM)'
                 },
                 width: 580,
-                
-                margin:{
+
+                margin: {
                     r: 15,
                     t: 90,
-                    b: 50, 
+                    b: 50,
                 },
-            xaxis: {
-                title: { text: "Armature Voltage (V)" },
-                type: "category",
-                categoryarray: xValues.map(String)
+                xaxis: {
+                    title: { text: "Armature Voltage (V)" },
+                    type: "category",
+                    categoryarray: xValues.map(String)
                 },
-            yaxis: {
-                title: { text: "Speed (RPM)" },
-                type: "category",
-                categoryarray: yValues.map(String)
+                yaxis: {
+                    title: { text: "Speed (RPM)" },
+                    type: "category",
+                    categoryarray: yValues.map(String)
                 }
 
             };
             Plotly.newPlot('myDiv2', data, layout, {
-    displaylogo: false
-    });
+                displaylogo: false
+            });
 
-    }
+        }
     </script>
 
-    </body>
-    </html>
+</body>
+
+</html>
