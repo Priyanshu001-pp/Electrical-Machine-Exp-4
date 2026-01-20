@@ -220,7 +220,22 @@
         <span>Check</span>
          </button>
          
-        <button class="pill-btn">Tap To Listen</button>
+        <button class="pill-btn speak-btn"
+        type="button"
+        aria-pressed="false"
+        aria-label="Tap To Listen">
+
+  <span class="speak-btn__icon">
+    <svg class="speak-btn__svg" viewBox="0 0 64 64">
+      <path class="speak-btn__wave wave-1" d="M20 32 Q28 24 36 32" />
+      <path class="speak-btn__wave wave-2" d="M16 32 Q28 20 40 32" />
+      <path class="speak-btn__wave wave-3" d="M12 32 Q28 16 44 32" />
+    </svg>
+  </span>
+
+  <span class="speak-btn__label">Tap To Listen</span>
+</button>
+
 
         <!-- <button class="pill-btn">Auto Connect</button> -->
 

@@ -112,63 +112,45 @@ function speakCurrentStep() {
   .find(btn => btn.textContent.trim() === "Tap To Listen");
 
   if (speakBtn) {
-  speakBtn.addEventListener("click", () => {
+ speakBtn.addEventListener("click", () => {
 
-    guideActive = !guideActive;
+  // ▶️ START GUIDE
+  if (!guideActive) {
 
-    if (guideActive) {
-      speakBtn.textContent = "Stop Listening";
+    guideActive = true;
+    speakBtn.textContent = "Stop Listening";
 
-    // ✅ If Auto Connect already completed, SKIP intro
-if (completedByAutoConnect) {
-  speakCurrentStep();
-  return;
-}
+    // 🔥 🔥 🔥 KEY LINE (SYNC WITH REALITY)
+    currentStepIndex = getFirstMissingStepIndex();
 
-// 🔊 Normal first-time intro flow
-if (!introSpoken) {
-  labSpeech.speak("Let's connect the components.");
-  introSpoken = true;
-
-  setTimeout(() => {
-    if (guideActive) speakCurrentStep();
-  }, 2000);
-
-} else {
-  speakCurrentStep();
-}
-
-    } else {
-      labSpeech.stop();
-      speakBtn.textContent = "Tap To Listen";
+    // ✅ ALL CONNECTIONS ALREADY DONE
+    if (currentStepIndex >= requiredPairs.length) {
+      speakCurrentStep(); // will say "Click Check"
+      return;
     }
-  });
-}
 
+    // 🔊 INTRO (ONLY ONCE, ONLY IF NOT AUTO-CONNECT)
+    if (!introSpoken && !completedByAutoConnect) {
+      labSpeech.speak("Let's connect the components.");
+      introSpoken = true;
 
-// if (guideActive) {
-//   speakBtn.textContent = "Stop Listening";
+      setTimeout(() => {
+        if (guideActive) speakCurrentStep();
+      }, 2000);
+    } else {
+      speakCurrentStep();
+    }
 
-//   // 🔊 INTRO VOICE (ONLY FIRST TIME)
-//   if (!introSpoken) {
-//     labSpeech.speak("Let's connect the components.");
+    return;
+  }
 
-//     introSpoken = true;
+  // ⏹ STOP GUIDE
+  guideActive = false;
+  labSpeech.stop();
+  speakBtn.textContent = "Tap To Listen";
+});
 
-//     // 🔁 AFTER INTRO, SPEAK FIRST STEP
-//     setTimeout(() => {
-//       if (guideActive) speakCurrentStep();
-//     }, 2000); // 2 sec pause after intro
-//   } else {
-//     speakCurrentStep();
-//   }
-
-// } else {
-//   labSpeech.stop();
-//   speakBtn.textContent = "Tap To Listen";
-// }
-
-
+  }
 
 window.isGuideActive = () => guideActive;
 
@@ -529,7 +511,7 @@ function updateVoltmeterByArmature(stepIndex) {
 
   if (isGuideActive()) {
   labSpeech.speak(
-    `Voltage is ${currentVoltage} volts and speed is ${currentRPM} RPM. Now adjust the armature rheostat to take readings.`
+    `Voltage is ${currentVoltage} volts and speed is ${currentRPM} RPM. now click on add to table button to add readings in observation table`
   );
 }
 

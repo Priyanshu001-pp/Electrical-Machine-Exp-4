@@ -1342,3 +1342,56 @@
   transform-origin: center;
 }
 
+/* ===============================
+   🎧 TAP TO LISTEN ANIMATION
+   =============================== */
+
+.speak-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Icon container */
+.speak-btn__icon {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SVG waves */
+.speak-btn__svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Default wave state */
+.speak-btn__wave {
+  fill: none;
+  stroke: white;
+  stroke-width: 3;
+  opacity: 0.35;
+}
+
+/* Animate ONLY when listening */
+.speak-btn[aria-pressed="true"] .speak-btn__wave {
+  animation: speakWave 1.2s ease-in-out infinite;
+}
+
+.speak-btn[aria-pressed="true"] .wave-2 {
+  animation-delay: 0.15s;
+}
+
+.speak-btn[aria-pressed="true"] .wave-3 {
+  animation-delay: 0.3s;
+}
+
+/* Wave animation */
+@keyframes speakWave {
+  0%   { opacity: 0.3; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.3; }
+}
