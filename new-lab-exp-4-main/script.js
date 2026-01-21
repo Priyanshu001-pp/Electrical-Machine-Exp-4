@@ -1574,16 +1574,24 @@ jsPlumb.ready(function () {
       }
 
       // 🔒 STEP-BY-STEP GUIDED CHECK
-      if (currentStepIndex >= requiredPairs.length) {
-        showPopup(
-          "🎉 All connections are already completed successfully!",
-          "Completed"
-        );
+      // 🔒 STEP-BY-STEP GUIDED CHECK
+if (currentStepIndex >= requiredPairs.length) {
+  showPopup(
+    "🎉 All connections are already completed successfully!",
+    "Completed"
+  );
 
-        checkClickedAfterCompletion = true;
+  checkClickedAfterCompletion = true;
 
-
-      }
+  // 🔔 ADD THESE 4 LINES:
+  if (guideActive) {
+    labSpeech.speak(
+      "The connections are correct. Now turn on the DC supply."
+    );
+  }
+  
+  return; // This return should already be there
+}
 
       // First, validate that no incorrect connections exist
       for (let conn of connections) {
