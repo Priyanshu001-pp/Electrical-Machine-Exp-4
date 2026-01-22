@@ -2030,6 +2030,159 @@ if (currentStepIndex >= requiredPairs.length) {
 
   });
 
-
-
 });
+
+// ==============================
+// COMPONENT WINDOW AUTO OPEN
+// ==============================
+
+function openComponentsWindow() {
+  const modal = document.getElementById("componentsModal");
+  if (!modal) return;
+
+   // 🔇 STEP 1: DISABLE SIMULATION VOICE
+  if (window.labSpeech) {
+    labSpeech.enabled = false;
+    labSpeech.stop();
+  }
+
+  modal.classList.remove("is-hidden");
+  document.body.classList.add("is-modal-open");
+}
+
+function closeComponentsWindow() {
+  const modal = document.getElementById("componentsModal");
+  if (!modal) return;
+
+    // 🔊 STEP 2: RE-ENABLE SIMULATION VOICE
+  if (window.labSpeech) {
+    labSpeech.enabled = true;
+  }
+
+  modal.classList.add("is-hidden");
+  document.body.classList.remove("is-modal-open");
+}
+
+/* Auto open when simulation loads */
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", openComponentsWindow);
+} else {
+  openComponentsWindow();
+}
+
+/* Close handlers */
+document.addEventListener("click", (e) => {
+  if (e.target.matches("[data-components-close]")) {
+
+    // 🔴 STEP 1: tell iframe to stop audio HARD
+    const iframe = document.querySelector("#componentsModal iframe");
+    iframe?.contentWindow?.postMessage(
+      { type: "component-audio-stop" },
+      "*"
+    );
+
+    // 🔴 STEP 2: stop lab voice (safety)
+    if (window.labSpeech) {
+      labSpeech.stop();
+    }
+
+
+
+    // 🔴 STEP 3: close modal
+    closeComponentsWindow();
+  }
+});
+
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeComponentsWindow();
+  }
+});
+
+// ==============================
+// COMPONENT AUDIO BRIDGE (REFERENCE STYLE)
+// ==============================
+
+const iframe = document.querySelector("#componentsModal iframe");
+const audioBtn = document.getElementById("componentsAudioBtn");
+const skipBtn = document.getElementById("skipComponentsBtn");
+
+if (audioBtn && iframe) {
+
+  // 🔁 Audio button only SENDS TO IFRAME
+ audioBtn.addEventListener("click", () => {
+  const isPlaying =
+    audioBtn.getAttribute("aria-pressed") === "true";
+
+  iframe.contentWindow?.postMessage(
+    {
+      type: isPlaying
+        ? "component-audio-pause"
+        : "component-audio-play"
+    },
+    "*"
+  );
+});
+
+
+  // 📩 LISTEN to iframe for REAL audio state
+  window.addEventListener("message", (event) => {
+    if (event.source !== iframe.contentWindow) return;
+
+    const data = event.data || {};
+
+    // ✅ Real audio state from iframe
+    if (data.type === "component-audio-state") {
+      const { playing, disabled, label } = data;
+
+      audioBtn.setAttribute(
+        "aria-pressed",
+        playing ? "true" : "false"
+      );
+
+      if (label) {
+        audioBtn.textContent = label;
+      }
+
+      audioBtn.disabled = !!disabled;
+    }
+
+    // 🚫 Autoplay blocked case
+    if (data.type === "component-audio-blocked") {
+      audioBtn.textContent = "Tap to enable audio";
+      audioBtn.setAttribute("aria-pressed", "false");
+    }
+  });
+
+  // 📤 Ask iframe current audio state on load
+  iframe.addEventListener("load", () => {
+    iframe.contentWindow?.postMessage(
+      { type: "component-audio-request" },
+      "*"
+    );
+  });
+}
+
+// ⏭️ SKIP BUTTON — EXACT REFERENCE BEHAVIOUR
+if (skipBtn && iframe) {
+  skipBtn.addEventListener("click", () => {
+
+    // 1️⃣ Stop component audio (iframe side)
+    iframe.contentWindow?.postMessage(
+      { type: "component-audio-stop" },
+      "*"
+    );
+
+    // 2️⃣ Stop lab voice if running
+    if (window.labSpeech) {
+      labSpeech.stop();
+    }
+
+
+
+    // 3️⃣ Close component modal
+    closeComponentsWindow();
+  });
+}
+

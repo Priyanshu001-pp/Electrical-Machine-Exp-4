@@ -14,6 +14,63 @@
 </head>
 
 <body>
+<!-- COMPONENTS MODAL (AUTO OPEN) -->
+<div id="componentsModal" class="components-overlay is-hidden"
+     role="dialog"
+     aria-modal="true"
+     aria-label="Experiment Components">
+
+  <div class="components-overlay__backdrop" data-components-close></div>
+
+  <div class="components-dialog" role="document">
+    <div class="components-dialog__header">
+      <div class="components-dialog__title">Components</div>
+
+      
+
+      <div class="components-dialog__actions">
+
+  <!-- TAP TO ENABLE AUDIO -->
+ <button type="button"
+        id="componentsAudioBtn"
+        class="components-audio-btn"
+        aria-pressed="false">
+  Tap to enable audio
+</button>
+
+
+  <!-- SKIP -->
+  <button type="button"
+          id="skipComponentsBtn"
+          class="components-skip-btn">
+    Skip
+  </button>
+
+
+        <button type="button"
+                class="components-close-btn"
+                data-components-close
+                aria-label="Close Components">
+          &times;
+        </button>
+  
+
+</div>
+
+    </div>
+
+    <div class="components-dialog__body">
+      <iframe
+        src="/new-lab-exp-4-main/components_window.html?embed=1"
+        title="Experiment Components"
+        loading="eager"
+        allow="autoplay">
+      </iframe>
+    </div>
+  </div>
+</div>
+
+
   <main class="panel">
     <section class="top-row">
       <aside class="left-column">
@@ -360,6 +417,7 @@
     </section>
 
   </main>
+  
   <!-- ALERT MODAL -->
   <div id="warningModal" class="modal">
     <div class="modal-box danger">
