@@ -58,14 +58,14 @@
 </div>
 
     </div>
-
-    <div class="components-dialog__body">
+<div class="components-dialog__body">
       <iframe
-        src="/new-lab-exp-4-main/components_window.html?embed=1"
-        title="Experiment Components"
+        title="Experiment components"
+        src="components_window.html?embed=1"
+        referrerpolicy="no-referrer"
+        allow="autoplay"
         loading="eager"
-        allow="autoplay">
-      </iframe>
+      ></iframe>
     </div>
   </div>
 </div>
@@ -417,6 +417,51 @@
     </section>
 
   </main>
+  
+   <div class="chatbot-widget">
+    <div class="chatbot-panel" data-chat-url="https://vlab-exp-2.netlify.app/">
+  <div class="chatbot-panel-header">
+  <div>
+    <p class="chatbot-panel-title">Virtual Lab Assistant</p>
+    <p class="chatbot-panel-caption">Ask anything about this experiment</p>
+  </div>
+
+  <div class="chatbot-panel-actions">
+    <button type="button" class="chatbot-panel-close" aria-label="Close chatbot">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+</div>
+
+      <div class="chatbot-panel-body">
+        <div class="chatbot-panel-placeholder">Loading area for your chatbot. Update the <strong>data-chat-url</strong> to match your deployment.</div>
+        <iframe title="Chatbot assistant" referrerpolicy="no-referrer" scrolling="no"></iframe>
+      </div>
+    </div>
+
+    <div class="chatbot-launcher-row">
+      <button type="button" class="chatbot-launcher" aria-expanded="false" aria-label="Open chatbot assistant">
+        <span class="chatbot-hint-bubble">
+          <span class="chatbot-hint-dot">Hi</span>
+          Ask anything about this experiment
+        </span>
+        <img src="images/chatbot.png" alt="" aria-hidden="true" class="chatbot-launcher-image">
+      </button>
+      <button
+        type="button"
+        class="components-launcher"
+        data-open-components
+        aria-label="Open components"
+        title="Components"
+      >
+         <img src="images/component.png" alt="" class="components-launcher__icon" aria-hidden="true">
+      </button>
+    </div>
+  </div>
   
   <!-- ALERT MODAL -->
   <div id="warningModal" class="modal">

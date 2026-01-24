@@ -2063,12 +2063,25 @@ function closeComponentsWindow() {
   document.body.classList.remove("is-modal-open");
 }
 
+// ==============================
+// COMPONENT LAUNCHER ICON CLICK
+// ==============================
+document.addEventListener("click", (e) => {
+  const launcher = e.target.closest("[data-open-components]");
+  if (!launcher) return;
+
+  openComponentsWindow();
+});
+
+
+// ==============================
 /* Auto open when simulation loads */
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", openComponentsWindow);
 } else {
   openComponentsWindow();
 }
+
 
 /* Close handlers */
 document.addEventListener("click", (e) => {

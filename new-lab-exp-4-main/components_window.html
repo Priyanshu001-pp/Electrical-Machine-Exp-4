@@ -1,1006 +1,1013 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Components</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            
-        }
-        html,
-        body {
-            height: 100%;
-        }
-        body {
-            min-height: 100vh;
-            width: 100%;
-            background: radial-gradient(circle at top, #e3ddcf 0%, #d2c9bb 55%, #c8bfb1 100%);
-            color: #2e2a24;
-            font-family: "Segoe UI", "Trebuchet MS", sans-serif;
-        }
-        :root {
-            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-            --ease-in: cubic-bezier(0.32, 0, 0.67, 0);
-            --dur-fast: 180ms;
-            --dur-mid: 360ms;
-            --dur-slow: 600ms;
-        }
-        .component-shell {
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        .component-sidebar {
-            width: 260px;
-            min-width: 200px;
-            background: linear-gradient(145deg, #f4efe6, #e1d6c6);
-            border: 1px solid #c7bfb3;
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 10px 20px rgba(60, 54, 46, 0.18);
-            animation: panelIn var(--dur-slow) var(--ease-out) both;
-        }
-        .sidebar-title {
-            position: relative;
-            width: auto;
-            height: 40px;
-            border-radius: 10px;
-            border: 1px solid #c6baab;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #f6f1e8, #dacdbd);
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: #2d3f4c;
-            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 6px 12px rgba(60, 54, 46, 0.14);
-            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
-            overflow: hidden;
-        }
-        .sidebar-title::before {
-            content: "";
-            position: absolute;
-            left: 12px;
-            bottom: 7px;
-            width: 28px;
-            height: 3px;
-            border-radius: 999px;
-            opacity: 0.65;
-        }
-        .component-thumbs {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            overflow-y: auto;
-            padding-right: 6px;
-        }
-        .thumb-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 10px;
-            border-radius: 10px;
-            border: 1px solid #d9cfc1;
-            background: linear-gradient(145deg, #ffffff, #ece4d7);
-            cursor: pointer;
-            text-align: left;
-            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 6px 12px rgba(60, 54, 46, 0.12);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
-            animation: thumbIn var(--dur-mid) var(--ease-out) both;
-        }
-        .thumb-item:hover {
-            border-color: #8aa0b1;
-            box-shadow: 0 8px 16px rgba(60, 54, 46, 0.18);
-            transform: translateY(-1px);
-        }
-        .thumb-item.is-active {
-            border-color: #2f5a78;
-            background: linear-gradient(145deg, #f7fbff, #dbe8f3);
-            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 0 2px rgba(47, 90, 120, 0.15), 0 10px 20px rgba(47, 90, 120, 0.15);
-        }
-        .thumb-item img {
-            width: 52px;
-            height: 52px;
-            object-fit: contain;
-            background: linear-gradient(145deg, #fdfbf7, #e6dbce);
-            border-radius: 8px;
-            border: 1px solid #ddd3c7;
-            padding: 6px;
-            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 4px 8px rgba(60, 54, 46, 0.15);
-        }
-        .thumb-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #3a3125;
-        }
-        .component-viewer {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 18px;
-            animation: panelIn var(--dur-slow) var(--ease-out) both;
-            animation-delay: 120ms;
-        }
-        .component-card {
-            width: min(780px, 100%);
-            background: linear-gradient(145deg, #ffffff, #efe5d7);
-            border-radius: 18px;
-            border: 1px solid #d8cec1;
-            padding: 24px;
-            display: flex;
-            gap: 24px;
-            align-items: center;
-            box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.7), 0 18px 30px rgba(60, 54, 46, 0.22);
-            transition: opacity var(--dur-fast) var(--ease-in), transform var(--dur-fast) var(--ease-in);
-            will-change: transform, opacity;
-        }
-        .component-card.is-fading-out {
-            opacity: 0;
-            transform: translateY(6px) scale(0.99);
-        }
-        .component-card.is-fading-out .component-media {
-            transform: scale(0.95) rotate(-1.2deg);
-            opacity: 0.8;
-        }
-        .component-card.is-fading-out .component-content {
-            transform: translateY(8px);
-            opacity: 0.7;
-        }
-        .component-card.is-animating {
-            animation: cardSwap var(--dur-slow) var(--ease-out);
-        }
-        .component-card.is-animating .component-media {
-            animation: mediaPop var(--dur-mid) var(--ease-out) both;
-        }
-        .component-card.is-animating .component-content {
-            animation: contentShift var(--dur-mid) var(--ease-out) both;
-        }
-        .component-card.is-animating .component-title {
-            animation: titleReveal var(--dur-mid) var(--ease-out) both;
-        }
-        .component-card.is-animating .component-definition {
-            animation: paragraphReveal var(--dur-mid) var(--ease-out) both;
-            animation-delay: 80ms;
-        }
-        .component-media {
-            width: 220px;
-            height: 220px;
-            border-radius: 14px;
-            border: 1px solid #e1d8cb;
-            background: linear-gradient(145deg, #f9f4ed, #e3d8ca);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6), 0 10px 16px rgba(60, 54, 46, 0.18);
-            transition: transform var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in);
-        }
-        .component-media img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        .component-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            transition: transform var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in);
-        }
-        .component-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2f5a78;
-            transition: transform var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in);
-        }
-        .component-definition {
-            font-size: 15px;
-            line-height: 1.7;
-            text-align: justify;
-            color: #3c362e;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(231, 222, 208, 0.7));
-            border: 1px solid rgba(200, 187, 172, 0.7);
-            border-left: 3px solid #2f5a78;
-            border-radius: 12px;
-            padding: 12px 14px;
-            max-width: 520px;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 10px 18px rgba(60, 54, 46, 0.12);
-            transition: transform var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in), background var(--dur-fast) var(--ease-in), border-color var(--dur-fast) var(--ease-in), box-shadow var(--dur-fast) var(--ease-in);
-        }
-        .component-audio {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .audio-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .audio-status {
-            font-size: 12px;
-            font-weight: 600;
-            color: #6b5e4e;
-        }
-        .component-card.is-fading-out .component-title,
-        .component-card.is-fading-out .component-definition {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        .component-card.is-fading-out .component-definition {
-            background: rgba(255, 255, 255, 0.35);
-            border-color: rgba(200, 187, 172, 0);
-            box-shadow: none;
-        }
-        .component-controls {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .control-btn {
-            padding: 10px 18px;
-            border-radius: 999px;
-            border: 1px solid #2f5a78;
-            background: linear-gradient(145deg, #3d6f92, #24465e);
-            color: #ffffff;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.35), 0 8px 16px rgba(47, 90, 120, 0.25);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .control-btn:disabled {
-            cursor: not-allowed;
-            background: #93a3ad;
-            border-color: #93a3ad;
-            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4);
-            transform: none;
-        }
-        .control-btn:not(:disabled):hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 12px rgba(47, 90, 120, 0.2);
-        }
-        .control-btn:not(:disabled):active {
-            background: linear-gradient(145deg, #24465e, #1a3242);
-            border-color: #1a3242;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-            transform: translateY(0);
-        }
-        .component-index {
-            font-size: 14px;
-            font-weight: 700;
-            color: #2f5a78;
-        }
-        @keyframes panelIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes thumbIn {
-            from {
-                opacity: 0;
-                transform: translateX(-8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        @keyframes cardSwap {
-            from {
-                opacity: 0;
-                transform: translateY(8px) scale(0.98);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        @keyframes mediaPop {
-            from {
-                opacity: 0.5;
-                transform: scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        @keyframes titleReveal {
-            from {
-                opacity: 0;
-                transform: translateY(8px) scale(0.98);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        @keyframes paragraphReveal {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes contentShift {
-            from {
-                transform: translateX(10px);
-            }
-            to {
-                transform: translateX(0);
-            }
-        }
-        @media (prefers-reduced-motion: reduce) {
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Components</title>
+        <style>
             * {
-                animation: none !important;
-                transition: none !important;
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                
+            }
+            html,
+            body {
+                height: 100%;
+            }
+            body {
+                min-height: 100vh;
+                width: 100%;
+                background: radial-gradient(circle at top, #e3ddcf 0%, #d2c9bb 55%, #c8bfb1 100%);
+                color: #2e2a24;
+                font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+            }
+            :root {
+                --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+                --ease-in: cubic-bezier(0.32, 0, 0.67, 0);
+                --dur-fast: 180ms;
+                --dur-mid: 360ms;
+                --dur-slow: 600ms;
+            }
+            .component-shell {
+                display: flex;
+                gap: 20px;
+                padding: 20px;
+                min-height: 100vh;
+            }
+            .component-sidebar {
+                width: 260px;
+                min-width: 200px;
+                background: linear-gradient(145deg, #f4efe6, #e1d6c6);
+                border: 1px solid #c7bfb3;
+                border-radius: 12px;
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 10px 20px rgba(60, 54, 46, 0.18);
+                animation: panelIn var(--dur-slow) var(--ease-out) both;
+            }
+            .sidebar-title {
+                position: relative;
+                width: auto;
+                height: 40px;
+                border-radius: 10px;
+                border: 1px solid #c6baab;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: linear-gradient(135deg, #f6f1e8, #dacdbd);
+                font-size: 16px;
+                font-weight: 700;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: #2d3f4c;
+                box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 6px 12px rgba(60, 54, 46, 0.14);
+                text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+                overflow: hidden;
+            }
+            .sidebar-title::before {
+                content: "";
+                position: absolute;
+                left: 12px;
+                bottom: 7px;
+                width: 28px;
+                height: 3px;
+                border-radius: 999px;
+                opacity: 0.65;
+            }
+            .component-thumbs {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                overflow-y: auto;
+                padding-right: 6px;
+            }
+            .thumb-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 8px 10px;
+                border-radius: 10px;
+                border: 1px solid #d9cfc1;
+                background: linear-gradient(145deg, #ffffff, #ece4d7);
+                cursor: pointer;
+                text-align: left;
+                box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 6px 12px rgba(60, 54, 46, 0.12);
+                transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
+                animation: thumbIn var(--dur-mid) var(--ease-out) both;
+            }
+            .thumb-item:hover {
+                border-color: #8aa0b1;
+                box-shadow: 0 8px 16px rgba(60, 54, 46, 0.18);
+                transform: translateY(-1px);
+            }
+            .thumb-item.is-active {
+                border-color: #2f5a78;
+                background: linear-gradient(145deg, #f7fbff, #dbe8f3);
+                box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 0 0 2px rgba(47, 90, 120, 0.15), 0 10px 20px rgba(47, 90, 120, 0.15);
+            }
+            .thumb-item img {
+                width: 52px;
+                height: 52px;
+                object-fit: contain;
+                background: linear-gradient(145deg, #fdfbf7, #e6dbce);
+                border-radius: 8px;
+                border: 1px solid #ddd3c7;
+                padding: 6px;
+                box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), 0 4px 8px rgba(60, 54, 46, 0.15);
+            }
+            .thumb-label {
+                font-size: 14px;
+                font-weight: 600;
+                color: #3a3125;
+            }
+            .component-viewer {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 18px;
+                animation: panelIn var(--dur-slow) var(--ease-out) both;
+                animation-delay: 120ms;
+            }
+            .component-card {
+                width: min(780px, 100%);
+                background: linear-gradient(145deg, #ffffff, #efe5d7);
+                border-radius: 18px;
+                border: 1px solid #d8cec1;
+                padding: 24px;
+                display: flex;
+                gap: 24px;
+                align-items: center;
+                box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.7), 0 18px 30px rgba(60, 54, 46, 0.22);
+                transition: opacity var(--dur-fast) var(--ease-in), transform var(--dur-fast) var(--ease-in);
+                will-change: transform, opacity;
             }
             .component-card.is-fading-out {
-                opacity: 1;
-                transform: none;
+                opacity: 0;
+                transform: translateY(6px) scale(0.99);
             }
-            .component-card.is-fading-out .component-media,
+            .component-card.is-fading-out .component-media {
+                transform: scale(0.95) rotate(-1.2deg);
+                opacity: 0.8;
+            }
             .component-card.is-fading-out .component-content {
-                opacity: 1;
-                transform: none;
+                transform: translateY(8px);
+                opacity: 0.7;
+            }
+            .component-card.is-animating {
+                animation: cardSwap var(--dur-slow) var(--ease-out);
+            }
+            .component-card.is-animating .component-media {
+                animation: mediaPop var(--dur-mid) var(--ease-out) both;
+            }
+            .component-card.is-animating .component-content {
+                animation: contentShift var(--dur-mid) var(--ease-out) both;
+            }
+            .component-card.is-animating .component-title {
+                animation: titleReveal var(--dur-mid) var(--ease-out) both;
+            }
+            .component-card.is-animating .component-definition {
+                animation: paragraphReveal var(--dur-mid) var(--ease-out) both;
+                animation-delay: 80ms;
+            }
+            .component-media {
+                width: 220px;
+                height: 220px;
+                border-radius: 14px;
+                border: 1px solid #e1d8cb;
+                background: linear-gradient(145deg, #f9f4ed, #e3d8ca);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+                box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6), 0 10px 16px rgba(60, 54, 46, 0.18);
+                transition: transform var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in);
+            }
+            .component-media img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+            }
+            .component-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                transition: transform var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in);
+            }
+            .component-title {
+                font-size: 24px;
+                font-weight: 700;
+                color: #2f5a78;
+                transition: transform var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in);
+            }
+            .component-definition {
+                font-size: 15px;
+                line-height: 1.7;
+                text-align: justify;
+                color: #3c362e;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(231, 222, 208, 0.7));
+                border: 1px solid rgba(200, 187, 172, 0.7);
+                border-left: 3px solid #2f5a78;
+                border-radius: 12px;
+                padding: 12px 14px;
+                max-width: 520px;
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 10px 18px rgba(60, 54, 46, 0.12);
+                transition: transform var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in), background var(--dur-fast) var(--ease-in), border-color var(--dur-fast) var(--ease-in), box-shadow var(--dur-fast) var(--ease-in);
+            }
+            .component-audio {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+            .audio-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .audio-status {
+                font-size: 12px;
+                font-weight: 600;
+                color: #6b5e4e;
             }
             .component-card.is-fading-out .component-title,
             .component-card.is-fading-out .component-definition {
-                opacity: 1;
-                transform: none;
+                opacity: 0;
+                transform: translateY(10px);
             }
             .component-card.is-fading-out .component-definition {
-                background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(231, 222, 208, 0.7));
-                border-color: rgba(200, 187, 172, 0.7);
-                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 10px 18px rgba(60, 54, 46, 0.12);
-            }
-        }
-        @media (max-width: 900px) {
-            .component-shell {
-                flex-direction: column;
-                padding: 16px;
-            }
-            .component-sidebar {
-                width: 100%;
-            }
-            .component-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .component-media {
-                width: 100%;
-                height: 200px;
+                background: rgba(255, 255, 255, 0.35);
+                border-color: rgba(200, 187, 172, 0);
+                box-shadow: none;
             }
             .component-controls {
-                justify-content: center;
+                display: flex;
+                align-items: center;
+                gap: 14px;
             }
-        }
+            .control-btn {
+                padding: 10px 18px;
+                border-radius: 999px;
+                border: 1px solid #2f5a78;
+                background: linear-gradient(145deg, #3d6f92, #24465e);
+                color: #ffffff;
+                font-weight: 600;
+                cursor: pointer;
+                box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.35), 0 8px 16px rgba(47, 90, 120, 0.25);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .control-btn:disabled {
+                cursor: not-allowed;
+                background: #93a3ad;
+                border-color: #93a3ad;
+                box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4);
+                transform: none;
+            }
+            .control-btn:not(:disabled):hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 12px rgba(47, 90, 120, 0.2);
+            }
+            .control-btn:not(:disabled):active {
+                background: linear-gradient(145deg, #24465e, #1a3242);
+                border-color: #1a3242;
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+                transform: translateY(0);
+            }
+            .component-index {
+                font-size: 14px;
+                font-weight: 700;
+                color: #2f5a78;
+            }
+            @keyframes panelIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            @keyframes thumbIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(-8px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+            @keyframes cardSwap {
+                from {
+                    opacity: 0;
+                    transform: translateY(8px) scale(0.98);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+            @keyframes mediaPop {
+                from {
+                    opacity: 0.5;
+                    transform: scale(0.96);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+            @keyframes titleReveal {
+                from {
+                    opacity: 0;
+                    transform: translateY(8px) scale(0.98);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+            @keyframes paragraphReveal {
+                from {
+                    opacity: 0;
+                    transform: translateY(12px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            @keyframes contentShift {
+                from {
+                    transform: translateX(10px);
+                }
+                to {
+                    transform: translateX(0);
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                * {
+                    animation: none !important;
+                    transition: none !important;
+                }
+                .component-card.is-fading-out {
+                    opacity: 1;
+                    transform: none;
+                }
+                .component-card.is-fading-out .component-media,
+                .component-card.is-fading-out .component-content {
+                    opacity: 1;
+                    transform: none;
+                }
+                .component-card.is-fading-out .component-title,
+                .component-card.is-fading-out .component-definition {
+                    opacity: 1;
+                    transform: none;
+                }
+                .component-card.is-fading-out .component-definition {
+                    background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(231, 222, 208, 0.7));
+                    border-color: rgba(200, 187, 172, 0.7);
+                    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 10px 18px rgba(60, 54, 46, 0.12);
+                }
+            }
+            @media (max-width: 900px) {
+                .component-shell {
+                    flex-direction: column;
+                    padding: 16px;
+                }
+                .component-sidebar {
+                    width: 100%;
+                }
+                .component-card {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                .component-media {
+                    width: 100%;
+                    height: 200px;
+                }
+                .component-controls {
+                    justify-content: center;
+                }
+            }
 
-        body.embed {
-            min-height: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: transparent;
-        }
-        body.embed .component-shell {
-            min-height: 100%;
-            height: 100%;
-            padding: 12px;
-            gap: 14px;
-        }
-        body.embed .component-audio {
-            display: none;
-        }
-        body.embed .component-sidebar {
-            width: 220px;
-            min-width: 180px;
-            padding: 12px;
-        }
-        body.embed .component-thumbs {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-        }
-        body.embed .component-viewer {
-            justify-content: center;
-            align-items: center;
-            overflow: auto;
-            min-height: 0;
-            min-width: 0;
-            padding-right: 6px;
-        }
-        body.embed .component-card {
-            width: min(720px, 100%);
-            padding: 16px;
-            gap: 16px;
-            opacity: 1;
-            transform: none;
-        }
-        body.embed .component-card.is-fading-out,
-        body.embed .component-card.is-fading-out .component-media,
-        body.embed .component-card.is-fading-out .component-content,
-        body.embed .component-card.is-fading-out .component-title,
-        body.embed .component-card.is-fading-out .component-definition {
-            opacity: 1;
-            transform: none;
-        }
-        body.embed .component-media {
-            width: 170px;
-            height: 170px;
-            padding: 12px;
-        }
-        body.embed .component-definition {
-            max-width: none;
-        }
-        body.embed .component-controls {
-            justify-content: center;
-        }
-
-        @media (max-width: 900px) {
+            body.embed {
+                min-height: 100%;
+                height: 100%;
+                overflow: hidden;
+                background: transparent;
+            }
             body.embed .component-shell {
-                flex-direction: row;
+                min-height: 100%;
+                height: 100%;
                 padding: 12px;
+                gap: 14px;
+            }
+            body.embed .component-audio {
+                display: none;
             }
             body.embed .component-sidebar {
                 width: 220px;
+                min-width: 180px;
+                padding: 12px;
+            }
+            body.embed .component-thumbs {
+                flex: 1;
+                min-height: 0;
+                overflow-y: auto;
+            }
+            body.embed .component-viewer {
+                justify-content: center;
+                align-items: center;
+                overflow: auto;
+                min-height: 0;
+                min-width: 0;
+                padding-right: 6px;
             }
             body.embed .component-card {
-                flex-direction: row;
-                align-items: center;
+                width: min(720px, 100%);
+                padding: 16px;
+                gap: 16px;
+                opacity: 1;
+                transform: none;
+            }
+            body.embed .component-card.is-fading-out,
+            body.embed .component-card.is-fading-out .component-media,
+            body.embed .component-card.is-fading-out .component-content,
+            body.embed .component-card.is-fading-out .component-title,
+            body.embed .component-card.is-fading-out .component-definition {
+                opacity: 1;
+                transform: none;
             }
             body.embed .component-media {
                 width: 170px;
                 height: 170px;
+                padding: 12px;
+            }
+            body.embed .component-definition {
+                max-width: none;
             }
             body.embed .component-controls {
                 justify-content: center;
             }
-        }
 
-        @media (max-width: 720px) {
-            body.embed .component-shell {
-                flex-direction: column;
+            @media (max-width: 900px) {
+                body.embed .component-shell {
+                    flex-direction: row;
+                    padding: 12px;
+                }
+                body.embed .component-sidebar {
+                    width: 220px;
+                }
+                body.embed .component-card {
+                    flex-direction: row;
+                    align-items: center;
+                }
+                body.embed .component-media {
+                    width: 170px;
+                    height: 170px;
+                }
+                body.embed .component-controls {
+                    justify-content: center;
+                }
             }
-            body.embed .component-sidebar {
-                width: 100%;
+
+            @media (max-width: 720px) {
+                body.embed .component-shell {
+                    flex-direction: column;
+                }
+                body.embed .component-sidebar {
+                    width: 100%;
+                }
+                body.embed .component-card {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                body.embed .component-media {
+                    width: 100%;
+                    height: 180px;
+                }
+                body.embed .component-controls {
+                    justify-content: center;
+                }
             }
-            body.embed .component-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            body.embed .component-media {
-                width: 100%;
-                height: 180px;
-            }
-            body.embed .component-controls {
-                justify-content: center;
-            }
-        }
-        /* 🔒 EMBED MODE: ensure no internal close buttons ever appear */
-body.embed button[aria-label*="Close"],
-body.embed .close,
-body.embed .close-btn {
-  display: none !important;
-}
+            /* 🔒 EMBED MODE: ensure no internal close buttons ever appear */
+    body.embed button[aria-label*="Close"],
+    body.embed .close,
+    body.embed .close-btn {
+    display: none !important;
+    }
 
 
-    </style>
-</head>
-<body>
-    <div class="component-shell">
-        <aside class="component-sidebar">
-            <div class="sidebar-title">COMPONENTS</div>
-            <div class="component-thumbs" id="componentThumbs"></div>
-        </aside>
+        </style>
+    </head>
+    <body>
+        <div class="component-shell">
+            <aside class="component-sidebar">
+                <div class="sidebar-title">COMPONENTS</div>
+                <div class="component-thumbs" id="componentThumbs"></div>
+            </aside>
 
-        <main class="component-viewer">
-            <div class="component-card" id="componentCard">
-                <div class="component-media">
-                    <img id="componentImage" src="" alt="">
-                </div>
-                <div class="component-content">
-                    <h1 class="component-title" id="componentTitle"></h1>
-                    <p class="component-definition" id="componentDefinition"></p>
-                    <div class="component-audio">
-                        <button class="control-btn audio-btn" id="toggleAudio" type="button" aria-pressed="false">
-                            <span data-audio-label>Play Audio</span>
-                        </button>
-                        <span class="audio-status" id="audioStatus" aria-live="polite"></span>
+            <main class="component-viewer">
+                <div class="component-card" id="componentCard">
+                    <div class="component-media">
+                        <img id="componentImage" src="" alt="">
+                    </div>
+                    <div class="component-content">
+                        <h1 class="component-title" id="componentTitle"></h1>
+                        <p class="component-definition" id="componentDefinition"></p>
+                        <div class="component-audio">
+                            <button class="control-btn audio-btn" id="toggleAudio" type="button" aria-pressed="false">
+                                <span data-audio-label>Play Audio</span>
+                            </button>
+                            <span class="audio-status" id="audioStatus" aria-live="polite"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="component-controls">
-                <button class="control-btn" id="prevComponent" type="button">Previous</button>
-                <div class="component-index" id="componentIndex"></div>
-                <button class="control-btn" id="nextComponent" type="button">Next</button>
-            </div>
-        </main>
-    </div>
+                <div class="component-controls">
+                    <button class="control-btn" id="prevComponent" type="button">Previous</button>
+                    <div class="component-index" id="componentIndex"></div>
+                    <button class="control-btn" id="nextComponent" type="button">Next</button>
+                </div>
+            </main>
+        </div>
 
-    <audio id="componentAudio" preload="metadata"></audio>
+        <audio id="componentAudio" preload="metadata"></audio>
 
-    <script>
+        <script>
         let componentVoice = null;
 
-function getComponentVoice() {
-  const voices = speechSynthesis.getVoices();
+            function getComponentVoice() {
+            const voices = speechSynthesis.getVoices();
 
-  // 🎯 FORCE ONE CONSISTENT COMPONENT VOICE
-  componentVoice =
-    voices.find(v => v.lang === "en-US") ||
-    voices.find(v => v.lang.startsWith("en")) ||
-    voices[0];
+    // 🎯 FORCE ONE CONSISTENT COMPONENT VOICE
+    componentVoice =
+        voices.find(v => v.lang === "en-US") ||
+        voices.find(v => v.lang.startsWith("en")) ||
+        voices[0];
 
-  return componentVoice;
-}
+    return componentVoice;
+    }
 
-// Ensure voices are loaded
-speechSynthesis.onvoiceschanged = () => {
-  getComponentVoice();
-};
+    // Ensure voices are loaded
+    speechSynthesis.onvoiceschanged = () => {
+    getComponentVoice();
+    };
 
-        const params = new URLSearchParams(window.location.search);
-        if (params.has("embed")) {
-            document.body.classList.add("embed");
-        }
+            const params = new URLSearchParams(window.location.search);
+            if (params.has("embed")) {
+                document.body.classList.add("embed");
+            }
 
-        const components = [
-            {
-                key: "mcb",
-                name: "MCB",
-                image:"/new-lab-exp-4-main/images/component/mcb-on.png",
-                description:
-                    "An MCB (Miniature Circuit Breaker) is an automatically operated electrical switching device used to protect a circuit from overcurrent, short circuit, or excessive load. It disconnects the circuit when abnormal conditions occur.",
-                audio: "../audio/mcb.wav"
-            },
-            {
-                key: "starter",
-                name: "3-Point Starter",
-                image: "/new-lab-exp-4-main/images/component/starter.png",
-                description:
-                    "A 3-point starter safely starts DC shunt and compound motors. It limits starting current, provides overload protection, and ensures smooth acceleration by gradually reducing resistance.",
-                audio: "../audio/3pointstarter.wav"
-            },
-            {
-                key: "shuntmotor",
-                name: "DC Shunt Motor",
-                image: "/new-lab-exp-4-main/images/component/shuntmotor.png",
-                description:
-                    "In this experiment, the DC motor acts as a prime mover, converting electrical energy into mechanical energy. Its shaft is mechanically coupled to the DC shunt generator, and it receives the supply through the MCB and starter.",
-                audio: "../audio/dcMotor.wav"
-            },
-            {
-                key: "generator",
-                name: "DC Shunt Generator",
-                image:  "/new-lab-exp-4-main/images/component/DC-Shunt-Generator.png",
-                description:
-                    "The DC shunt generator converts the mechanical energy received from the motor into electrical energy, producing DC output voltage and current. Its terminals are connected to an ammeter in series and a voltmeter in parallel for measurement.",
-                audio: "../audio/dcShuntGenerator.wav"
-            },
+            const components = [
+                {
+                    key: "mcb",
+                    name: "MCB",
+                    image:"/new-lab-exp-4-main/images/component/mcb-on.png",
+                    description:
+                        "An MCB (Miniature Circuit Breaker) is an automatically operated electrical switching device used to protect a circuit from overcurrent, short circuit, or excessive load. It disconnects the circuit when abnormal conditions occur.",
+                    audio: "../audio/mcb.wav"
+                },
+                {
+                    key: "starter",
+                    name: "3-Point Starter",
+                    image: "/new-lab-exp-4-main/images/component/starter.png",
+                    description:
+                        "A 3-point starter safely starts DC shunt and compound motors. It limits starting current, provides overload protection, and ensures smooth acceleration by gradually reducing resistance.",
+                    audio: "../audio/3pointstarter.wav"
+                },
+                {
+                    key: "shuntmotor",
+                    name: "DC Shunt Motor",
+                    image: "/new-lab-exp-4-main/images/component/shuntmotor.png",
+                    description:
+                        "In this experiment, the DC motor acts as a prime mover, converting electrical energy into mechanical energy. Its shaft is mechanically coupled to the DC shunt generator, and it receives the supply through the MCB and starter.",
+                    audio: "../audio/dcMotor.wav"
+                },
+                {
+                    key: "generator",
+                    name: "DC Shunt Generator",
+                    image:  "/new-lab-exp-4-main/images/component/DC-Shunt-Generator.png",
+                    description:
+                        "The DC shunt generator converts the mechanical energy received from the motor into electrical energy, producing DC output voltage and current. Its terminals are connected to an ammeter in series and a voltmeter in parallel for measurement.",
+                    audio: "../audio/dcShuntGenerator.wav"
+                },
+                
+                {
+                    key: "rheostate",
+                    name: "Field Rheostat",
+                    image:   "/new-lab-exp-4-main/images/component/Rheostat.png",
+                    description:                   
+                    "A field rheostat is a variable resistor connected in the field circuit of a DC machine. It is used to control the field current and thereby regulate the magnetic flux and speed or voltage of the machine.",
+                    audio: "../audio/lampLoad.wav"
+                },
+
+                            {
+                    key: "rheostate",
+                    name: "Armature Rheostat",
+                    image:   "/new-lab-exp-4-main/images/component/Rheostat.png",
+                    description:
+                        "An armature rheostat is a variable resistor connected in series with the armature circuit. It is mainly used during starting to limit the high starting current and protect the armature windings.",
+                    audio: "../audio/lampLoad.wav"
+                },
+
+                {
+                    key: "ammeter",
+                    name: "Ammeter",
+                    image: "/new-lab-exp-4-main/images/ammeter.png",
+                    description:
+                        "This ammeter is connected in series with the DC motor. Its purpose is to measure the current drawn by the DC motor while it is operating.",
+                    audio: "../audio/ammeter.wav"
+                },
+                {
+                    key: "voltmeter",
+                    name: "Voltmeter",
+                    image:"/new-lab-exp-4-main/images/component/voltmeter.png",
+                    description:
+                        "It is connected in parallel across the MCB. The purpose of this voltmeter is to measure the voltage of the main supply.",
+                    audio: "audio/voltmeter.wav"
+                },
+                {
+                    key: "rpm-indicator",
+                    name: "RPM-Indicator",
+                    image:"/new-lab-exp-4-main/images/component/rpm.png",
+                    description:
+                        "An RPM indicator measures the rotational speed of the motor shaft in revolutions per minute. It helps in monitoring and analyzing the speed performance of the DC machine under different operating conditions.",
+                    audio: "audio/voltmeter.wav"
+                },
+                
             
-            {
-                key: "rheostate",
-                name: "Field Rheostate",
-                image:   "/new-lab-exp-4-main/images/component/Rheostat.png",
-                description:                   
-                 "A field rheostat is a variable resistor connected in the field circuit of a DC machine. It is used to control the field current and thereby regulate the magnetic flux and speed or voltage of the machine.",
-                audio: "../audio/lampLoad.wav"
-            },
+            
+            ];
 
+            const thumbsEl = document.getElementById("componentThumbs");
+            const cardEl = document.getElementById("componentCard");
+            const imageEl = document.getElementById("componentImage");
+            const titleEl = document.getElementById("componentTitle");
+            const definitionEl = document.getElementById("componentDefinition");
+            const indexEl = document.getElementById("componentIndex");
+            const prevBtn = document.getElementById("prevComponent");
+            const nextBtn = document.getElementById("nextComponent");
+            const audioBtn = document.getElementById("toggleAudio");
+            const audioLabelEl = audioBtn?.querySelector("[data-audio-label]");
+            const audioStatusEl = document.getElementById("audioStatus");
+            const audioEl = document.getElementById("componentAudio");
+            const speechSupported =
+                "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance === "function";
+            const isEmbedded = window.parent && window.parent !== window;
+            let autoPlayFallbackArmed = false;
+
+            let currentIndex = 0;
+            let swapTimer = null;
+            let audioMode = "tts";
+            let ttsState = "idle";
+            let activeComponent = components[0];
+            const autoPlayByDefault = !isEmbedded;
+            let autoPlayOnChange = false;
+            let audioForceStopped = false; // 🔒 HARD STOP FLAG
+
+
+            function buildThumbs() {
+                thumbsEl.innerHTML = "";
+                components.forEach((component, index) => {
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.className = "thumb-item";
+                    btn.dataset.index = String(index);
+                    btn.style.animationDelay = `${index * 40}ms`;
+
+                    const img = document.createElement("img");
+                    img.src = component.image;
+                    img.alt = component.name;
+
+                    const label = document.createElement("span");
+                    label.className = "thumb-label";
+                    label.textContent = component.name;
+
+                    btn.appendChild(img);
+                    btn.appendChild(label);
+
+                    btn.addEventListener("click", () => {
+        stopAudio();          // 🔥 audio hard stop
+        setActive(index);     // existing logic
+                        });
+
+                    thumbsEl.appendChild(btn);
+                });
+            }
+
+            function updateControls() {
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === components.length - 1;
+                indexEl.textContent = `${currentIndex + 1} / ${components.length}`;
+
+                const items = thumbsEl.querySelectorAll(".thumb-item");
+                items.forEach((item, index) => {
+                    item.classList.toggle("is-active", index === currentIndex);
+                });
+            }
+
+            function setAudioStatus(message) {
+                if (!audioStatusEl) return;
+                audioStatusEl.textContent = message || "";
+                audioStatusEl.hidden = !message;
+            }
+
+            function updateAudioButton(isPlaying) {
+                if (!audioBtn) return;
+                audioBtn.setAttribute("aria-pressed", isPlaying ? "true" : "false");
+                if (audioLabelEl) {
+                    audioLabelEl.textContent = isPlaying ? "Pause Audio" : "Play Audio";
+                }
+                if (isEmbedded) {
+                    window.parent.postMessage(
                         {
-                key: "rheostate",
-                name: "Armature Rheostate",
-                image:   "/new-lab-exp-4-main/images/component/Rheostat.png",
-                description:
-                    "An armature rheostat is a variable resistor connected in series with the armature circuit. It is mainly used during starting to limit the high starting current and protect the armature windings.",
-                audio: "../audio/lampLoad.wav"
-            },
-
-            {
-                key: "ammeter",
-                name: "Ammeter",
-                image: "/new-lab-exp-4-main/images/ammeter.png",
-                description:
-                    "This ammeter is connected in series with the DC motor. Its purpose is to measure the current drawn by the DC motor while it is operating.",
-                audio: "../audio/ammeter.wav"
-            },
-            {
-                key: "voltmeter",
-                name: "Voltmeter",
-                image:"/new-lab-exp-4-main/images/component/voltmeter.png",
-                description:
-                    "It is connected in parallel across the MCB. The purpose of this voltmeter is to measure the voltage of the main supply.",
-                audio: "audio/voltmeter.wav"
-            },
-            {
-                key: "rpm-indicator",
-                name: "RPM-Indicator",
-                image:"/new-lab-exp-4-main/images/component/rpm.png",
-                description:
-                    "An RPM indicator measures the rotational speed of the motor shaft in revolutions per minute. It helps in monitoring and analyzing the speed performance of the DC machine under different operating conditions.",
-                audio: "audio/voltmeter.wav"
-            },
-            
-           
-          
-        ];
-
-        const thumbsEl = document.getElementById("componentThumbs");
-        const cardEl = document.getElementById("componentCard");
-        const imageEl = document.getElementById("componentImage");
-        const titleEl = document.getElementById("componentTitle");
-        const definitionEl = document.getElementById("componentDefinition");
-        const indexEl = document.getElementById("componentIndex");
-        const prevBtn = document.getElementById("prevComponent");
-        const nextBtn = document.getElementById("nextComponent");
-        const audioBtn = document.getElementById("toggleAudio");
-        const audioLabelEl = audioBtn?.querySelector("[data-audio-label]");
-        const audioStatusEl = document.getElementById("audioStatus");
-        const audioEl = document.getElementById("componentAudio");
-        const speechSupported =
-            "speechSynthesis" in window && typeof window.SpeechSynthesisUtterance === "function";
-        const isEmbedded = window.parent && window.parent !== window;
-        let autoPlayFallbackArmed = false;
-
-        let currentIndex = 0;
-        let swapTimer = null;
-        let audioMode = "tts";
-        let ttsState = "idle";
-        let activeComponent = components[0];
-        const autoPlayByDefault = !isEmbedded;
-        let autoPlayOnChange = false;
-        let audioForceStopped = false; // 🔒 HARD STOP FLAG
-
-
-        function buildThumbs() {
-            thumbsEl.innerHTML = "";
-            components.forEach((component, index) => {
-                const btn = document.createElement("button");
-                btn.type = "button";
-                btn.className = "thumb-item";
-                btn.dataset.index = String(index);
-                btn.style.animationDelay = `${index * 40}ms`;
-
-                const img = document.createElement("img");
-                img.src = component.image;
-                img.alt = component.name;
-
-                const label = document.createElement("span");
-                label.className = "thumb-label";
-                label.textContent = component.name;
-
-                btn.appendChild(img);
-                btn.appendChild(label);
-
-                btn.addEventListener("click", () => {
-    stopAudio();          // 🔥 audio hard stop
-    setActive(index);     // existing logic
-                    });
-
-                thumbsEl.appendChild(btn);
-            });
-        }
-
-        function updateControls() {
-            prevBtn.disabled = currentIndex === 0;
-            nextBtn.disabled = currentIndex === components.length - 1;
-            indexEl.textContent = `${currentIndex + 1} / ${components.length}`;
-
-            const items = thumbsEl.querySelectorAll(".thumb-item");
-            items.forEach((item, index) => {
-                item.classList.toggle("is-active", index === currentIndex);
-            });
-        }
-
-        function setAudioStatus(message) {
-            if (!audioStatusEl) return;
-            audioStatusEl.textContent = message || "";
-            audioStatusEl.hidden = !message;
-        }
-
-        function updateAudioButton(isPlaying) {
-            if (!audioBtn) return;
-            audioBtn.setAttribute("aria-pressed", isPlaying ? "true" : "false");
-            if (audioLabelEl) {
-                audioLabelEl.textContent = isPlaying ? "Pause Audio" : "Play Audio";
+                            type: "component-audio-state",
+                            playing: isPlaying,
+                            disabled: audioBtn.disabled,
+                            label: audioLabelEl ? audioLabelEl.textContent : ""
+                        },
+                        "*"
+                    );
+                }
             }
-            if (isEmbedded) {
-                window.parent.postMessage(
-                    {
-                        type: "component-audio-state",
-                        playing: isPlaying,
-                        disabled: audioBtn.disabled,
-                        label: audioLabelEl ? audioLabelEl.textContent : ""
-                    },
-                    "*"
-                );
+
+            function notifyParent(type) {
+                if (!isEmbedded) return;
+                window.parent.postMessage({ type }, "*");
             }
-        }
 
-        function notifyParent(type) {
-            if (!isEmbedded) return;
-            window.parent.postMessage({ type }, "*");
-        }
+            function armAutoPlayFallback() {
+                if (autoPlayFallbackArmed) return;
+                autoPlayFallbackArmed = true;
 
-        function armAutoPlayFallback() {
-            if (autoPlayFallbackArmed) return;
-            autoPlayFallbackArmed = true;
+                const resume = () => {
+                    autoPlayFallbackArmed = false;
+                    playAudio({ allowFallback: false });
+                };
 
-            const resume = () => {
-                autoPlayFallbackArmed = false;
-                playAudio({ allowFallback: false });
-            };
-
-            document.addEventListener("pointerdown", resume, { once: true });
-            document.addEventListener("keydown", resume, { once: true });
-        }
-
-        function stopAudio() {
-            if (audioEl) {
-                audioEl.pause();
-                audioEl.currentTime = 0;
+                document.addEventListener("pointerdown", resume, { once: true });
+                document.addEventListener("keydown", resume, { once: true });
             }
-            if (speechSupported) {
-                window.speechSynthesis.cancel();
-            }
-            ttsState = "idle";
-            updateAudioButton(false);
-        }
 
-        function playAudio(options = {}) {
-            const allowFallback = options.allowFallback === true;
-            if (audioMode === "file") {
-                if (!audioEl) return;
-                if (!audioEl.paused) {
+            function stopAudio() {
+                if (audioEl) {
+                    audioEl.pause();
+                    audioEl.currentTime = 0;
+                }
+                if (speechSupported) {
+                    window.speechSynthesis.cancel();
+                }
+                ttsState = "idle";
+                updateAudioButton(false);
+            }
+
+            function playAudio(options = {}) {
+
+            // 🔥 ADD THIS: Ensure voice is loaded before speaking
+                    if (!componentVoice) {
+                        componentVoice = getComponentVoice();
+                            }
+
+                const allowFallback = options.allowFallback === true;
+                if (audioMode === "file") {
+                    if (!audioEl) return;
+                    if (!audioEl.paused) {
+                        updateAudioButton(true);
+                        return;
+                    }
+                    const playAttempt = audioEl.play();
+                    if (playAttempt && typeof playAttempt.catch === "function") {
+                        playAttempt.catch(() => {
+                            updateAudioButton(false);
+                            if (allowFallback) {
+                                setAudioStatus("Tap to enable audio");
+                                notifyParent("component-audio-blocked");
+                                armAutoPlayFallback();
+                            }
+                        });
+                    } else {
+                        updateAudioButton(true);
+                    }
+                    return;
+                }
+
+                if (!speechSupported) return;
+
+                if (ttsState === "paused") {
+                    window.speechSynthesis.resume();
+                    ttsState = "playing";
                     updateAudioButton(true);
                     return;
                 }
-                const playAttempt = audioEl.play();
-                if (playAttempt && typeof playAttempt.catch === "function") {
-                    playAttempt.catch(() => {
-                        updateAudioButton(false);
-                        if (allowFallback) {
-                            setAudioStatus("Tap to enable audio");
-                            notifyParent("component-audio-blocked");
-                            armAutoPlayFallback();
-                        }
-                    });
-                } else {
+
+                if (ttsState === "playing") {
                     updateAudioButton(true);
+                    return;
                 }
-                return;
-            }
 
-            if (!speechSupported) return;
+        const utterance = new SpeechSynthesisUtterance(activeComponent.description);
 
-            if (ttsState === "paused") {
-                window.speechSynthesis.resume();
-                ttsState = "playing";
+    // 🔒 FORCE COMPONENT-ONLY VOICE
+    utterance.voice = componentVoice || getComponentVoice();
+    utterance.rate = 0.85;     // clear & calm
+    utterance.pitch = 1;
+
+    ttsState = "playing"; 
+
+                utterance.onend = () => {
+                    ttsState = "idle";
+                    updateAudioButton(false);
+                };
+                utterance.onerror = () => {
+                    ttsState = "idle";
+                    updateAudioButton(false);
+                };
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(utterance);
                 updateAudioButton(true);
-                return;
             }
 
-            if (ttsState === "playing") {
-                updateAudioButton(true);
-                return;
-            }
-
-            const utterance = new SpeechSynthesisUtterance(activeComponent.description);
-
-// 🔒 FORCE COMPONENT-ONLY VOICE
-utterance.voice = componentVoice || getComponentVoice();
-utterance.rate = 0.85;     // clear & calm
-utterance.pitch = 1;
-
-            ttsState = "playing";
-            utterance.onend = () => {
-                ttsState = "idle";
-                updateAudioButton(false);
-            };
-            utterance.onerror = () => {
-                ttsState = "idle";
-                updateAudioButton(false);
-            };
-            window.speechSynthesis.cancel();
-            window.speechSynthesis.speak(utterance);
-            updateAudioButton(true);
-        }
-
-        function pauseAudio() {
-            if (audioMode === "file") {
-                if (!audioEl) return;
-                if (!audioEl.paused) {
-                    audioEl.pause();
+            function pauseAudio() {
+                if (audioMode === "file") {
+                    if (!audioEl) return;
+                    if (!audioEl.paused) {
+                        audioEl.pause();
+                    }
+                    updateAudioButton(false);
+                    return;
                 }
-                updateAudioButton(false);
-                return;
+
+                if (!speechSupported) return;
+
+                if (ttsState === "playing") {
+                    window.speechSynthesis.pause();
+                    ttsState = "paused";
+                    updateAudioButton(false);
+                }
             }
 
-            if (!speechSupported) return;
+            function prepareAudio(component) {
+                activeComponent = component;
+                stopAudio();
 
-            if (ttsState === "playing") {
-                window.speechSynthesis.pause();
-                ttsState = "paused";
-                updateAudioButton(false);
+                const hasFile = Boolean(component.audio);
+                audioMode = hasFile ? "file" : "tts";
+
+                if (audioEl) {
+                    audioEl.src = hasFile ? component.audio : "";
+                    if (hasFile) {
+                        audioEl.load();
+                    }
+                }
+
+                if (audioBtn) {
+                    audioBtn.disabled = !hasFile && !speechSupported;
+                }
+
+                if (hasFile) {
+                    setAudioStatus("");
+                } else if (speechSupported) {
+                    setAudioStatus("Voice narration");
+                } else {
+                    setAudioStatus(" ");
+                }
+
+                if (isEmbedded && audioBtn) {
+                    window.parent.postMessage(
+                        {
+                            type: "component-audio-state",
+                            playing: audioBtn.getAttribute("aria-pressed") === "true",
+                            disabled: audioBtn.disabled,
+                            label: audioLabelEl ? audioLabelEl.textContent : ""
+                        },
+                        "*"
+                    );
+                }
             }
-        }
 
-        function prepareAudio(component) {
-            activeComponent = component;
-            stopAudio();
+            function applyComponent(component) {
+                imageEl.src = component.image;
+                imageEl.alt = component.name;
+                titleEl.textContent = component.name;
+                definitionEl.textContent = component.description;
+                prepareAudio(component);
+            if (!audioForceStopped && (autoPlayByDefault || autoPlayOnChange)) {
+        playAudio();
+    }
 
-            const hasFile = Boolean(component.audio);
-            audioMode = hasFile ? "file" : "tts";
+            }
+
+            function restartCardAnimation() {
+                cardEl.classList.remove("is-animating");
+                void cardEl.offsetWidth;
+                cardEl.classList.add("is-animating");
+            }
+
+            function setActive(index, options = {}) {
+                const safeIndex = Math.max(0, Math.min(components.length - 1, index));
+                currentIndex = safeIndex;
+                updateControls();
+
+                if (swapTimer) {
+                    clearTimeout(swapTimer);
+                    swapTimer = null;
+                }
+
+                if (options.immediate) {
+                    cardEl.classList.remove("is-fading-out");
+                    applyComponent(components[currentIndex]);
+                    restartCardAnimation();
+                    return;
+                }
+
+                cardEl.classList.remove("is-animating");
+                cardEl.classList.add("is-fading-out");
+
+                swapTimer = setTimeout(() => {
+                    applyComponent(components[currentIndex]);
+                    cardEl.classList.remove("is-fading-out");
+                    restartCardAnimation();
+                }, 160);
+            }
+
+            prevBtn.addEventListener("click", () => setActive(currentIndex - 1));
+            nextBtn.addEventListener("click", () => setActive(currentIndex + 1));
 
             if (audioEl) {
-                audioEl.src = hasFile ? component.audio : "";
-                if (hasFile) {
-                    audioEl.load();
-                }
+                audioEl.addEventListener("play", () => {
+                    if (audioMode === "file") {
+                        setAudioStatus("");
+                        updateAudioButton(true);
+                    }
+                });
+                audioEl.addEventListener("ended", () => updateAudioButton(false));
+                audioEl.addEventListener("pause", () => {
+                    if (audioEl.currentTime === 0 || audioEl.ended) return;
+                    updateAudioButton(false);
+                });
+                audioEl.addEventListener("error", () => {
+                    if (audioMode === "file" && speechSupported) {
+                        audioMode = "tts";
+                        setAudioStatus("Voice narration");
+                    } else {
+                        setAudioStatus("Audio not available");
+                        if (audioBtn) audioBtn.disabled = true;
+                    }
+                    updateAudioButton(false);
+                });
             }
 
             if (audioBtn) {
-                audioBtn.disabled = !hasFile && !speechSupported;
+                audioBtn.addEventListener("click", (event) => {
+                    const isPlaying = audioBtn.getAttribute("aria-pressed") === "true";
+                    const allowFallback = isEmbedded && event?.isTrusted === false;
+                    if (isPlaying) {
+                        pauseAudio();
+                        autoPlayOnChange = false;
+                    } else {
+                        audioForceStopped = false; // 🔓 USER ALLOWED AUDIO AGAIN
+                        autoPlayOnChange = true;
+                        playAudio({ allowFallback });
+                    }
+                });
             }
 
-            if (hasFile) {
-                setAudioStatus("");
-            } else if (speechSupported) {
-                setAudioStatus("Voice narration");
-            } else {
-                setAudioStatus(" ");
+            if (isEmbedded) {
+                window.addEventListener("message", (event) => {
+                    if (event.source !== window.parent) return;
+                    const data = event.data || {};
+                    if (data.type === "component-audio-toggle") {
+                        audioBtn?.click();
+                    }
+                    if (data.type === "component-audio-play") {
+                        playAudio({ allowFallback: true });
+                    }
+                    if (data.type === "component-audio-pause") {
+                        pauseAudio();
+                        autoPlayOnChange = false;
+                    }
+                    if (data.type === "component-audio-request") {
+                        updateAudioButton(audioBtn?.getAttribute("aria-pressed") === "true");
+                    }
+                    if (data.type === "component-audio-stop") {
+                        stopAudio();
+                        autoPlayOnChange = false;
+                        audioForceStopped = true; // 🔒 PREVENT AUTOPLAY AFTER CLOSE
+                    }
+                });
             }
 
-            if (isEmbedded && audioBtn) {
-                window.parent.postMessage(
-                    {
-                        type: "component-audio-state",
-                        playing: audioBtn.getAttribute("aria-pressed") === "true",
-                        disabled: audioBtn.disabled,
-                        label: audioLabelEl ? audioLabelEl.textContent : ""
-                    },
-                    "*"
-                );
-            }
-        }
+            buildThumbs();
+            setActive(0, { immediate: true });
+        </script>
 
-        function applyComponent(component) {
-            imageEl.src = component.image;
-            imageEl.alt = component.name;
-            titleEl.textContent = component.name;
-            definitionEl.textContent = component.description;
-            prepareAudio(component);
-           if (!audioForceStopped && (autoPlayByDefault || autoPlayOnChange)) {
-    playAudio();
-}
-
-        }
-
-        function restartCardAnimation() {
-            cardEl.classList.remove("is-animating");
-            void cardEl.offsetWidth;
-            cardEl.classList.add("is-animating");
-        }
-
-        function setActive(index, options = {}) {
-            const safeIndex = Math.max(0, Math.min(components.length - 1, index));
-            currentIndex = safeIndex;
-            updateControls();
-
-            if (swapTimer) {
-                clearTimeout(swapTimer);
-                swapTimer = null;
-            }
-
-            if (options.immediate) {
-                cardEl.classList.remove("is-fading-out");
-                applyComponent(components[currentIndex]);
-                restartCardAnimation();
-                return;
-            }
-
-            cardEl.classList.remove("is-animating");
-            cardEl.classList.add("is-fading-out");
-
-            swapTimer = setTimeout(() => {
-                applyComponent(components[currentIndex]);
-                cardEl.classList.remove("is-fading-out");
-                restartCardAnimation();
-            }, 160);
-        }
-
-        prevBtn.addEventListener("click", () => setActive(currentIndex - 1));
-        nextBtn.addEventListener("click", () => setActive(currentIndex + 1));
-
-        if (audioEl) {
-            audioEl.addEventListener("play", () => {
-                if (audioMode === "file") {
-                    setAudioStatus("");
-                    updateAudioButton(true);
-                }
-            });
-            audioEl.addEventListener("ended", () => updateAudioButton(false));
-            audioEl.addEventListener("pause", () => {
-                if (audioEl.currentTime === 0 || audioEl.ended) return;
-                updateAudioButton(false);
-            });
-            audioEl.addEventListener("error", () => {
-                if (audioMode === "file" && speechSupported) {
-                    audioMode = "tts";
-                    setAudioStatus("Voice narration");
-                } else {
-                    setAudioStatus("Audio not available");
-                    if (audioBtn) audioBtn.disabled = true;
-                }
-                updateAudioButton(false);
-            });
-        }
-
-        if (audioBtn) {
-            audioBtn.addEventListener("click", (event) => {
-                const isPlaying = audioBtn.getAttribute("aria-pressed") === "true";
-                const allowFallback = isEmbedded && event?.isTrusted === false;
-                if (isPlaying) {
-                    pauseAudio();
-                    autoPlayOnChange = false;
-                } else {
-                    audioForceStopped = false; // 🔓 USER ALLOWED AUDIO AGAIN
-                    autoPlayOnChange = true;
-                    playAudio({ allowFallback });
-                }
-            });
-        }
-
-        if (isEmbedded) {
-            window.addEventListener("message", (event) => {
-                if (event.source !== window.parent) return;
-                const data = event.data || {};
-                if (data.type === "component-audio-toggle") {
-                    audioBtn?.click();
-                }
-                if (data.type === "component-audio-play") {
-                    playAudio({ allowFallback: true });
-                }
-                if (data.type === "component-audio-pause") {
-                    pauseAudio();
-                    autoPlayOnChange = false;
-                }
-                if (data.type === "component-audio-request") {
-                    updateAudioButton(audioBtn?.getAttribute("aria-pressed") === "true");
-                }
-                if (data.type === "component-audio-stop") {
-                    stopAudio();
-                    autoPlayOnChange = false;
-                    audioForceStopped = true; // 🔒 PREVENT AUTOPLAY AFTER CLOSE
-                }
-            });
-        }
-
-        buildThumbs();
-        setActive(0, { immediate: true });
-    </script>
-
-</body>
-</html>
+    </body>
+    </html>
