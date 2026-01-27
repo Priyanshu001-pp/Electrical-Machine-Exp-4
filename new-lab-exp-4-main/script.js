@@ -405,6 +405,11 @@ jsPlumb.ready(function () {
     const graphBars = document.getElementById("graphBars");
     if (graphBars) graphBars.style.display = "none";
 
+    const graphCanvas = document.querySelector(".graph-canvas");
+if (graphCanvas) {
+  graphCanvas.classList.add("is-plotting");
+}
+
     // Show Plotly container
     const graphPlot = document.getElementById("graphPlot");
     if (!graphPlot) return;
@@ -457,6 +462,10 @@ jsPlumb.ready(function () {
           },
           type: "category",
           categoryarray: xValues.map(String),
+
+           showgrid: true,
+          gridcolor: "rgba(0, 0, 0, 0.07)",
+          zeroline: false
         },
 
         yaxis: {
@@ -471,9 +480,11 @@ jsPlumb.ready(function () {
           },
           type: "category",
           categoryarray: yValues.map(String),
+
+          showgrid: true,
+          gridcolor: "rgba(0, 0, 0, 0.07)",
+          zeroline: false
         },
-
-
 
         paper_bgcolor: "rgba(0,0,0,0)",
         plot_bgcolor: "rgba(0,0,0,0)"

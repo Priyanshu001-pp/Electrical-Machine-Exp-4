@@ -2225,3 +2225,8 @@ body.is-modal-open {
   background: #1a1f25;
   color: #f2f2f2; 
 }
+
+
+.graph-canvas.is-plotting {
+  background-image: none;
+}
