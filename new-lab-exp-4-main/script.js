@@ -1895,6 +1895,9 @@ if (currentStepIndex >= requiredPairs.length) {
         graphBarsReset.style.display = "block";
       }
 
+      const graphCanvas = document.querySelector(".graph-canvas");
+graphCanvas?.classList.remove("is-plotting");
+
       // 🔊 VOICE AFTER RESET
       onExperimentReset();
 
