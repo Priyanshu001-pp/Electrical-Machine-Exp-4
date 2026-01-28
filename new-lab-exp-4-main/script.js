@@ -1226,6 +1226,26 @@ if (graphCanvas) {
     return [a, b].sort().join("-");
   }
 
+  // ===============================
+// 🎯 WIRE CURVINESS LOGIC 
+// ===============================
+
+const WIRE_CURVINESS = 80; // default curve for all wires
+
+const WIRE_CURVE_OVERRIDES = new Map([
+  [connectionKey("pointR", "pointL"), -80],
+  [connectionKey("pointB", "pointD"), -50],
+  [connectionKey("pointA", "pointJ"), -160],
+  [connectionKey("pointG", "pointH"), 250],
+  [connectionKey("pointF", "pointE"), -80]
+]);
+
+function getWireCurvinessForConnection(a, b) {
+  const key = connectionKey(a, b);
+  return WIRE_CURVE_OVERRIDES.get(key) ?? WIRE_CURVINESS;
+}
+
+
   function getSeenConnectionKeys() {
     const seen = new Set();
     jsPlumb.getAllConnections().forEach(conn => {
@@ -1395,7 +1415,10 @@ if (graphCanvas) {
     const connectionParams = {
       sourceEndpoint,
       targetEndpoint,
-      connector: ["Bezier", { curviness: 60 }],
+      connector: ["Bezier", { 
+  curviness: getWireCurvinessForConnection(sourceId, targetId)
+}],
+
       paintStyle: { stroke: wireColor, strokeWidth: 4 }
     };
 
@@ -1418,6 +1441,13 @@ if (graphCanvas) {
 
   // Dynamic wire color based on source anchor side (left: blue, right: red) - Now sets on connection for consistency
   jsPlumb.bind("connection", function (info) {
+
+    const curviness =
+  getWireCurvinessForConnection(info.sourceId, info.targetId);
+
+info.connection.setConnector(
+  ["Bezier", { curviness }]
+);
 
     // existing color logic
     const src = info.sourceId;

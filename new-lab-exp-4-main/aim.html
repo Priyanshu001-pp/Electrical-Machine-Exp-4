@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Virtual Labs | Electrical Machines Lab - To study the Load Characteristics of DC shunt generator</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --lab-border: rgba(11, 96, 168, 0.35);
+      --lab-border-strong: rgba(2, 26, 44, 0.55);
+      --lab-accent: #0b60a8;
+      --lab-accent-strong: #021a2c;
+      --lab-ink: #0f172a;
+      --lab-muted: #475569;
+      --intro-panel-gradient: linear-gradient(145deg, rgba(11, 96, 168, 0.08), rgba(255, 255, 255, 0.95));
+      --intro-panel-border: rgba(251, 180, 84, 0.35);
+      --intro-border-highlight: rgba(11, 96, 168, 0.16);
+      --intro-text-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(232, 245, 255, 0.7));
+      --intro-video-bg: linear-gradient(150deg, #0b1224 0%, #2b1a10 100%);
+    }
+
+    body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+    /* Page blur when intro popup is open */
+    body.body-blurred #page-wrapper {
+      filter: blur(5px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    body.body-blurred { overflow: hidden; }
+
+    /* Custom Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeInUp { animation: fadeInUp 0.6s ease-out forwards; }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .animate-slideInLeft { animation: slideInLeft 0.5s ease-out forwards; }
+
+    @keyframes chatbot-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    @keyframes chatbot-hint-pulse {
+      0%, 65% { opacity: 0; transform: translate(8px, -50%) scale(0.94); }
+      10%, 40% { opacity: 1; transform: translate(0, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(8px, -50%) scale(0.94); }
+    }
+
+    @keyframes intro-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    @keyframes intro-ring-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes intro-glow {
+      0%, 100% { opacity: 0.5; transform: scale(0.92); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+
+    @keyframes intro-ping {
+      0% { transform: scale(0.65); opacity: 0; }
+      25% { opacity: 0.7; }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+
+    @keyframes intro-overlay-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes intro-panel-3d {
+      from { opacity: 0; transform: translateY(28px) scale(0.96) rotateX(8deg) rotateY(-6deg); }
+      to { opacity: 1; transform: translateY(0) scale(1) rotateX(0) rotateY(0); }
+    }
+
+    @keyframes intro-panel-rise {
+      from { opacity: 0; transform: translateY(16px) translateZ(10px); }
+      to { opacity: 1; transform: translateY(0) translateZ(10px); }
+    }
+
+    @keyframes intro-item-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes intro-line-in {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes intro-video-pop {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes intro-badge-pulse {
+      0%, 100% { box-shadow: 0 10px 18px rgba(11, 96, 168, 0.35); transform: translateY(0); }
+      50% { box-shadow: 0 12px 22px rgba(11, 96, 168, 0.45); transform: translateY(-1px); }
+    }
+
+    /* 3D intro motion */
+    @keyframes intro-pop {
+      0% { opacity: 0; transform: translateY(18px) scale(0.97) rotateX(5deg); }
+      65% { opacity: 1; transform: translateY(0) scale(1.02) rotateX(0deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotateX(0); }
+    }
+
+    @keyframes intro-grid-shimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    @keyframes intro-pane-tilt {
+      0% { transform: perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(0); }
+      50% { transform: perspective(1400px) rotateX(1.2deg) rotateY(-1deg) translateY(-6px); }
+      100% { transform: perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(0); }
+    }
+
+    @keyframes intro-video-glow {
+      0% { box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16), 0 0 0 0 rgba(11, 96, 168, 0.2); }
+      50% { box-shadow: 0 20px 46px rgba(15, 23, 42, 0.2), 0 0 0 12px rgba(11, 96, 168, 0.08); }
+      100% { box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16), 0 0 0 0 rgba(11, 96, 168, 0.2); }
+    }
+
+    /* Stagger animation for menu items */
+    .menu-item:nth-child(1) { animation-delay: 0.1s; }
+    .menu-item:nth-child(2) { animation-delay: 0.2s; }
+    .menu-item:nth-child(3) { animation-delay: 0.3s; }
+    .menu-item:nth-child(4) { animation-delay: 0.4s; }
+    .menu-item:nth-child(5) { animation-delay: 0.5s; }
+    .menu-item:nth-child(6) { animation-delay: 0.6s; }
+    .menu-item:nth-child(7) { animation-delay: 0.7s; }
+    .menu-item:nth-child(8) { animation-delay: 0.8s; }
+
+    /* Section stagger */
+    .section-content:nth-child(even) { animation-delay: 0.2s; }
+    .section-content:nth-child(odd) { animation-delay: 0.1s; }
+
+    /* Virtual Labs specific styling */
+    .vl-header {
+      height: 70px;
+      background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+      box-shadow: 0 10px 30px rgba(2, 26, 44, 0.35);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+    }
+
+    .top-nav { gap: 1.5rem; align-items: center; }
+
+    .nav-link {
+      position: relative;
+      color: #e2e8f0;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      transition: color 150ms ease, transform 150ms ease;
+      border-radius: 0.375rem;
+      text-decoration: none;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -6px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 200ms ease;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus {
+      color: #fff;
+      transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-link:hover::after,
+    .nav-link:focus::after { transform: scaleX(1); }
+
+    .logo-container { display: flex; align-items: center; gap: 0.75rem; }
+
+    .logo-glow { transition: transform 200ms ease, box-shadow 200ms ease; }
+    .logo-glow:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(11, 96, 168, 0.5); }
+
+    .logo-text { display: flex; flex-direction: column; justify-content: center; }
+
+    .logo-title {
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .logo-subtitle { color: #bfdbfe; font-size: 0.875rem; font-weight: 500; margin: 0; }
+
+    .flex-1.pt-16 { flex: 1; }
+
+    .vl-footer {
+      background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+      color: #e2e8f0;
+      padding: 1.25rem 0;
+      box-shadow: 0 -10px 30px rgba(2, 26, 44, 0.5);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 50;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 0 1.5rem;
+    }
+
+    .vl-sidebar { background: #f8fafc; border-right: 1px solid #e2e8f0; }
+
+    .vl-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu-item {
+      border-left: 3px solid transparent;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 0.75rem;
+      transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(4px);
+      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .menu-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(11, 96, 168, 0.15), transparent 60%);
+      opacity: 0;
+      transform: translateX(-100%);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .menu-item:hover::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      border-left-color: #0b60a8;
+      background: rgba(255, 255, 255, 0.85);
+      transform: translateX(6px);
+      box-shadow: 0 12px 30px rgba(2, 26, 44, 0.15);
+    }
+
+    .menu-item.active::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Override Tailwind blue accents with lab primary theme */
+    .bg-blue-600,
+    .hover\:bg-blue-700:hover {
+      background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+    }
+
+    .text-blue-600,
+    .hover\:text-blue-600:hover { color: #0b60a8; }
+
+    .border-blue-600 { border-color: #0b60a8; }
+
+    #intro-text .intro-line {
+      margin: 0 0 0.85rem;
+      color: #000;
+      line-height: 1.6;
+      opacity: 1;
+      transition: opacity 160ms ease, transform 160ms ease;
+      animation: intro-line-in 0.35s ease-out both;
+      font-size: 1.05rem;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    #intro-text .intro-line:last-child { margin-bottom: 0; }
+
+    #intro-text .intro-line.active {
+      opacity: 1;
+      color: #000;
+      font-weight: 600;
+      transform: translateX(2px);
+    }
+
+    #intro-text { text-align: center; }
+
+    #intro-outline {
+      list-style: none;
+      padding: 0.25rem 0.15rem 0.05rem;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .outline-item {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.58rem 0.8rem;
+      border: 1px solid rgba(11, 96, 168, 0.15);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.65);
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #0f172a;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+      transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease, background 150ms ease, color 150ms ease;
+      cursor: pointer;
+      position: relative;
+      border-left-width: 4px;
+      border-left-color: transparent;
+      animation: intro-item-in 0.45s ease both;
+    }
+
+    .outline-item:nth-child(1) { animation-delay: 0.05s; }
+    .outline-item:nth-child(2) { animation-delay: 0.1s; }
+    .outline-item:nth-child(3) { animation-delay: 0.15s; }
+    .outline-item:nth-child(4) { animation-delay: 0.2s; }
+    .outline-item:nth-child(5) { animation-delay: 0.25s; }
+    .outline-item:nth-child(6) { animation-delay: 0.3s; }
+    .outline-item:nth-child(7) { animation-delay: 0.35s; }
+    .outline-item:nth-child(8) { animation-delay: 0.4s; }
+
+    .outline-item::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      border: 2px solid #cdd5e4;
+      background: #edf2fb;
+      display: inline-block;
+      box-shadow: inset 0 0 0 2px #fff;
+    }
+
+    .outline-item.active {
+      border-color: var(--lab-accent);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.18);
+      transform: translateY(-2px);
+      color: var(--lab-accent-strong);
+      text-shadow: none;
+      border-left-color: var(--lab-accent);
+    }
+
+    .outline-item.active::before {
+      border-color: #0b60a8;
+      background: radial-gradient(circle at 50% 50%, #0b60a8 0%, #042f5a 100%);
+      box-shadow: 0 0 0 4px rgba(11, 96, 168, 0.15);
+    }
+
+    .outline-item:hover {
+      border-color: #0b60a8;
+      color: #0b60a8;
+      box-shadow: 0 10px 24px rgba(11, 96, 168, 0.18);
+      transform: translateY(-1px);
+    }
+
+    #intro-video-wrapper {
+      width: 100%;
+      background: var(--intro-video-bg);
+      border: 1px solid rgba(11, 96, 168, 0.3);
+      border-radius: 20px;
+      box-shadow:
+        0 35px 70px rgba(2, 12, 32, 0.45),
+        0 0 30px rgba(14, 165, 233, 0.25);
+      overflow: hidden;
+      min-height: 220px;
+      max-height: 360px;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      isolation: isolate;
+      margin-top: -2rem;
+      z-index: 1;
+    }
+
+    #intro-video-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      pointer-events: none;
+    }
+
+    #intro-video-wrapper:not(.hidden) { opacity: 1; transform: scale(1); }
+    #intro-video-wrapper.hidden { opacity: 0; transform: scale(0.95); }
+
+    #intro-video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #0b1224;
+      image-rendering: auto;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      border-radius: 16px;
+      display: block;
+      filter: none;
+    }
+
+    .body-blurred #intro-video-wrapper {
+      animation: intro-video-pop 0.6s ease-out both;
+      animation-delay: 0.15s;
+    }
+
+    /* Hide native video controls */
+    #intro-video::-webkit-media-controls { display: none !important; }
+    #intro-video::-moz-media-controls { display: none !important; }
+    #intro-video::-ms-media-controls { display: none !important; }
+
+    .final-message {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    #intro-grid.final-state { grid-template-columns: 1fr; align-items: center; justify-items: center; }
+    #intro-grid.final-state #intro-left { display: none; }
+    #intro-grid.final-state #intro-right { width: 100%; max-width: 760px; margin: 0 auto; }
+
+    .chatbot-launcher {
+      width: 74px;
+      height: 74px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #dbeafe);
+      box-shadow: 0 25px 45px rgba(15, 23, 42, 0.35);
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+      position: relative;
+      z-index: 1;
+      overflow: visible;
+    }
+
+    .chatbot-launcher::before,
+    .chatbot-launcher::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      background: conic-gradient(from 160deg,
+        rgba(59, 130, 246, 0.25),
+        rgba(14, 165, 233, 0.65),
+        rgba(59, 130, 246, 0.95),
+        rgba(14, 165, 233, 0.65),
+        rgba(59, 130, 246, 0.25)
+      );
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 180ms ease, transform 180ms ease;
+      z-index: -1;
+    }
+
+    .chatbot-launcher::after { filter: blur(12px); }
+
+    .chatbot-launcher:hover::before,
+    .chatbot-launcher:hover::after { opacity: 1; transform: scale(1.05); }
+
+    .chatbot-launcher:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(15, 23, 42, 0.45);
+    }
+
+    .chatbot-launcher-image {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.65));
+      animation: chatbot-float 2.4s ease-in-out infinite;
+    }
+
+    .chatbot-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.65rem;
+    }
+
+    .intro-launcher {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      border: 2px solid rgba(11, 96, 168, 0.35);
+      background: #ffffff;
+      color: #0b60a8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 18px 30px rgba(2, 26, 44, 0.2);
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, color 160ms ease, border-color 160ms ease;
+      overflow: visible;
+    }
+
+    .intro-launcher:hover {
+      background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+      color: #ffffff;
+      border-color: rgba(2, 26, 44, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 22px 34px rgba(2, 26, 44, 0.3);
+    }
+
+    .intro-icon {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      animation: intro-float 2.6s ease-in-out infinite;
+      z-index: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #dbeafe);
+      box-shadow: inset 0 0 0 2px rgba(11, 96, 168, 0.2);
+    }
+
+    .intro-icon::before,
+    .intro-icon::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .intro-icon::before {
+      inset: -6px;
+      border: 2px solid rgba(14, 165, 233, 0.45);
+      background: conic-gradient(from 120deg, rgba(14, 165, 233, 0.15), rgba(2, 26, 44, 0.15), rgba(14, 165, 233, 0.15));
+      animation: intro-ring-spin 6s linear infinite;
+    }
+
+    .intro-icon::after {
+      inset: -14px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.4), rgba(56, 189, 248, 0) 70%);
+      animation: intro-glow 2.8s ease-in-out infinite;
+    }
+
+    .intro-icon-ping {
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      animation: intro-ping 3.2s ease-out infinite;
+    }
+
+    .intro-icon-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      background: #ffffff;
+      filter: drop-shadow(0 2px 6px rgba(15, 23, 42, 0.25));
+      transition: transform 160ms ease;
+    }
+
+    .intro-launcher:hover .intro-icon-image { transform: scale(1.08); }
+
+    .chatbot-hint-bubble {
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translate(8px, -50%) scale(0.94);
+      margin-right: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      color: #e0f2fe;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.55);
+      animation: chatbot-hint-pulse 4.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .chatbot-hint-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #38bdf8;
+      box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .chatbot-widget { z-index: 90; }
+    .chatbot-panel { z-index: 90; }
+
+    #intro-modal { z-index: 9999 !important; }
+    #intro-modal button { position: relative; z-index: 10000 !important; }
+
+    @media (prefers-reduced-motion: no-preference) {
+      #intro-right { animation: intro-pane-tilt 12s ease-in-out infinite; }
+      #intro-video-wrapper:not(.hidden) { animation: intro-video-glow 9s ease-in-out infinite; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #intro-right,
+      #intro-video-wrapper { animation: none !important; }
+    }
+
+    @media (max-width: 640px) {
+      .chatbot-launcher { width: 64px; height: 64px; }
+      .chatbot-launcher-image { width: 50px; height: 50px; }
+      .intro-launcher { width: 64px; height: 64px; }
+      .intro-icon { width: 50px; height: 50px; }
+      .intro-icon-image { width: 50px; height: 50px; }
+      .chatbot-hint-bubble { display: none; }
+    }
+
+    .chatbot-widget {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.9rem;
+      z-index: 90;
+      max-width: calc(100vw - 32px);
+    }
+
+    .chatbot-widget.chatbot-open .chatbot-hint-bubble,
+    .chatbot-widget:hover .chatbot-hint-bubble {
+      animation: none;
+      opacity: 0;
+    }
+
+    .chatbot-panel {
+      width: min(420px, calc(100vw - 40px));
+      height: min(600px, calc(100vh - 140px));
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 30px 60px rgba(2, 38, 61, 0.45);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      transform-origin: bottom right;
+      transform: translateY(12px) scale(0.94);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease, transform 220ms ease;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chatbot-panel.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .chatbot-panel-header {
+      padding: 1.1rem 1.35rem;
+      background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .chatbot-panel-title { font-size: 1.05rem; font-weight: 700; margin: 0; }
+    .chatbot-panel-caption { font-size: 0.78rem; opacity: 0.9; margin: 0; }
+
+    .chatbot-panel-close {
+      border: none;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 120ms ease;
+    }
+    .chatbot-panel-close:hover { background: rgba(255, 255, 255, 0.3); }
+
+    .chatbot-panel-body {
+      flex: 1;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      position: relative;
+      border-top: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .chatbot-panel-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.5rem;
+      color: #475569;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .chatbot-panel iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      display: none;
+      overflow: hidden;
+      scrollbar-width: none;
+    }
+
+    .chatbot-panel iframe::-webkit-scrollbar { display: none; }
+    .chatbot-panel iframe.chatbot-frame-visible { display: block; }
+
+    .section-text {
+      text-align: left;
+      line-height: 1.7;
+      hyphens: auto;
+    }
+
+    .section-text p {
+      margin-bottom: 1rem;
+      text-indent: 0;
+    }
+
+    /* Intro Modal Improvements */
+    #intro-modal {
+      padding: clamp(0.75rem, 3vw, 1.5rem);
+      box-sizing: border-box;
+      backdrop-filter: blur(16px) saturate(1.2);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(11, 96, 168, 0.25), transparent 40%),
+        radial-gradient(circle at 80% 20%, rgba(14, 165, 233, 0.25), transparent 45%),
+        rgba(0, 0, 0, 0.55);
+      perspective: 1200px;
+      perspective-origin: center top;
+      overflow-y: auto;
+    }
+
+    .body-blurred #intro-modal {
+      animation: intro-overlay-in 0.45s ease-out both;
+    }
+
+    #intro-modal .modal-container {
+      position: relative;
+      width: min(1080px, calc(100vw - 1.5rem));
+      max-width: 1180px;
+      max-height: min(88vh, 940px);
+      padding: clamp(1.1rem, 2.5vw, 1.75rem);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 1.8rem;
+      border: 1px solid var(--intro-panel-border);
+      box-sizing: border-box;
+      background:
+        radial-gradient(120% 140% at 10% 10%, rgba(11, 96, 168, 0.18), transparent 60%),
+        var(--intro-panel-gradient);
+      box-shadow:
+        0 35px 80px rgba(4, 24, 46, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      isolation: isolate;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      will-change: transform;
+      margin: 0 auto;
+    }
+
+    .body-blurred #intro-modal .modal-container {
+      animation: intro-panel-3d 0.7s ease-out both;
+    }
+
+    .intro-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 1.15rem 1.5rem 0;
+      position: relative;
+      z-index: 1;
+      transform: translateZ(18px);
+    }
+
+    .intro-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .intro-title-chip {
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background: linear-gradient(140deg, #dbeafe, #bfdbfe);
+      border: 1px solid var(--lab-border-strong);
+      color: #0b60a8;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(11, 96, 168, 0.25);
+    }
+
+    #intro-modal .modal-container::before,
+    #intro-modal .modal-container::after {
+      content: '';
+      position: absolute;
+      inset: -20%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(11, 96, 168, 0.22), transparent 40%),
+        radial-gradient(circle at 70% 70%, rgba(14, 165, 233, 0.18), transparent 38%);
+      filter: blur(40px);
+      z-index: -1;
+      animation: intro-grid-shimmer 14s linear infinite;
+      background-size: 200% 200%;
+    }
+
+    #intro-modal .modal-container::after {
+      inset: -10%;
+      opacity: 0.35;
+      animation-direction: reverse;
+    }
+
+    #intro-modal h3 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--lab-ink);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #intro-modal h3::before {
+      content: '';
+      display: none;
+    }
+
+    .intro-subtitle {
+      color: var(--lab-muted);
+      font-size: 0.95rem;
+      margin: 0;
+      max-width: 680px;
+    }
+
+    .intro-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.55rem;
+    }
+
+    .intro-meta-item {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(11, 96, 168, 0.25);
+      color: #0b60a8;
+      font-weight: 600;
+    }
+
+    #intro-grid {
+      position: relative;
+      gap: clamp(0.85rem, 2vw, 1.15rem);
+      min-height: 0;
+      width: min(100%, 1080px);
+      max-width: 1080px;
+      margin: 0 auto;
+      padding-top: 1rem;
+      padding-inline: clamp(0.35rem, 1.4vw, 0.85rem);
+      box-sizing: border-box;
+      transform-style: preserve-3d;
+      z-index: 1;
+    }
+
+    #intro-grid::before {
+      content: '';
+      position: absolute;
+      inset: 0.35rem;
+      border-radius: 1.35rem;
+      background: linear-gradient(120deg, rgba(11, 96, 168, 0.06), rgba(14, 165, 233, 0.05), rgba(11, 96, 168, 0.06));
+      background-size: 200% 200%;
+      animation: intro-grid-shimmer 20s linear infinite;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .body-blurred #intro-left,
+    .body-blurred #intro-right {
+      animation: intro-panel-rise 0.6s ease-out both;
+    }
+
+    #intro-left {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      padding: 0.8rem;
+      border-radius: 1rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 16px 32px rgba(4, 24, 46, 0.12);
+      transform: perspective(1200px) translateZ(6px);
+    }
+
+    #intro-left .intro-left-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      padding: 1.05rem;
+      border: 1px solid #e0e7f1;
+      background: linear-gradient(150deg, #ffffff 0%, #f5f8ff 100%);
+      box-shadow:
+        0 18px 36px rgba(15, 23, 42, 0.14),
+        0 10px 22px rgba(11, 96, 168, 0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      backdrop-filter: blur(6px);
+    }
+
+    #intro-left .intro-left-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(11, 96, 168, 0.08), transparent 30%);
+      pointer-events: none;
+    }
+
+    #intro-left .intro-heading {
+      margin-bottom: 0.05rem;
+      align-items: center;
+      padding: 0.5rem 0.7rem;
+      border-radius: 12px;
+      border: 1px solid #d8e3f5;
+      background: linear-gradient(180deg, #f5f8ff 0%, #eef3fb 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      gap: 0.65rem;
+    }
+
+    #intro-left .intro-heading p { margin: 0; letter-spacing: 0.1px; color: #0f172a; }
+
+    #intro-left .intro-note { margin: 0; color: #64748b; font-size: 0.85rem; }
+
+    #intro-outline {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+      padding: 0.35rem 0.2rem 0.1rem;
+      gap: 0.55rem;
+      padding-right: 0.3rem;
+      border-radius: 14px;
+      border: 1px solid rgba(11, 96, 168, 0.1);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(237, 242, 247, 0.8));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    #intro-left .intro-badge {
+      background: linear-gradient(135deg, #0b60a8, #064073);
+      box-shadow: 0 12px 22px rgba(11, 96, 168, 0.28);
+      letter-spacing: 0.5px;
+      width: 2.35rem;
+      height: 2.35rem;
+      border: 1px solid #0b60a8;
+      font-weight: 700;
+      animation: intro-badge-pulse 2.6s ease-in-out infinite;
+    }
+
+    #intro-right {
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 1.2rem;
+      width: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      perspective: 1400px;
+      padding: 0.4rem 0.6rem 0.8rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(243, 247, 255, 0.92));
+      border-radius: 1.4rem;
+      border: 1px solid rgba(14, 165, 233, 0.15);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(6px);
+    }
+
+    #intro-text {
+      min-height: 180px;
+      max-height: 260px;
+      padding: 1.2rem 1.15rem;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--lab-ink);
+      letter-spacing: 0.01em;
+      border: 1px solid rgba(11, 96, 168, 0.2);
+      background: var(--intro-text-bg);
+      overflow-y: auto;
+      border-radius: 18px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        0 20px 45px rgba(15, 23, 42, 0.12);
+      position: relative;
+      z-index: 2;
+      margin-bottom: 1rem;
+    }
+
+    #intro-text::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(transparent 92%, rgba(120, 72, 40, 0.08) 100%);
+      background-size: 100% 30px;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    #intro-modal .controls {
+      margin-top: 1.25rem;
+      gap: 1rem;
+      padding: 1rem 1.5rem 1.4rem;
+      border-top: 1px solid rgba(120, 72, 40, 0.2);
+      transform: translateZ(16px);
+    }
+
+    #intro-play,
+    #intro-pause,
+    #intro-skip {
+      border: none;
+      background: linear-gradient(135deg, #0b60a8, #064073);
+      color: #ffffff;
+      box-shadow: 0 12px 22px rgba(2, 26, 44, 0.25);
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    #intro-play:hover,
+    #intro-pause:hover,
+    #intro-skip:hover {
+      background: linear-gradient(135deg, #064073, #021a2c);
+      transform: translateY(-1px);
+      box-shadow: 0 16px 26px rgba(2, 26, 44, 0.35);
+    }
+
+    @media (max-width: 640px) {
+      #intro-modal { padding: 0.75rem; }
+      #intro-modal .modal-container {
+        width: calc(100vw - 1rem);
+        max-height: calc(100vh - 1.5rem);
+        padding: 1rem;
+        border-radius: 1rem;
+        box-sizing: border-box;
+      }
+
+      #intro-grid { padding-inline: 0.35rem; max-width: 100%; }
+      #intro-right { grid-template-rows: auto auto; }
+      #intro-video-wrapper { min-height: 180px; max-height: 260px; }
+      #intro-text { font-size: 1rem; min-height: 160px; }
+    }
+
+    @media (max-width: 480px) {
+      .chatbot-panel { height: min(88vh, 620px); }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- WRAPPER FOR BLUR EFFECT -->
+  <div id="page-wrapper">
+
+    <!-- Header -->
+    <header class="vl-header shadow-xl fixed top-0 left-0 right-0 z-50">
+      <div class="header-inner px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between py-1 w-full">
+          <a href="../../main.html" class="logo-container hover:no-underline focus:no-underline">
+            <img
+              src="./images/image.png"
+              alt="Virtual Labs Logo"
+              class="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 rounded-xl object-contain bg-white p-1.5 logo-glow"
+              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%233b82f6%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22%3EVL%3C/text%3E%3C/svg%3E'"
+            >
+            <div class="logo-text">
+              <h1 class="logo-title text-base sm:text-lg lg:text-xl">Virtual Labs</h1>
+              <p class="logo-subtitle text-[10px] sm:text-xs lg:text-sm">IIT Roorkee</p>
+            </div>
+          </a>
+
+          <button
+            id="mobile-menu-toggle"
+            class="lg:hidden text-white p-2 menu-button"
+            aria-label="Toggle menu"
+          >
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+
+          <nav class="top-nav hidden lg:flex items-center">
+            <a href="../../main.html" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Contact Us</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex pt-16 min-h-screen">
+      <!-- Sidebar -->
+      <aside id="sidebar" class="vl-sidebar w-64 fixed inset-y-0 left-0 z-40 overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out pt-20 lg:pt-6 pb-6">
+        <div class="px-4">
+          <h2 class="text-lg font-semibold text-gray-800 mb-6 border-b border-gray-200 pb-4">Experiment Navigation</h2>
+          <nav class="space-y-1">
+            <a href="aim.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Aim
+            </a>
+
+            <a href="theory.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+              Theory
+            </a>
+
+            <a href="pretest.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Pretest
+            </a>
+
+            <a href="procedure.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2m-6 9l2 2 4-4"></path>
+              </svg>
+              Procedure
+            </a>
+
+            <a href="simulation.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              Simulation
+            </a>
+
+            <a href="posttest.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Posttest
+            </a>
+
+            <a href="references.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+              </svg>
+              References
+            </a>
+
+            <a href="contributors.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              Contributors
+            </a>
+
+            <a href="#feedback" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+              </svg>
+              Feedback
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Mobile overlay -->
+      <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
+
+      <!-- Main Content -->
+      <main class="flex-1 lg:ml-64 p-4 lg:p-8">
+        <nav class="mb-6 text-m text-gray-600 animate-slideInLeft flex items-center space-x-2">
+          <a href="../../main.html" class="hover:text-blue-600 transition-colors">Home</a>
+          <span>></span>
+          <a href="#" class="hover:text-blue-600">AI-Enhanced Electrical Machines Lab</a>
+          <span>></span>
+          <span class="text-gray-800 font-medium">To study the Load Characteristics of DC shunt generator</span>
+        </nav>
+
+        <div class="vl-card mb-4 overflow-hidden animate-fadeInUp rounded-lg">
+          <div class="px-4 py-3" style="background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);">
+            <h1 class="text-lg md:text-xl font-bold text-white text-center leading-snug">
+              To study the Load Characteristics of DC shunt generator
+            </h1>
+          </div>
+        </div>
+
+        <!-- Aim Section -->
+        <section id="aim" class="section-content vl-card mb-8 p-6 animate-fadeInUp">
+          <div class="border-l-4 border-blue-600 pl-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+              <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                <svg class="w-7 h-7 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Aim
+              </h2>
+            </div>
+
+            <div class="section-text text-gray-700 leading-relaxed text-lg">
+              <p>
+                To study the load characteristics of DC Shunt Generator. Draw the external characteristic under different loading conditions.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Placeholders -->
+        <section id="theory" class="section-content vl-card mb-8 p-6 animate-fadeInUp hidden">
+          <div class="border-l-4 border-blue-600 pl-4">
+            <a href="theory.html"></a>
+            <div class="section-text text-gray-700 leading-relaxed text-lg"></div>
+          </div>
+        </section>
+
+        <section id="pretest" class="section-content vl-card mb-8 p-6 animate-fadeInUp hidden">
+          <div class="border-l-4 border-green-600 pl-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+              <svg class="w-7 h-7 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Pretest
+            </h2>
+            <div class="section-text text-gray-700 leading-relaxed text-lg"></div>
+          </div>
+        </section>
+
+        <section id="simulation" class="section-content vl-card mb-8 p-6 animate-fadeInUp hidden">
+          <div class="border-l-4 border-purple-600 pl-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+              <svg class="w-7 h-7 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              Simulation
+            </h2>
+            <div class="section-text text-gray-700 leading-relaxed text-lg"></div>
+          </div>
+        </section>
+
+        <section id="posttest" class="section-content vl-card mb-8 p-6 animate-fadeInUp hidden">
+          <div class="border-l-4 border-green-600 pl-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+              <svg class="w-7 h-7 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Posttest
+            </h2>
+            <div class="section-text text-gray-700 leading-relaxed text-lg"></div>
+          </div>
+        </section>
+
+        <section id="references" class="section-content vl-card mb-8 p-6 animate-fadeInUp hidden">
+          <div class="border-l-4 border-gray-600 pl-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+              <svg class="w-7 h-7 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+              </svg>
+              References
+            </h2>
+            <div class="section-text text-gray-700 leading-relaxed text-lg"></div>
+          </div>
+        </section>
+
+        <section id="contributor" class="section-content vl-card mb-8 p-6 animate-fadeInUp hidden">
+          <div class="border-l-4 border-indigo-600 pl-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+              <svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              Contributor
+            </h2>
+            <div class="section-text text-gray-700 leading-relaxed text-lg"></div>
+          </div>
+        </section>
+
+        <section id="feedback" class="section-content vl-card mb-8 p-6 animate-fadeInUp hidden">
+          <div class="border-l-4 border-orange-600 pl-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+              Feedback
+            </h2>
+            <div class="section-text text-gray-700 leading-relaxed text-lg"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="vl-footer fixed bottom-0 left-0 right-0 z-50 h-12">
+      <div class="footer-inner flex items-center justify-center h-full px-4">
+        <p class="text-xs md:text-sm text-center text-sky-100 font-medium tracking-wide">
+          &copy; 2026 Virtual Labs IIT Roorkee
+        </p>
+      </div>
+    </footer>
+
+    <!-- Chatbot (kept inside page-wrapper so it blurs/locks when intro modal is open) -->
+    <div class="chatbot-widget">
+      <div class="chatbot-panel" data-chat-url="https://vlab-exp-2.netlify.app/">
+        <div class="chatbot-panel-header">
+          <div>
+            <p class="chatbot-panel-title">Virtual Lab Assistant</p>
+            <p class="chatbot-panel-caption">Ask anything about this experiment</p>
+          </div>
+          <button type="button" class="chatbot-panel-close" aria-label="Close chatbot">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="chatbot-panel-body">
+          <div class="chatbot-panel-placeholder">Loading area for your chatbot. Update the <strong>data-chat-url</strong> to match your deployment.</div>
+          <iframe title="Chatbot assistant" referrerpolicy="no-referrer" scrolling="no"></iframe>
+        </div>
+      </div>
+
+      <div class="chatbot-actions">
+        <button type="button" class="chatbot-launcher" aria-expanded="false" aria-label="Open chatbot assistant">
+          <span class="chatbot-hint-bubble">
+            <span class="chatbot-hint-dot">Hi </span>
+            Ask anything about this experiment
+          </span>
+          <img src="./images/chatbot.png" alt="" aria-hidden="true" class="chatbot-launcher-image">
+        </button>
+        <button type="button" class="intro-launcher" id="intro-launcher" aria-label="Open introduction panel">
+          <span class="intro-icon" aria-hidden="true">
+            <span class="intro-icon-ping"></span>
+            <img src="./images/intro.png" alt="" class="intro-icon-image">
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <audio id="chatbot-notification-audio" preload="auto">
+      <source src="./audio/live-chat-353605.mp3" type="audio/mpeg">
+    </audio>
+
+  </div><!-- /#page-wrapper -->
+
+
+  <!-- INTRO POPUP MODAL (BLUR BACKGROUND) -->
+  <div
+    id="intro-modal"
+    class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+    data-intro-autoshow="always"
+    style="display: none;"
+  >
+    <div class="modal-container bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden">
+
+      <h3 class="px-4 pt-4">Introduction of DC Shunt Generator Load Characteristics</h3>
+
+      <div id="intro-grid" class="flex-1 w-full grid grid-cols-1 lg:grid-cols-[0.42fr_1.58fr] gap-3 mt-2 min-h-0 px-3 pb-3">
+        <!-- LEFT PANEL -->
+        <div id="intro-left" class="h-full min-h-0">
+          <div class="intro-left-card h-full rounded-xl border border-gray-200 bg-white shadow p-3 flex flex-col gap-3">
+
+            <div class="flex items-center gap-2 intro-heading">
+              <span class="intro-badge inline-flex items-center justify-center w-8 h-8 rounded-full text-white font-semibold">i</span>
+              <p class="text-lg font-semibold text-gray-800 mb-0">Experiment Sections</p>
+            </div>
+            <p class="intro-note">Tap a section to jump there instantly.</p>
+
+            <ul id="intro-outline">
+              <li class="outline-item" data-start="0">Overview</li>
+              <li class="outline-item" data-start="23">Aim</li>
+              <li class="outline-item" data-start="27">Theory</li>
+              <li class="outline-item" data-start="40">Pretest</li>
+              <li class="outline-item" data-start="46">Procedure</li>
+              <li class="outline-item" data-start="55">Simulation</li>
+              <li class="outline-item" data-start="62">Posttest</li>
+              <li class="outline-item" data-start="68">References & Contributors</li>
+            </ul>
+
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div id="intro-right" class="h-full flex flex-col gap-3 min-h-0">
+          <div
+            id="intro-text"
+            class="space-y-3 text-black text-base leading-relaxed flex-1 overflow-y-auto border rounded-lg p-4 bg-gray-50 shadow-inner min-h-[200px] max-h-full"
+          ></div>
+
+          <div id="intro-video-wrapper">
+            <video
+              id="intro-video"
+              class="w-full object-contain"
+              src="./videos/intro.mp4"
+              preload="auto"
+              muted
+              playsinline
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <button
+            id="intro-play"
+            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50"
+            type="button"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <span>Play</span>
+          </button>
+
+          <button
+            id="intro-pause"
+            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-gray-400 text-gray-700 hover:bg-gray-100"
+            type="button"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <span>Pause</span>
+          </button>
+        </div>
+
+        <button
+          id="intro-skip"
+          type="button"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          <span>Skip & Go to Aim</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+
+      <!-- Audio (UPDATED: removed autoplay attribute; controlled by JS) -->
+      <audio id="intro-audio" src="./audio/intro.wav" preload="auto"></audio>
+
+    </div>
+  </div>
+
+
+  <!-- EXISTING SCRIPT -->
+  <script>
+    // Mobile menu toggle
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      });
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+    }
+
+    // Smooth scrolling and show/hide sections for # links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetSection = document.getElementById(targetId);
+
+        if (targetSection) {
+          document.querySelectorAll('.section-content').forEach(sec => {
+            sec.classList.add('hidden');
+          });
+
+          targetSection.classList.remove('hidden');
+
+          document.querySelectorAll('.menu-item').forEach(item => {
+            item.classList.remove('active');
+          });
+
+          const menuItem = this.closest('.menu-item');
+          if (menuItem) menuItem.classList.add('active');
+
+          targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+          if (overlay && !overlay.classList.contains('hidden')) {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+          }
+        }
+      });
+    });
+
+    // Highlight current page
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const activeLink = document.querySelector(`a[href="${currentPage}"]`);
+
+    if (activeLink) {
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+      });
+
+      const item = activeLink.closest('.menu-item');
+      if (item) item.classList.add('active');
+    }
+  </script>
+
+
+  <!-- INTRO POPUP SCRIPT (auto-open based on data-intro-autoshow) -->
+  <script>
+    const DEFAULT_CUE_LEAD = 0.65; // seconds before narration to reveal text
+    const introCues = [
+      { start: 0, end: 6, text: "Welcome to the experiment titled \"To Study the Load Characteristics of a DC Shunt Generator.\"" },
+      { start: 6, end: 17, text: "In this experiment, you will learn how to determine and analyze the load characteristics of a DC shunt generator, and how to plot external characteristic under different load conditions." },
+      { start: 17, end: 22, text: "To guide you through the learning experience, the experiment is divided into several key sections." },
+      { start: 23, end: 27, text: "We begin with the Aim, which explains what you will learn and why this experiment is important." },
+      { start: 27, end: 40, text: "Next is the Theory section, where you will find all the fundamental concepts and background knowledge required to understand the working and behaviour of a DC shunt generator." },
+      { start: 40, end: 46, text: "Before moving on to the simulation, you will go through the Pretest, which helps you check your basic understanding of the topic." },
+      { start: 46, end: 54, text: "Once you complete the Pretest, you can proceed to the Procedure, which explains each step you need to follow in order to perform the experiment correctly." },
+      { start: 55, end: 62, text: "The most interactive part is the Simulation, where you will work with a virtual setup and perform the experiment yourself." },
+      { start: 62, end: 68, text: "After completing the simulation, the Posttest allows you to assess what you have learned." },
+      { start: 68, end: 76, text: "Finally, the References and Contributors sections provide additional learning resources and acknowledge the team behind the development of this experiment." },
+      { start: 76, end: 82, text: "Together, these sections ensure a smooth, structured, and engaging learning experience from start to finish." }
+    ];
+
+    const INTRO_STORAGE_KEY = 'dcShuntIntroShown:aim';
+    const INTRO_STORAGE_VERSION = '1';
+    const INTRO_STORAGE = (() => {
+      try { return window.localStorage; }
+      catch (error) {
+        try { return window.sessionStorage; }
+        catch (err) { return null; }
+      }
+    })();
+
+    const introModal = document.getElementById('intro-modal');
+    const introText = document.getElementById('intro-text');
+    const audioEl = document.getElementById('intro-audio');
+    const videoEl = document.getElementById('intro-video');
+    const videoWrapper = document.getElementById('intro-video-wrapper');
+    const introGrid = document.getElementById('intro-grid');
+    const outlineList = document.getElementById('intro-outline');
+    const playBtn = document.getElementById('intro-play');
+    const pauseBtn = document.getElementById('intro-pause');
+    const skipBtn = document.getElementById('intro-skip');
+
+    const VIDEO_SHOW_TIME = 0;
+
+    let cuesInitialized = false;
+    let lastRenderedIndex = -1;
+    let lastTime = 0;
+    let finalMessageShown = false;
+    let videoShown = false;
+    let audioAutoplayQueued = false;
+
+    const outlineItems = outlineList ? Array.from(outlineList.querySelectorAll('.outline-item')) : [];
+
+    function hasIntroBeenShown() {
+      if (!INTRO_STORAGE) return false;
+      try { return INTRO_STORAGE.getItem(INTRO_STORAGE_KEY) === INTRO_STORAGE_VERSION; }
+      catch (error) { return false; }
+    }
+
+    function markIntroAsShown() {
+      if (!INTRO_STORAGE) return;
+      try { INTRO_STORAGE.setItem(INTRO_STORAGE_KEY, INTRO_STORAGE_VERSION); } catch (error) {}
+    }
+
+    function queueAudioAutoplay() {
+      if (audioAutoplayQueued) return;
+      audioAutoplayQueued = true;
+
+      const resumeAudio = () => {
+        audioAutoplayQueued = false;
+        const retry = audioEl.play();
+        if (retry && typeof retry.catch === 'function') {
+          retry.catch(() => {});
+        }
+      };
+
+      document.addEventListener('pointerdown', resumeAudio, { once: true });
+      document.addEventListener('keydown', resumeAudio, { once: true });
+    }
+
+    function startAudioWithFallback() {
+      const playAttempt = audioEl.play();
+      if (playAttempt && typeof playAttempt.catch === 'function') {
+        playAttempt.catch(() => {
+          if (playBtn) playBtn.focus();
+          queueAudioAutoplay();
+        });
+      }
+    }
+
+    function ensureCueTimings() {
+      if (cuesInitialized) return;
+
+      introCues.sort((a, b) => a.start - b.start);
+
+      const fallbackDuration = (introCues[introCues.length - 1]?.start || 0) + 8;
+      const trackDuration = Number.isFinite(audioEl.duration) && audioEl.duration > 0
+        ? audioEl.duration
+        : fallbackDuration;
+
+      introCues.forEach((cue, idx) => {
+        const nextStart = introCues[idx + 1]?.start ?? trackDuration;
+        cue.end = Math.max(nextStart, cue.start + 0.5);
+      });
+
+      cuesInitialized = true;
+    }
+
+    function updateOutline(time) {
+      if (!outlineItems.length) return;
+
+      let activeItem = outlineItems[0];
+      const targetTime = time + DEFAULT_CUE_LEAD;
+
+      for (let i = 0; i < outlineItems.length; i += 1) {
+        const itemStart = Number(outlineItems[i].dataset.start || 0);
+        if (targetTime >= itemStart) activeItem = outlineItems[i];
+        else break;
+      }
+
+      outlineItems.forEach(item => {
+        if (item === activeItem) item.classList.add('active');
+        else item.classList.remove('active');
+      });
+    }
+
+    function resetNarrationState() {
+      if (introText) introText.innerHTML = '';
+      lastRenderedIndex = -1;
+      lastTime = 0;
+      finalMessageShown = false;
+      outlineItems.forEach(item => item.classList.remove('active'));
+
+      if (videoWrapper) videoWrapper.classList.add('hidden');
+      if (introGrid) introGrid.classList.remove('final-state');
+
+      if (videoEl) {
+        videoEl.pause();
+        videoEl.currentTime = 0;
+      }
+
+      if (introText) introText.classList.remove('final-message');
+    }
+
+    function showIntroModal() {
+      if (!introModal || !audioEl || !introText) return;
+
+      document.body.classList.add('body-blurred');
+      introModal.classList.remove('hidden');
+      introModal.style.display = 'flex';
+
+      introText.innerHTML = '';
+      lastRenderedIndex = -1;
+      lastTime = 0;
+      finalMessageShown = false;
+      videoShown = false;
+
+      audioEl.pause();
+      audioEl.currentTime = 0;
+      audioEl.load();
+
+      if (introGrid) introGrid.classList.remove('final-state');
+
+      if (videoEl) {
+        videoEl.pause();
+        videoEl.currentTime = 0;
+      }
+
+      if (videoWrapper) videoWrapper.classList.remove('hidden');
+
+      updateOutline(0);
+
+      const handleReady = () => {
+        ensureCueTimings();
+        syncNarration();
+        startAudioWithFallback();
+      };
+
+      if (audioEl.readyState >= 1) handleReady();
+      else {
+        audioEl.addEventListener('loadedmetadata', function handleMeta() {
+          audioEl.removeEventListener('loadedmetadata', handleMeta);
+          handleReady();
+        });
+      }
+    }
+
+    function closeIntroModal() {
+      if (audioEl) {
+        audioEl.pause();
+        audioEl.currentTime = 0;
+      }
+      if (videoEl) {
+        videoEl.pause();
+        videoEl.currentTime = 0;
+      }
+
+      document.body.classList.remove('body-blurred');
+      if (introModal) introModal.style.display = 'none';
+
+      markIntroAsShown();
+      resetNarrationState();
+
+      // Always go to aim section (you are on aim.html anyway)
+      const aimSection = document.getElementById('aim');
+      if (aimSection) {
+        const header = document.querySelector('.vl-header');
+        const headerHeight = header ? header.offsetHeight : 0;
+        const aimTop = aimSection.getBoundingClientRect().top + window.scrollY - headerHeight - 20;
+        window.scrollTo({ top: aimTop, behavior: 'smooth' });
+      }
+    }
+
+    function getActiveIndex(time) {
+      let activeIndex = -1;
+      for (let i = 0; i < introCues.length; i += 1) {
+        const cueLead = typeof introCues[i].lead === 'number' ? introCues[i].lead : DEFAULT_CUE_LEAD;
+        if (time + cueLead >= introCues[i].start) activeIndex = i;
+        else break;
+      }
+      return activeIndex;
+    }
+
+    function appendLine(index) {
+      const cue = introCues[index];
+      introText.innerHTML = '';
+      const p = document.createElement('p');
+      p.classList.add('intro-line');
+      p.textContent = cue.text;
+      introText.appendChild(p);
+      introText.scrollTop = 0;
+    }
+
+    function highlightActiveLine(index) {
+      const paragraphs = introText.querySelectorAll('.intro-line');
+      paragraphs.forEach((paragraph, idx) => {
+        if (finalMessageShown) paragraph.classList.add('active');
+        else if (idx === index) paragraph.classList.add('active');
+        else paragraph.classList.remove('active');
+      });
+    }
+
+    function hideVideo() {
+      if (videoWrapper) videoWrapper.classList.add('hidden');
+      if (videoEl) videoEl.pause();
+      videoShown = false;
+    }
+
+    function showVideo() {
+      if (!videoWrapper || !videoEl) return;
+      videoWrapper.classList.remove('hidden');
+      videoEl.currentTime = audioEl.currentTime || 0;
+      videoEl.play().catch(() => {});
+      videoShown = true;
+    }
+
+    function syncVideo(force = false) {
+      if (!videoEl || !videoShown || finalMessageShown) return;
+
+      const audioTime = audioEl.currentTime || 0;
+      const drift = Math.abs((videoEl.currentTime || 0) - audioTime);
+
+      if (!videoEl.seeking && (force || drift > 0.35)) {
+        videoEl.currentTime = audioTime;
+      }
+
+      if (!audioEl.paused && videoEl.paused) videoEl.play().catch(() => {});
+      else if (audioEl.paused && !videoEl.paused) videoEl.pause();
+    }
+
+    function handleFinalCue(targetIndex) {
+      const lastIndex = introCues.length - 1;
+      if (finalMessageShown || targetIndex < lastIndex) return;
+
+      finalMessageShown = true;
+
+      if (audioEl && !audioEl.paused) audioEl.pause();
+      if (videoEl) videoEl.pause();
+      if (videoWrapper) videoWrapper.classList.add('hidden');
+      videoShown = false;
+
+      if (introGrid) introGrid.classList.add('final-state');
+
+      const finalText = introCues[lastIndex]?.text || '';
+      introText.classList.add('final-message');
+      introText.innerHTML = '';
+
+      const p = document.createElement('p');
+      p.classList.add('intro-line', 'active');
+      p.textContent = finalText;
+      introText.appendChild(p);
+      lastRenderedIndex = lastIndex;
+    }
+
+    function maybeShowVideo(time) {
+      if (finalMessageShown) return;
+
+      if (time >= VIDEO_SHOW_TIME) {
+        if (!videoShown) showVideo();
+      } else if (videoShown) hideVideo();
+    }
+
+    function syncNarration() {
+      const currentTime = audioEl.currentTime;
+
+      if (currentTime + 0.05 < lastTime) {
+        introText.innerHTML = '';
+        lastRenderedIndex = -1;
+      }
+      lastTime = currentTime;
+
+      const targetIndex = getActiveIndex(currentTime);
+
+      while (lastRenderedIndex < targetIndex) {
+        lastRenderedIndex += 1;
+        appendLine(lastRenderedIndex);
+      }
+
+      highlightActiveLine(targetIndex);
+      updateOutline(currentTime);
+      maybeShowVideo(currentTime);
+      syncVideo();
+      handleFinalCue(targetIndex);
+    }
+
+    if (audioEl) {
+      audioEl.addEventListener('timeupdate', syncNarration);
+      audioEl.addEventListener('seeked', () => { syncNarration(); syncVideo(true); });
+      audioEl.addEventListener('play', () => { updateOutline(audioEl.currentTime); syncVideo(true); maybeShowVideo(audioEl.currentTime); });
+      audioEl.addEventListener('pause', () => { updateOutline(audioEl.currentTime); syncVideo(); });
+      audioEl.addEventListener('ended', () => { closeIntroModal(); });
+    }
+
+    if (videoEl) {
+      videoEl.addEventListener('play', () => {
+        if (audioEl.paused) {
+          audioEl.currentTime = videoEl.currentTime;
+          audioEl.play().catch(() => {});
+        }
+        maybeShowVideo(videoEl.currentTime);
+      });
+
+      videoEl.addEventListener('pause', () => {
+        if (!audioEl.paused) audioEl.pause();
+      });
+
+      videoEl.addEventListener('seeking', () => {
+        const targetTime = videoEl.currentTime;
+        if (Math.abs(audioEl.currentTime - targetTime) > 0.2) {
+          audioEl.currentTime = targetTime;
+          syncNarration();
+        }
+      });
+    }
+
+    if (playBtn) playBtn.addEventListener('click', () => { audioEl.play().catch(() => {}); });
+    if (pauseBtn) pauseBtn.addEventListener('click', () => { audioEl.pause(); });
+    if (skipBtn) skipBtn.addEventListener('click', closeIntroModal);
+
+    // Auto-open intro on aim.html (controlled by data-intro-autoshow)
+    let introAutoShown = false;
+    const introLauncher = document.getElementById('intro-launcher');
+    if (introLauncher) {
+      introLauncher.addEventListener('click', () => {
+        introAutoShown = true;
+        showIntroModal();
+      });
+    }
+    function autoShowIntro() {
+      if (introAutoShown || !introModal) return;
+      const autoShowMode = String(introModal.dataset.introAutoshow || 'once').toLowerCase();
+      const shouldAutoShow = autoShowMode === 'always' || !hasIntroBeenShown();
+      if (!shouldAutoShow) return;
+
+      const page = (window.location.pathname.split('/').pop() || '').toLowerCase();
+      if (page === 'aim.html') {
+        introAutoShown = true;
+        showIntroModal();
+      }
+    }
+
+    function scheduleAutoShowIntro() {
+      requestAnimationFrame(() => {
+        setTimeout(autoShowIntro, 50);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', scheduleAutoShowIntro, { once: true });
+    } else {
+      scheduleAutoShowIntro();
+    }
+  </script>
+
+
+  <!-- CHATBOT SCRIPT -->
+  <script>
+    (function () {
+      const widget = document.querySelector('.chatbot-widget');
+      if (!widget) return;
+
+      const toggleBtn = widget.querySelector('.chatbot-launcher');
+      const panel = widget.querySelector('.chatbot-panel');
+      const closeBtn = widget.querySelector('.chatbot-panel-close');
+      const iframe = panel.querySelector('iframe');
+      const placeholder = panel.querySelector('.chatbot-panel-placeholder');
+      const chatUrl = (panel.dataset.chatUrl || '').trim();
+      const notifyAudio = document.getElementById('chatbot-notification-audio');
+
+      if (!toggleBtn || !panel || !closeBtn || !iframe || !placeholder) return;
+
+      let isLoaded = false;
+      let autoCloseTimer = null;
+
+      function playNotification() {
+        if (!notifyAudio) return;
+        try {
+          const maybePromise = notifyAudio.play();
+          if (maybePromise && typeof maybePromise.catch === 'function') {
+            maybePromise.catch(function () {});
+          }
+        } catch (e) {}
+      }
+
+      function scheduleAutoOpen() {
+        playNotification();
+        if (!panel.classList.contains('open')) openPanel();
+
+        if (autoCloseTimer) clearTimeout(autoCloseTimer);
+        autoCloseTimer = setTimeout(function () {
+          if (panel.classList.contains('open')) closePanel();
+        }, 3000);
+      }
+
+      function openPanel() {
+        panel.classList.add('open');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        widget.classList.add('chatbot-open');
+
+        if (chatUrl && chatUrl !== '#') {
+          if (!isLoaded) {
+            placeholder.textContent = 'Loading assistant...';
+            iframe.addEventListener('load', () => {
+              isLoaded = true;
+              iframe.classList.add('chatbot-frame-visible');
+              placeholder.style.display = 'none';
+            }, { once: true });
+            iframe.src = chatUrl;
+          }
+        } else {
+          placeholder.innerHTML = 'Set the <strong>data-chat-url</strong> on the chatbot panel to your chatbot link.';
+        }
+      }
+
+      function closePanel() {
+        panel.classList.remove('open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        widget.classList.remove('chatbot-open');
+
+        if (autoCloseTimer) {
+          clearTimeout(autoCloseTimer);
+          autoCloseTimer = null;
+        }
+      }
+
+      toggleBtn.addEventListener('click', () => {
+        if (panel.classList.contains('open')) closePanel();
+        else openPanel();
+      });
+
+      closeBtn.addEventListener('click', closePanel);
+
+      if (document.readyState === 'complete') {
+        setTimeout(scheduleAutoOpen, 1200);
+      } else {
+        window.addEventListener('load', function () {
+          setTimeout(scheduleAutoOpen, 1200);
+        }, { once: true });
+      }
+    })();
+  </script>
+
+</body>
+</html>
