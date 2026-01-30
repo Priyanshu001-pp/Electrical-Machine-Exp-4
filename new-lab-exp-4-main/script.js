@@ -2270,53 +2270,86 @@ if (skipBtn && iframe) {
 }
 
 // ==============================
-// 🤖 CHATBOT PANEL (REFERENCE STYLE)
+// 🤖 CHATBOT PANEL (REFERENCE STYLE - FINAL)
 // ==============================
-// (function initChatbotWidget() {
-//   function setup() {
-//     const widget = document.querySelector(".chatbot-widget");
-//     if (!widget) return;
+(function initChatbotWidget() {
+  function setup() {
+    const widget = document.querySelector(".chatbot-widget");
+    if (!widget) return;
 
-//     const toggleBtn = widget.querySelector(".chatbot-launcher");
-//     const panel = widget.querySelector(".chatbot-panel");
-//     const closeBtn = widget.querySelector(".chatbot-panel-close");
-//     const iframe = panel?.querySelector("iframe");
-//     const placeholder = panel?.querySelector(".chatbot-panel-placeholder");
-//     const chatUrl = (panel?.dataset?.chatUrl || "").trim();
+    const toggleBtn = widget.querySelector(".chatbot-launcher");
+    const panel = widget.querySelector(".chatbot-panel");
+    const closeBtn = widget.querySelector(".chatbot-panel-close");
+    const iframe = panel?.querySelector("iframe");
+    const placeholder = panel?.querySelector(".chatbot-panel-placeholder");
+    const chatUrl = (panel?.dataset?.chatUrl || "").trim();
 
-//     if (!toggleBtn || !panel || !iframe || !chatUrl) {
-//       console.warn("Chatbot widget incomplete");
-//       return;
-//     }
+    if (!toggleBtn || !panel || !iframe || !chatUrl) {
+      console.warn("Chatbot widget incomplete");
+      return;
+    }
 
-//     function openPanel() {
-//       panel.classList.add("open");
-//       toggleBtn.setAttribute("aria-expanded", "true");
+    let isLoaded = false;
+    let notifiedOnce = false;
 
-//       // Load chatbot ONLY once
-//       if (!iframe.src) {
-//         iframe.src = chatUrl;
-//         if (placeholder) placeholder.style.display = "none";
-//       }
-//     }
+    function openPanel() {
+      panel.classList.add("open");
+      widget.classList.add("chatbot-open");
+      toggleBtn.setAttribute("aria-expanded", "true");
 
-//     function closePanel() {
-//       panel.classList.remove("open");
-//       toggleBtn.setAttribute("aria-expanded", "false");
-//     }
+      // 🔹 Lazy load iframe ONLY ONCE
+      if (!isLoaded) {
+        if (placeholder) placeholder.style.display = "flex";
 
-//     toggleBtn.addEventListener("click", () => {
-//       panel.classList.contains("open") ? closePanel() : openPanel();
-//     });
+        iframe.addEventListener(
+          "load",
+          () => {
+            isLoaded = true;
+            iframe.classList.add("chatbot-frame-visible");
+            if (placeholder) placeholder.style.display = "none";
 
-//     closeBtn?.addEventListener("click", closePanel);
-//   }
+            // 🔔 Play notification sound ONCE
+            const notifyAudio = document.getElementById(
+              "chatbot-notification-audio"
+            );
+            if (notifyAudio && !notifiedOnce) {
+              notifiedOnce = true;
+              notifyAudio.currentTime = 0;
+              notifyAudio.play().catch(() => {});
+            }
+          },
+          { once: true }
+        );
 
-//   if (document.readyState === "loading") {
-//     document.addEventListener("DOMContentLoaded", setup);
-//   } else {
-//     setup();
-//   }
-// })();
+        iframe.src = chatUrl;
+      }
+    }
 
+    function closePanel() {
+      panel.classList.remove("open");
+      widget.classList.remove("chatbot-open");
+      toggleBtn.setAttribute("aria-expanded", "false");
+    }
 
+    // Toggle button
+    toggleBtn.addEventListener("click", () => {
+      panel.classList.contains("open") ? closePanel() : openPanel();
+    });
+
+    // Close button
+    closeBtn?.addEventListener("click", closePanel);
+
+    // ESC key closes chatbot
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && panel.classList.contains("open")) {
+        closePanel();
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setup, { once: true });
+  } else {
+    setup();
+  }
+})();
