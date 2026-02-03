@@ -282,7 +282,19 @@ jsPlumb.ready(function () {
  
  
   window.closeModal = closeModal;
- 
+
+  // ===============================
+// ✅ WARNING MODAL OK BUTTON FIX
+// ===============================
+document.addEventListener("click", function (e) {
+
+  // Detect OK button click
+  if (e.target.matches("[data-modal-close]")) {
+    e.stopPropagation();   // ⛔ stop blocked clicks
+    closeModal();
+  }
+
+});
  
  
   /* =====================================
