@@ -295,6 +295,7 @@ document.addEventListener("click", function (e) {
   }
 
 });
+
  
  
   /* =====================================
@@ -1540,6 +1541,12 @@ info.connection.setConnector(
       if (isModalOpen()) return;   // 🛑 ADD THIS LINE
  
       const className = this.className;
+
+      // 🔒 PREVENT REMOVAL WHEN MCB IS ON
+      if (mcbState === "ON") {
+        showPopup("⚠️ Cannot remove wires while DC supply is ON.\n\nPlease turn OFF the MCB first.", "MCB Active");
+        return;
+      }
  
  
       const match = className.match(/point-([A-Za-z0-9]+)/);
@@ -1588,6 +1595,12 @@ info.connection.setConnector(
       if (isModalOpen()) return;   // 🛑 ADD THIS LINE
  
       const id = this.id;
+
+      // 🔒 PREVENT REMOVAL WHEN MCB IS ON
+      if (mcbState === "ON") {
+        showPopup("⚠️ Cannot remove wires while DC supply is ON.\n\nPlease turn OFF the MCB first.", "MCB Active");
+        return;
+      }
  
  
  
@@ -2017,6 +2030,33 @@ graphCanvas?.classList.remove("is-plotting");
     window.addEventListener("load", initPinnedPoints);
   }
   window.addEventListener("resize", () => lockPointsToBase(true));
+
+  /* ===============================
+   🔒 METER PANEL ZOOM FIX
+================================ */
+(function lockMeterPanelScale() {
+
+  const BASE_WIDTH = 900;
+
+  function fixMeterScale() {
+    const viewport = document.querySelector(".meter-panel-viewport");
+    const panel = document.querySelector(".meter-panel");
+    if (!viewport || !panel) return;
+
+    const scale = viewport.clientWidth / BASE_WIDTH;
+
+    panel.style.transform = `scale(${scale})`;
+
+    if (window.jsPlumb) {
+      jsPlumb.repaintEverything();
+    }
+  }
+
+  window.addEventListener("resize", fixMeterScale);
+  window.addEventListener("load", fixMeterScale);
+
+})();
+
  
   createObservationTable();
   currentStepIndex = 0;   // 🔁 Reset guided steps
