@@ -49,13 +49,28 @@ jsPlumb.ready(function () {
     if (!guideActive) return;
  
     // 1️⃣ Check clicked, DC OFF
-    if (checkClickedAfterCompletion && mcbState === "OFF") {
-      labSpeech.speak(
-        "Connections are already verified. Now turn on the DC supply."
-      );
-      return;
-    }
- 
+    // 1️⃣ Check clicked, DC OFF - BUT verify connections still complete
+
+if (checkClickedAfterCompletion && mcbState === "OFF") {
+  // 🔍 RE-CHECK if all connections still exist
+  const connections = jsPlumb.getAllConnections();
+  const allStillConnected = requiredPairs.every(pair => {
+    const [a, b] = pair.split("-");
+    return isPairConnected(a, b, connections);
+  });
+
+  if (allStillConnected) {
+    labSpeech.speak(
+      "Connections are already verified. Now turn on the DC supply."
+    );
+    return;
+  } else {
+    // 🔄 Wire was removed, reset check state
+    checkClickedAfterCompletion = false;
+    currentStepIndex = getFirstMissingStepIndex();
+    // Fall through to speak the missing step below
+  }
+}
     // 2️⃣ DC ON, starter OFF
     if (mcbState === "ON" && !starterEngaged) {
       labSpeech.speak(
@@ -81,15 +96,29 @@ jsPlumb.ready(function () {
     }
  
     // 5️⃣ Wiring complete but Check NOT clicked
-    if (
-      currentStepIndex >= requiredPairs.length &&
-      !checkClickedAfterCompletion
-    ) {
-      labSpeech.speak(
-        "The connections are now complete. Click the Check button to confirm them."
-      );
-      return;
-    }
+  // 5️⃣ Wiring complete but Check NOT clicked
+if (
+  currentStepIndex >= requiredPairs.length &&
+  !checkClickedAfterCompletion
+) {
+  // 🔍 RE-CHECK if all connections still exist
+  const connections = jsPlumb.getAllConnections();
+  const allStillConnected = requiredPairs.every(pair => {
+    const [a, b] = pair.split("-");
+    return isPairConnected(a, b, connections);
+  });
+
+  if (allStillConnected) {
+    labSpeech.speak(
+      "The connections are now complete. Click the Check button to confirm them."
+    );
+    return;
+  } else {
+    // 🔄 Something was removed, re-sync step index
+    currentStepIndex = getFirstMissingStepIndex();
+    // Fall through to speak the missing step below
+  }
+}
  
     // 6️⃣ Normal wiring steps
     const [a, b] = requiredPairs[currentStepIndex].split("-");
@@ -1479,52 +1508,67 @@ function getWireCurvinessForConnection(sourceId, targetId) {
   }
  
   // Dynamic wire color based on source anchor side (left: blue, right: red) - Now sets on connection for consistency
-  jsPlumb.bind("connection", function (info) {
- 
-    const curviness =
-  getWireCurvinessForConnection(info.sourceId, info.targetId);
- 
-info.connection.setConnector(
-  ["Bezier", { curviness }]
-);
- 
-    // existing color logic
-    const src = info.sourceId;
-    const tgt = info.targetId;
- 
-    if (!guideActive) return;
- 
-    const [expectedA, expectedB] =
-      requiredPairs[currentStepIndex].split("-");
- 
-    const isCorrect =
-      (src === expectedA && tgt === expectedB) ||
-      (src === expectedB && tgt === expectedA);
- 
-    if (!isCorrect) {
- 
-      // 🧠 Extract readable point names
-      const wrongFrom = src.replace("point", "");
-      const wrongTo = tgt.replace("point", "");
- 
-      const rightFrom = expectedA.replace("point", "");
-      const rightTo = expectedB.replace("point", "");
- 
-      // 🔊 Speak in 3 clear steps
-      labSpeech.speak(
-        `Wrong connection. You connected point ${wrongFrom} to point ${wrongTo}. Please connect point ${rightFrom} to point ${rightTo}.`
-      );
- 
-      return;
-    }
- 
- 
-    // ✅ MOVE TO NEXT STEP
-    currentStepIndex++;
- 
-    // 🔊 SPEAK NEXT STEP AUTOMATICALLY
-    speakCurrentStep();
+jsPlumb.bind("connection", function (info) {
+
+  const curviness =
+    getWireCurvinessForConnection(info.sourceId, info.targetId);
+
+  info.connection.setConnector(
+    ["Bezier", { curviness }]
+  );
+
+  // existing color logic
+  const src = info.sourceId;
+  const tgt = info.targetId;
+
+  if (!guideActive) return;
+
+  // 🔥 CHECK IF ALL CONNECTIONS ARE NOW COMPLETE
+  const connections = jsPlumb.getAllConnections();
+  const allConnected = requiredPairs.every(pair => {
+    const [a, b] = pair.split("-");
+    return isPairConnected(a, b, connections);
   });
+
+  // ✅ IF ALL COMPLETE → SPEAK COMPLETE MESSAGE
+  if (allConnected) {
+    currentStepIndex = requiredPairs.length;
+    speakCurrentStep();
+    return;
+  }
+
+  // 🔍 OTHERWISE, CHECK IF THIS CONNECTION WAS CORRECT FOR CURRENT STEP
+  const [expectedA, expectedB] =
+    requiredPairs[currentStepIndex].split("-");
+
+  const isCorrect =
+    (src === expectedA && tgt === expectedB) ||
+    (src === expectedB && tgt === expectedA);
+
+  if (!isCorrect) {
+
+    // 🧠 Extract readable point names
+    const wrongFrom = src.replace("point", "");
+    const wrongTo = tgt.replace("point", "");
+
+    const rightFrom = expectedA.replace("point", "");
+    const rightTo = expectedB.replace("point", "");
+
+    // 🔊 Speak in 3 clear steps
+    labSpeech.speak(
+      `Wrong connection. You connected point ${wrongFrom} to point ${wrongTo}. Please connect point ${rightFrom} to point ${rightTo}.`
+    );
+
+    return;
+  }
+
+
+  // ✅ MOVE TO NEXT STEP
+  currentStepIndex++;
+
+  // 🔊 SPEAK NEXT STEP AUTOMATICALLY
+  speakCurrentStep();
+});
  
  
   const requiredConnections = new Set(requiredPairs.map(pair => {
@@ -1565,20 +1609,24 @@ info.connection.setConnector(
           // remove ONLY one connection (latest / first)
           const conn = relatedConnections[0];
  
-          lastRemovedPair = [conn.sourceId, conn.targetId].sort().join("-");
+         lastRemovedPair = [conn.sourceId, conn.targetId].sort().join("-");
           jsPlumb.deleteConnection(conn);
- 
- 
- 
- 
- 
- 
-          jsPlumb.repaintEverything();
- 
-          autoConnectUsed = false;
-          currentStepIndex = getFirstMissingStepIndex();
- 
-          turnMCBOff("Wire removed from " + pointId);
+
+           jsPlumb.repaintEverything();
+
+              autoConnectUsed = false;
+                       currentStepIndex = getFirstMissingStepIndex();
+
+                       checkClickedAfterCompletion = false;  // 🔥 ADD THIS LINE HERE
+
+                   turnMCBOff("Wire removed from " + pointId);
+
+// 🔊 SPEAK MISSING STEP AFTER WIRE REMOVAL
+if (guideActive) {
+  setTimeout(() => {
+    speakCurrentStep();
+  }, 500);
+}
  
         }
       }
@@ -1595,14 +1643,12 @@ info.connection.setConnector(
       if (isModalOpen()) return;   // 🛑 ADD THIS LINE
  
       const id = this.id;
-
-      // 🔒 PREVENT REMOVAL WHEN MCB IS ON
+ 
+ // 🔒 PREVENT REMOVAL WHEN MCB IS ON
       if (mcbState === "ON") {
         showPopup("⚠️ Cannot remove wires while DC supply is ON.\n\nPlease turn OFF the MCB first.", "MCB Active");
         return;
       }
- 
- 
  
       // Get connections only related to this point
       const conns = jsPlumb.getAllConnections().filter(conn =>
@@ -1613,16 +1659,23 @@ info.connection.setConnector(
  
       // Remove only this point's connection
       lastRemovedPair = [conns[0].sourceId, conns[0].targetId].sort().join("-");
-      jsPlumb.deleteConnection(conns[0]);
- 
- 
-      jsPlumb.repaintEverything();
- 
-      autoConnectUsed = false;   // 🔥 ADD THIS
-      currentStepIndex = getFirstMissingStepIndex();
- 
- 
-      turnMCBOff("Wire disconnected");
+jsPlumb.deleteConnection(conns[0]);
+
+jsPlumb.repaintEverything();
+
+autoConnectUsed = false;
+currentStepIndex = getFirstMissingStepIndex();
+
+checkClickedAfterCompletion = false;  // 🔥 ADD THIS LINE HERE
+
+turnMCBOff("Wire disconnected");
+
+// 🔊 SPEAK MISSING STEP AFTER WIRE REMOVAL
+if (guideActive) {
+  setTimeout(() => {
+    speakCurrentStep();
+  }, 500);
+}
  
     });
   });
@@ -1638,10 +1691,9 @@ info.connection.setConnector(
  
  
     // Replace your checkBtn.addEventListener with this DEBUG VERSION:
- 
-    checkBtn.addEventListener("click", function () {
+ checkBtn.addEventListener("click", function () {
       const connections = jsPlumb.getAllConnections();
- 
+
       // ✅ AUTO CONNECT MODE CHECK
       if (autoConnectUsed) {
         if (areAllConnectionsCorrect()) {
@@ -1650,7 +1702,7 @@ info.connection.setConnector(
             "🎉 All wiring connections are correct and completed!",
             "Success"
           );
- 
+
           if (guideActive) {
             labSpeech.speak(
               "The connections are correct. Now turn on the DC supply."
@@ -1662,96 +1714,40 @@ info.connection.setConnector(
             "Wiring Error"
           );
         }
- 
+        return;
       }
- 
-      // 🔒 STEP-BY-STEP GUIDED CHECK
-      // 🔒 STEP-BY-STEP GUIDED CHECK
-if (currentStepIndex >= requiredPairs.length) {
-  showPopup(
-    "🎉 All connections are already completed successfully!",
-    "Completed"
-  );
- 
-  checkClickedAfterCompletion = true;
- 
-  // 🔔 ADD THESE 4 LINES:
-  if (guideActive) {
-    labSpeech.speak(
-      "The connections are correct. Now turn on the DC supply."
-    );
-  }
- 
-  return; // This return should already be there
-}
- 
-      // First, validate that no incorrect connections exist
-      for (let conn of connections) {
-        const src = conn.sourceId;
-        const tgt = conn.targetId;
- 
-        if (!isConnectionAllowed(src, tgt, currentStepIndex)) {
-          showPopup(
-            `❌ Wrong connection detected!\n\nIncorrect: ${src} ↔ ${tgt}`,
-            "Wrong Connection"
-          );
-          return;
-        }
-      }
- 
- 
-      // Next, ensure all previous steps are completed
-      for (let i = 0; i < currentStepIndex; i++) {
+
+      // 🔒 CHECK EACH REQUIRED PAIR IN SEQUENCE
+      for (let i = 0; i < requiredPairs.length; i++) {
         const [a, b] = requiredPairs[i].split("-");
+        const stepNo = i + 1;
+
+        // ❌ If this step is missing
         if (!isPairConnected(a, b, connections)) {
+          
+          // Show which connection is missing
           showPopup(
-            `⚠️ Previous step missing!\n\nRequired: ${a} ↔ ${b}`,
-            "Step Order Error"
+            `🔧 Step ${stepNo} of ${requiredPairs.length} missing\n\nRequired: ${a} ↔ ${b}`,
+            "Connection Required"
           );
+
+          // Update current step index
+          currentStepIndex = i;
           return;
         }
       }
- 
-      // Finally, check the current step
-      const [currA, currB] = requiredPairs[currentStepIndex].split("-");
-      const stepNo = currentStepIndex + 1;
- 
-      if (!isPairConnected(currA, currB, connections)) {
+    
+
+      // ✅ ALL CONNECTIONS COMPLETE
+      if (currentStepIndex >= requiredPairs.length || areAllConnectionsCorrect()) {
+        checkClickedAfterCompletion = true;
+        currentStepIndex = requiredPairs.length;
+
         showPopup(
-          `🔧 Step ${stepNo} pending\n\nConnect: ${currA} ↔ ${currB}`,
-          "Connection Required"
+          "🎉 All wiring connections are correct and completed!",
+          "Success"
         );
- 
-        return;
-      }
- 
- 
-      currentStepIndex++;
-      lastRemovedPair = null;
- 
-      // 🔔 Show NEXT step instruction immediately
-      if (currentStepIndex < requiredPairs.length) {
-        const [nextA, nextB] = requiredPairs[currentStepIndex].split("-");
-        const nextStepNo = currentStepIndex + 1;
- 
-        showPopup(
-          `🔧 Step ${nextStepNo} pending\n\nConnect: ${nextA} ↔ ${nextB}`,
-          "Connection Required"
-        );
-        return;
-      }
- 
- 
- 
-      if (currentStepIndex === requiredPairs.length) {
-        showPopup(
-          "🎉 All wiring steps completed!\n\nYou may now proceed.",
-          "All Steps Completed"
-        );
- 
-        checkClickedAfterCompletion = true; // ✅ SET FLAG
- 
-        // 🔊 ADD THIS
+
         if (guideActive) {
           labSpeech.speak(
             "The connections are correct. Now turn on the DC supply."
@@ -1759,76 +1755,7 @@ if (currentStepIndex >= requiredPairs.length) {
         }
         return;
       }
- 
- 
-      // 🔍 DEBUG: Log all current connections
-      console.log("=== ALL CONNECTIONS ===");
-      connections.forEach(conn => {
-        const srcId = conn.sourceId || (conn.source && conn.source.id);
-        const tgtId = conn.targetId || (conn.target && conn.target.id);
-        console.log(`${srcId} ↔ ${tgtId}`);
-      });
- 
-      // Find all missing connections IN ORDER
-      const missing = [];
-      const completed = [];
- 
-      requiredPairs.forEach(pair => {
-        const [a, b] = pair.split("-");
-        const isConnected = isPairConnected(a, b, connections);
- 
-        if (!isConnected) {
-          missing.push(pair);
-          console.log(`❌ Missing: ${a} ↔ ${b}`);
-        } else {
-          completed.push(pair);
-          console.log(`✅Connected: ${a} ↔ ${b}`);
-        }
-      });
- 
-      // ✅ All connections correct
-      if (missing.length === 0) {
-        showPopup(
-          "All connections are correct!\n\nCompleted all 10 steps!",
-          "Success"
-        );
- 
-        return;
-      }
- 
-      // ⚠️ Show the FIRST missing connection (in order)
-      const nextMissing = missing[0];
-      const completedCount = requiredPairs.length - missing.length;
-      const allowedPair = requiredPairs[completedCount];
- 
-      if (nextMissing !== allowedPair) {
-        showPopup(
-          "⚠️ First, complete the previous step\n\nRequired: " + allowedPair,
-          "Step Order Error"
-        );
-        return;
-      }
- 
-      const [a, b] = nextMissing.split("-");
-      const stepNumber = requiredPairs.indexOf(nextMissing) + 1;
- 
- 
-      let message = `You must make all connections to continue.\n\n`;
-      // let message = `⚠️ Connections Required!\n\n`;
-      // message += `Step ${stepNumber} of ${requiredPairs.length}:\n`;
-      // message += `Connect → ${a} ↔ ${b}\n\n`;
-      // message += `Progress: ${completedCount}/${requiredPairs.length} completed\n`;
-      // message += `Remaining: ${missing.length}`;
- 
-      showPopup(message, "Connection Required");
- 
- 
-      // 🔍 Show debug info in console
-      console.log("=== MISSING STEPS ===");
-      missing.forEach((pair, idx) => {
-        const step = requiredPairs.indexOf(pair) + 1;
-        console.log(`Step ${step}: ${pair}`);
-      });
+
     });
   }
  
