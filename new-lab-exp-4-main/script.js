@@ -805,6 +805,10 @@ if (graphCanvas) {
     if (mcbImg) {
       mcbImg.src = "images/mcb-off.png";
     }
+
+   // ✅ RE-ENABLE CHECK & AUTO CONNECT BUTTONS
+    enableCheckAndAutoConnect();
+
  
     // 🔥 RESET ARMATURE RHEOSTAT (STEP-4)
     armatureX = KNOB_START_X;
@@ -887,10 +891,53 @@ if (graphCanvas) {
       currentStepIndex = 0;
     }
  
- 
- 
   }
- 
+
+
+  // ==============================
+  // 🔒 DISABLE CHECK & AUTO CONNECT BUTTONS
+  // ==============================
+  function disableCheckAndAutoConnect() {
+    const checkBtn = document.getElementById("checkBtn");
+    const autoBtn = document.getElementById("auto");
+
+    if (checkBtn) {
+      checkBtn.disabled = true;
+      checkBtn.style.opacity = "0.5";
+      checkBtn.style.cursor = "not-allowed";
+      checkBtn.style.pointerEvents = "none";
+    }
+
+    if (autoBtn) {
+      autoBtn.disabled = true;
+      autoBtn.style.opacity = "0.5";
+      autoBtn.style.cursor = "not-allowed";
+      autoBtn.style.pointerEvents = "none";
+    }
+  }
+
+  // ==============================
+  // ✅ RE-ENABLE CHECK & AUTO CONNECT BUTTONS
+  // ==============================
+  function enableCheckAndAutoConnect() {
+    const checkBtn = document.getElementById("checkBtn");
+    const autoBtn = document.getElementById("auto");
+
+    if (checkBtn) {
+      checkBtn.disabled = false;
+      checkBtn.style.opacity = "1";
+      checkBtn.style.cursor = "pointer";
+      checkBtn.style.pointerEvents = "auto";
+    }
+
+    if (autoBtn) {
+      autoBtn.disabled = false;
+      autoBtn.style.opacity = "1";
+      autoBtn.style.cursor = "pointer";
+      autoBtn.style.pointerEvents = "auto";
+    }
+  }
+
  
  
   if (mcbImg) {
@@ -907,6 +954,9 @@ if (graphCanvas) {
           "⚠️ DC SUPPLY has been turned OFF.",
           "MCB OFF"
         );
+
+          // ✅ RE-ENABLE CHECK & AUTO CONNECT BUTTONS
+        enableCheckAndAutoConnect();
         return;
       }
  
@@ -935,7 +985,9 @@ if (graphCanvas) {
  
  
       this.src = "images/mcb-on.png";
- 
+
+        // 🔒 DISABLE CHECK & AUTO CONNECT BUTTONS
+      disableCheckAndAutoConnect();
  
       if (starterHandle) {
         starterHandle.style.cursor = "grab";
@@ -1854,6 +1906,9 @@ if (guideActive) {
         speakBtn.setAttribute("aria-pressed", "false");
         speakBtn.querySelector(".speak-btn__label").textContent = "TAP TO LISTEN";
       }
+
+        // ✅ RE-ENABLE CHECK & AUTO CONNECT BUTTONS
+      enableCheckAndAutoConnect();
  
       // Remove all connections safely
       if (typeof jsPlumb.deleteEveryConnection === "function") {
