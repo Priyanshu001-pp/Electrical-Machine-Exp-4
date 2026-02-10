@@ -1027,7 +1027,7 @@
         left: 55%;
         top: 50%;
         transform-origin: 50% 90%;
-        transform: translate(-60%, -90%) rotate(-71deg);
+        transform: translate(-70%, -80%) rotate(-71deg);
     }
 
     /* .meter-needle2 {
@@ -1046,7 +1046,7 @@
         left: 49%;
         top: 52%;
         transform-origin: 50% 90%;
-        transform: translate(-30%, -90%) rotate(-71deg);
+        transform: translate(-36%, -95%) rotate(-71deg);
     }
 
     /* .meter-needle4 {

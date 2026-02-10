@@ -614,26 +614,32 @@ if (graphCanvas) {
     { voltage: 198, rpm: 1690 },
     { voltage: 220, rpm: 1889 }
   ];
- 
- 
-  function updateVoltmeterByArmature(stepIndex) {
- 
-    const row = armatureTable[stepIndex];
- 
-    // ✅ DISPLAY VALUES (ONLY FOR TABLE & METERS)
-    currentVoltage = row.voltage;
-    currentRPM = row.rpm;
- 
+
+      function updateVoltmeterByArmature(stepIndex) {
+  const row = armatureTable[stepIndex];
+  
+  // Display values
+  currentVoltage = row.voltage;
+  currentRPM = row.rpm;
+  
     // ✅ ROTOR VISUAL SPEED (REAL CONTROL)
     rotorSpeed = ARMATURE_ROTATION_SPEED[stepIndex];
- 
- 
-    const voltAngle =
-      -70 + (row.voltage / 220) * 68;
- 
-    voltNeedle.style.transform =
-      `translate(-60%, -90%) rotate(${voltAngle}deg)`;
- 
+
+  // ✅ SIMPLE: Direct angle for each step
+  const needleAngles = [
+    -41,    // Step 1 (132V)
+    -39,    // Step 2 (139V)
+    -32,    // Step 3 (152V)
+    -29.5,  // Step 4 (166V)
+    -24.5,  // Step 5 (176V)
+    -18.5,   // Step 6 (198V)
+    -7.5    // Step 7 (220V)
+  ];
+  
+  const voltAngle = needleAngles[stepIndex];
+  
+  voltNeedle.style.transform = 
+    `translate(-60%, -90%) rotate(${voltAngle}deg)`;
  
     // 🔥 RPM DIGITAL DISPLAY UPDATE
     if (rpmDisplay) {
@@ -687,7 +693,7 @@ if (graphCanvas) {
  
  
   function setFieldDefaultMeters() {
-    const ampAngle = -70 + (7.4 / 10) * 140;
+    const ampAngle = -70 + (7.5 / 10) * 140;
     ampNeedle.style.transform =
       `translate(-30%, -90%) rotate(${ampAngle}deg)`;
   }
