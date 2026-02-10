@@ -416,13 +416,18 @@ document.addEventListener("click", function (e) {
  
   }
  
-  function updateGraphButtonState() {
-    const plotGraphBtn = document.getElementById("plotGraphBtn");
-    if (!plotGraphBtn) return;
- 
-    plotGraphBtn.disabled = false;
- 
-  }
+ function updateGraphButtonState() {
+  const plotGraphBtn = document.getElementById("plotGraphBtn");
+  if (!plotGraphBtn) return;
+
+  const shouldDisable = graphReadings.length < MIN_GRAPH_POINTS;
+
+  plotGraphBtn.disabled = shouldDisable;
+  plotGraphBtn.style.opacity = shouldDisable ? "0.5" : "1";
+  plotGraphBtn.style.cursor = shouldDisable ? "not-allowed" : "pointer";
+  plotGraphBtn.style.pointerEvents = shouldDisable ? "none" : "auto";
+}
+
  
  
   // ===== GRAPH DRAW FUNCTION =====
@@ -539,6 +544,14 @@ if (graphCanvas) {
         displaylogo: false
       }).then(() => {
         Plotly.Plots.resize(graphPlot);
+
+        if (reportBtn) {
+  reportBtn.disabled = false;
+  reportBtn.style.opacity = "1";
+  reportBtn.style.cursor = "pointer";
+  reportBtn.style.pointerEvents = "auto";
+}
+
  
         // 🔊 VOICE AFTER GRAPH PLOT
         onGraphPlotted();
@@ -1907,6 +1920,14 @@ if (guideActive) {
  
       labSpeech.stop();
       guideActive = false;
+
+      if (reportBtn) {
+  reportBtn.disabled = true;
+  reportBtn.style.opacity = "0.5";
+  reportBtn.style.cursor = "not-allowed";
+  reportBtn.style.pointerEvents = "none";
+}
+
  
       if (speakBtn) {
         speakBtn.setAttribute("aria-pressed", "false");
@@ -2048,6 +2069,9 @@ graphCanvas?.classList.remove("is-plotting");
  
   createObservationTable();
   currentStepIndex = 0;   // 🔁 Reset guided steps
+
+  updateGraphButtonState();   // 🔒 Graph disabled initially
+
  
  
   // ===== ADD TABLE BUTTON =====
@@ -2069,6 +2093,14 @@ graphCanvas?.classList.remove("is-plotting");
   // ===== REPORT BUTTON =====
  
   const reportBtn = document.getElementById("reportBtn");
+
+  if (reportBtn) {
+  reportBtn.disabled = true;
+  reportBtn.style.opacity = "0.5";
+  reportBtn.style.cursor = "not-allowed";
+  reportBtn.style.pointerEvents = "none";
+}
+
  
  
   reportBtn.addEventListener("click", () => {
