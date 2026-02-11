@@ -2040,31 +2040,7 @@ graphCanvas?.classList.remove("is-plotting");
   }
   window.addEventListener("resize", () => lockPointsToBase(true));
 
-  /* ===============================
-   🔒 METER PANEL ZOOM FIX
-================================ */
-(function lockMeterPanelScale() {
-
-  const BASE_WIDTH = 900;
-
-  function fixMeterScale() {
-    const viewport = document.querySelector(".meter-panel-viewport");
-    const panel = document.querySelector(".meter-panel");
-    if (!viewport || !panel) return;
-
-    const scale = viewport.clientWidth / BASE_WIDTH;
-
-    panel.style.transform = `scale(${scale})`;
-
-    if (window.jsPlumb) {
-      jsPlumb.repaintEverything();
-    }
-  }
-
-  window.addEventListener("resize", fixMeterScale);
-  window.addEventListener("load", fixMeterScale);
-
-})();
+ 
 
  
   createObservationTable();
@@ -2424,4 +2400,171 @@ if (skipBtn && iframe) {
   } else {
     setup();
   }
+})();
+
+
+/* ===============================
+   🎯 COMPONENT TOOLTIP SYSTEM
+   (REFERENCE-STYLE, CSS-MATCHED)
+=============================== */
+(function initComponentTooltips() {
+
+  function setup() {
+
+    /* ---------- 1. CREATE TOOLTIP ELEMENT (ONCE) ---------- */
+    if (document.querySelector(".hover-tooltip")) return;
+
+    const tooltip = document.createElement("div");
+    tooltip.className = "hover-tooltip";
+    tooltip.innerHTML = `
+      <div class="hover-tooltip__body">
+        <div class="hover-tooltip__accent"></div>
+        <div class="hover-tooltip__text"></div>
+      </div>
+    `;
+    document.body.appendChild(tooltip);
+
+    const tooltipText = tooltip.querySelector(".hover-tooltip__text");
+
+    let activeTarget = null;
+
+    /* ---------- 2. TOOLTIP DEFINITIONS (REFERENCE STYLE) ---------- */
+    const tooltips = [
+      {
+        id: "mcb",
+        selector: ".mcb-toggle, .mcb-block",
+        text: "MCB: Main supply breaker for the setup; trips on overload/short-circuit to protect the circuit and users."
+      },
+      {
+        id: "starter",
+        selector: ".starter-block, .starter-body, .starter-handle",
+        text: "3-Point Starter: Limits the DC motor starting current and provides no-volt/overload protection; drag the handle after turning ON the MCB."
+      },
+      {
+        id: "lamp-load",
+        selector: ".lampboard-dropdown, #number, .lamp-board, .lamp-grid, .lamp-bulb, .lamp-load-label",
+        text: "Lamp Load: Variable resistive bulb bank used to change load; select the number of bulbs to vary current and observe voltage regulation."
+      },
+      {
+       id: "voltmeter",
+        selector: ".meters > .meter-card:nth-of-type(1)",
+        text: "Voltmeter: Measures the supply/line voltage (connected across the source)."
+      },
+      {
+        id: "ammeter",
+        selector: ".meters > .meter-card:nth-of-type(4)",
+        text: "Ammeter: Measures the generator terminal voltage (connected across generator terminals)."
+      },
+      {
+       id: "rpm-display",
+       selector: ".rpm-card, .rpm-display, #rpmDisplay",
+       text: "RPM Indicator: Displays the rotational speed of the DC motor in revolutions per minute. The speed increases as armature voltage is increased while field current remains constant."
+      },
+       {
+        id: "field-rheostat",
+        selector: ".rheostat-img-1, .nob1",
+        text: "Field Rheostat: Controls the field current of the DC machine. Adjusting it changes the magnetic flux and hence affects the speed of the motor."
+      },
+      {
+        id: "armature-rheostat",
+        selector: ".rheostat-img-2, .nob2",
+        text: "Armature Rheostat: Controls the armature voltage. Increasing armature voltage increases motor speed while field current remains constant."
+      },
+      {
+  id: "motor-box",
+  selector: ".motor-box, .motor-box img",
+  text: "DC Shunt Motor: Converts electrical energy to mechanical energy. Speed varies with armature voltage while field current remains constant."
+},
+{
+  id: "generator-box",
+  selector: ".generator-box, .generator-body, .generator-rotor, #gr",
+  text: "Rotor View: Visual representation of motor shaft rotation. Speed increases as armature voltage rises, shown by faster rotation and RPM display."
+}
+    ];
+
+    /* ---------- 3. REMOVE DEFAULT BROWSER TOOLTIPS ---------- */
+    tooltips.forEach(t => {
+      document.querySelectorAll(t.selector).forEach(el => {
+        el.removeAttribute("title");
+      });
+    });
+
+    /* ---------- 4. FIND MATCHING TOOLTIP ---------- */
+    function findTooltip(target) {
+      for (const t of tooltips) {
+        const match = target.closest(t.selector);
+        if (match) {
+          return { el: match, text: t.text, id: t.id };
+        }
+      }
+      return null;
+    }
+
+    /* ---------- 5. POSITION NEAR CURSOR ---------- */
+    function moveTooltip(e) {
+      tooltip.style.left = e.clientX + 16 + "px";
+      tooltip.style.top  = e.clientY + 16 + "px";
+    }
+
+    /* ---------- 6. SHOW / HIDE ---------- */
+    function showTooltip(text, e) {
+      tooltipText.textContent = text;
+      moveTooltip(e);
+      tooltip.classList.add("show");
+    }
+
+    function hideTooltip() {
+      tooltip.classList.remove("show");
+      activeTarget = null;
+    }
+
+    /* ---------- 7. CLICK HANDLER ---------- */
+    document.addEventListener("click", (e) => {
+      const found = findTooltip(e.target);
+
+      if (!found) {
+        hideTooltip();
+        return;
+      }
+
+      if (activeTarget === found.el) {
+        hideTooltip();
+        return;
+      }
+
+      activeTarget = found.el;
+      showTooltip(found.text, e);
+
+       // 🔴 NEW: AUTO-HIDE WHEN MOUSE LEAVES THE ELEMENT
+  activeTarget.addEventListener(
+    "mouseleave",
+    () => {
+      hideTooltip();
+    },
+    { once: true }
+  );
+    });
+
+    /* ---------- 8. FOLLOW MOUSE ---------- */
+    document.addEventListener("mousemove", (e) => {
+      if (tooltip.classList.contains("show")) {
+        moveTooltip(e);
+      }
+    });
+
+    /* ---------- 9. ESC KEY CLOSE ---------- */
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        hideTooltip();
+      }
+    });
+  }
+
+  /* ---------- SAFE DOM READY ---------- */
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setup, { once: true });
+  } else {
+    setup();
+  }
+
 })();

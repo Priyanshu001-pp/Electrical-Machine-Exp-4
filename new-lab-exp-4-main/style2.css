@@ -156,27 +156,27 @@
 
  #pointC {
    position: absolute;
-   left: 62px;
-   top: 176px;
+   left: 84px;
+   top: 188px;
  }
 
  #pointD {
    position: absolute;
-   left: 168px;
-   top: 176px;
+   left: 202px;
+   top: 188px;
 
  }
 
  #pointE {
    position: absolute;
    left: 50px;
-   top: 187px;
+   top: 199px;
  }
 
  #pointG {
    position: absolute;
-   left: 160px;
-   top: 187px;
+   left: 176px;
+   top: 199px;
  }
 
  #pointH {
@@ -319,8 +319,8 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 49px;
-   top: 190px;
+   left: 65px;
+   top: 199px;
  }
 
  .point-D {
@@ -328,8 +328,8 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 155px;
-   top: 190px;
+   left: 190px;
+   top: 199px;
  }
 
  .point-E {
@@ -337,8 +337,8 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 280px;
-   top: 190px;
+   left: 356px;
+   top: 198px;
  }
 
  .point-G {
@@ -346,8 +346,8 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 392px;
-   top: 190px;
+   left: 485px;
+   top: 198px;
  }
 
  .point-H {
