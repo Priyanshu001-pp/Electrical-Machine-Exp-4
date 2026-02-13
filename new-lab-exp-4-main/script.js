@@ -29,6 +29,8 @@ jsPlumb.ready(function () {
       speechSynthesis.cancel();
     }
   };
+
+  
  
  
   let mcbState = "OFF";   // 🔥 ADD THIS
@@ -44,6 +46,15 @@ jsPlumb.ready(function () {
  
   let guideActive = false;
   let introSpoken = false;
+
+  // =====================
+// 🎯 HIGHLIGHT SYSTEM FOR SPEAKING
+// =====================
+const SPEAK_HIGHLIGHT_CLASS = "speak-glow";
+const SPEAK_LINE_COLOR = "#f59e0b";
+const SPEAK_LINE_WIDTH = 7;
+const activeSpeakLabels = new Set();
+const activeSpeakConnections = new Map();
  
   function speakCurrentStep() {
     if (!guideActive) return;
@@ -1421,7 +1432,7 @@ function getWireCurvinessForConnection(sourceId, targetId) {
  
   let autoConnectUsed = false;
  
-  let lastRemovedPair = null;   // 🔥 remembers user-removed wire
+  // 🔥 remembers user-removed wire
   let completedByAutoConnect = false;
  
   // Required connections: unsorted list for iteration order in auto-connect, sorted Set for checking
@@ -1452,30 +1463,19 @@ function getWireCurvinessForConnection(sourceId, targetId) {
   }
  
  
-  function getFirstMissingStepIndex() {
-    const connections = jsPlumb.getAllConnections();
- 
-    // 🔥 1️⃣ If user removed a known required pair, report that first
-    if (lastRemovedPair) {
-      const index = requiredPairs.indexOf(lastRemovedPair);
-      if (index !== -1) {
-        const [a, b] = requiredPairs[index].split("-");
-        if (!isPairConnected(a, b, connections)) {
-          return index;
-        }
-      }
+function getFirstMissingStepIndex() {
+  const connections = jsPlumb.getAllConnections();
+
+  for (let i = 0; i < requiredPairs.length; i++) {
+    const [a, b] = requiredPairs[i].split("-");
+    if (!isPairConnected(a, b, connections)) {
+      return i; // ✅ first real missing step
     }
- 
-    // 🔁 2️⃣ Otherwise, fall back to normal sequential logic
-    for (let i = 0; i < requiredPairs.length; i++) {
-      const [a, b] = requiredPairs[i].split("-");
-      if (!isPairConnected(a, b, connections)) {
-        return i;
-      }
-    }
- 
-    return requiredPairs.length;
   }
+
+  return requiredPairs.length;
+}
+
  
  
   // function getFirstMissingStepIndex() {
@@ -1632,10 +1632,10 @@ jsPlumb.bind("connection", function (info) {
 
     return;
   }
+// 🔄 HAR CONNECTION KE BAAD REAL STATE SE CALCULATE KARO
+currentStepIndex = getFirstMissingStepIndex();
 
 
-  // ✅ MOVE TO NEXT STEP
-  currentStepIndex++;
 
   // 🔊 SPEAK NEXT STEP AUTOMATICALLY
   speakCurrentStep();
@@ -1680,7 +1680,7 @@ jsPlumb.bind("connection", function (info) {
           // remove ONLY one connection (latest / first)
           const conn = relatedConnections[0];
  
-         lastRemovedPair = [conn.sourceId, conn.targetId].sort().join("-");
+      
           jsPlumb.deleteConnection(conn);
 
            jsPlumb.repaintEverything();
@@ -1729,7 +1729,7 @@ if (guideActive) {
       if (conns.length === 0) return;
  
       // Remove only this point's connection
-      lastRemovedPair = [conns[0].sourceId, conns[0].targetId].sort().join("-");
+     
 jsPlumb.deleteConnection(conns[0]);
 
 jsPlumb.repaintEverything();
