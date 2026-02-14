@@ -156,51 +156,51 @@
 
  #pointC {
    position: absolute;
-   left: 84px;
+   left: 94px;
    top: 188px;
  }
 
  #pointD {
    position: absolute;
-   left: 202px;
+   left: 196px;
    top: 188px;
 
  }
 
  #pointE {
    position: absolute;
-   left: 50px;
+   left: 62px;
    top: 199px;
  }
 
  #pointG {
    position: absolute;
-   left: 176px;
+   left: 168px;
    top: 199px;
  }
 
  #pointH {
    position: absolute;
-   left: 53px;
-   top: 70px;
+   left: 49px;
+   top: 95px;
  }
 
  #pointJ {
    position: absolute;
-   left: 16%;
-   top: 9%;
+   left: 14%;
+   top: 33%;
  }
 
  #pointI {
    position: absolute;
-   left: 276px;
-   top: 70px;
+   left: 278px;
+   top: 95px;
  }
 
  #pointK {
    position: absolute;
-   left: 81%;
-   top: 9%;
+   left: 82%;
+   top: 33%;
  }
 
  #pointA1 {
@@ -319,7 +319,7 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 65px;
+   left: 78px;
    top: 199px;
  }
 
@@ -328,7 +328,7 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 190px;
+   left: 180px;
    top: 199px;
  }
 
@@ -337,7 +337,7 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 356px;
+   left: 370px;
    top: 198px;
  }
 
@@ -346,7 +346,7 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 485px;
+   left: 478px;
    top: 198px;
  }
 
@@ -355,8 +355,8 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 42px;
-   top: 88px;
+   left: 38px;
+   top: 110px;
  }
 
  .point-J {
@@ -364,8 +364,8 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 12%;
-   top: 18%;
+   left: 11%;
+   top: 40%;
  }
 
  .point-I {
@@ -373,8 +373,8 @@
    position: absolute;
    width: 24px;
    height: 24px;
-   left: 262px;
-   top: 88px;
+   left: 266px;
+   top: 110px;
  }
 
  .point-K {
@@ -383,8 +383,8 @@
    width: 24px;
    height: 24px;
    right: 6%;
-   left: 78%;
-   top: 18%;
+   left: 79%;
+   top: 40%;
  }
 
  .point-A1 {

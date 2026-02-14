@@ -1798,7 +1798,7 @@ if (guideActive) {
           
           // Show which connection is missing
           showPopup(
-            `🔧 Step ${stepNo} of ${requiredPairs.length} missing\n\nRequired: ${a} ↔ ${b}`,
+            `🔧 Step ${stepNo} of ${requiredPairs.length} Connections\n\nMissing: ${a} ↔ ${b}`,
             "Connection Required"
           );
 
@@ -2432,12 +2432,12 @@ if (skipBtn && iframe) {
     const tooltips = [
       {
         id: "mcb",
-        selector: ".mcb-toggle, .mcb-block",
+        selector: ".mcb-label",
         text: "MCB: Main supply breaker for the setup; trips on overload/short-circuit to protect the circuit and users."
       },
       {
         id: "starter",
-        selector: ".starter-block, .starter-body, .starter-handle",
+        selector: ".starter-body",
         text: "3-Point Starter: Limits the DC motor starting current and provides no-volt/overload protection; drag the handle after turning ON the MCB."
       },
       {
@@ -2457,7 +2457,7 @@ if (skipBtn && iframe) {
       },
       {
        id: "rpm-display",
-       selector: ".rpm-card, .rpm-display, #rpmDisplay",
+       selector: ".rpm-image, .rpm-display, #rpmDisplay",
        text: "RPM Indicator: Displays the rotational speed of the DC motor in revolutions per minute. The speed increases as armature voltage is increased while field current remains constant."
       },
        {
