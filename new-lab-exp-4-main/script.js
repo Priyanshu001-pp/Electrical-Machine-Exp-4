@@ -991,23 +991,12 @@ if (graphCanvas) {
       }
  
  
-      if (!checkClickedAfterCompletion) {
-        showPopup(
-          "⚠️ Please click 'Check Connections' first.",
-          "Verification Required"
-        );
-        return;
-      }
- 
- 
-      if (!areAllConnectionsCorrect()) {
-        showPopup(
-          "❌ Wiring incorrect!\n\nPlease complete all connections first.",
-          "Wiring Error"
-        );
- 
-        return;
-      }
+     if (!checkClickedAfterCompletion || !areAllConnectionsCorrect()) {
+  showPopup(
+    "⚠️ Make and check all connections before turning ON the MCB."
+  );
+  return;
+}
  
       mcbState = "ON";
       mcbReady = true;
@@ -1949,7 +1938,12 @@ if (guideActive) {
  
       // Force repaint so no ghost wires remain
       jsPlumb.repaintEverything();
-      turnMCBOff("Reset pressed");
+      turnMCBOff("");
+      // ✅ Show new reset message
+showPopup(
+  "🔄 The Simulation has been reset.\n\nYou can start again.",
+  "Simulation Reset"
+);
       localStorage.removeItem("experimentStartTime");
       localStorage.removeItem("experimentEndTime");
       localStorage.removeItem("reportStartTime");
