@@ -57,8 +57,8 @@
 }
 
 .panel {
-    width: 1800px;  
-    max-width: 100%;  /* 🔥 CHANGED: Remove calc() */
+    width: 1800px;
+    min-width: 1800px;
     border: 3px solid #111;
     background: #d7d0c4;
     display: flex;
@@ -86,7 +86,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;  /* Align content to top */
-    width: 360px;  /* Fixed width matching grid column */
+    width: 410px;  /* Fixed width matching grid column */
 }
 
   .center-column {
@@ -2219,8 +2219,8 @@ body.is-modal-open {
 }
 
 .panel-footer {
-    width: 1800px;  
-    max-width: 100%;  /* 🔥 CHANGED: Remove calc() */
+    width: 1800px;
+    min-width: 1800px;
     margin: 16px 0 18px 0;  /* 🔥 CHANGED: Add margin instead of auto */
     border: 3px solid #111;
     background: #d7d0c4;
