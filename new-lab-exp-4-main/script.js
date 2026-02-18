@@ -222,22 +222,28 @@ if (
   }
  
   // ---- AFTER ADD TO TABLE ----
-  function onReadingAdded(total) {
- 
-    if (total < 5) {
-      guidedSpeak(
-        "Reading added successfully. Now vary the armature rheostat to take the next reading."
-      );
-      voiceStage = "reading_added";
-    }
- 
-    if (total === 5) {
-      guidedSpeak(
-        "Five readings are completed. Now click on the Graph button to plot the graph."
-      );
-      voiceStage = "five_completed";
-    }
+function onReadingAdded(total) {
+  if (total < 5) {
+    guidedSpeak(
+      "Reading added successfully. Now vary the armature rheostat to take the next reading."
+    );
+    voiceStage = "reading_added";
   }
+
+  if (total === 5) {
+    // ✅ SHOW ALERT POPUP
+    showPopup(
+      "You have added 5 readings. Now you can plot the graph.",
+      "Graph Ready"
+    );
+
+    guidedSpeak(
+      "Five readings are completed. Now click on the Graph button to plot the graph."
+    );
+
+    voiceStage = "five_completed";
+  }
+}
  
   // ---- AFTER GRAPH ----
   function onGraphPlotted() {
@@ -550,20 +556,25 @@ if (graphCanvas) {
       };
  
  
-      Plotly.newPlot(graphPlot, [trace], layout, {
+     Plotly.newPlot(graphPlot, [trace], layout, {
         responsive: true,
         displaylogo: false
       }).then(() => {
         Plotly.Plots.resize(graphPlot);
 
         if (reportBtn) {
-  reportBtn.disabled = false;
-  reportBtn.style.opacity = "1";
-  reportBtn.style.cursor = "pointer";
-  reportBtn.style.pointerEvents = "auto";
-}
+          reportBtn.disabled = false;
+          reportBtn.style.opacity = "1";
+          reportBtn.style.cursor = "pointer";
+          reportBtn.style.pointerEvents = "auto";
+        }
 
- 
+        // ✅ GRAPH READY ALERT
+        showPopup(
+          "Graph plotted successfully. You can now generate the report.",
+          "Graph Ready"
+        );
+
         // 🔊 VOICE AFTER GRAPH PLOT
         onGraphPlotted();
       });
