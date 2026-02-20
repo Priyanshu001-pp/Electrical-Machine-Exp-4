@@ -243,6 +243,13 @@ if (
  
   // ---- AFTER ADD TO TABLE ----
 function onReadingAdded(total) {
+   // ✅ Show popup ONLY for the first reading
+  if (total === 1) {
+    showPopup(
+      "Reading added to the observation table.",
+      "Observation"
+    );
+  }
   if (total < 5) {
     guidedSpeak(
       "Reading added successfully. Now vary the armature rheostat to take the next reading."
@@ -253,7 +260,7 @@ function onReadingAdded(total) {
   if (total === 5) {
     // ✅ SHOW ALERT POPUP
     showPopup(
-      "You have added 5 readings. Now you can plot the graph.",
+      "You have added five readings. Now you can plot the graph.<br> by clicking on the graph button or add more readings to the table.",
       "Graph Ready"
     );
 
@@ -262,6 +269,19 @@ function onReadingAdded(total) {
     );
 
     voiceStage = "five_completed";
+  }
+   // ✅ Show popup when 7 readings are added
+  if (total === 7) {
+    showPopup(
+      "You can add a maximum of 7 readings to the table. Now, click the Graph button.",
+      "Maximum Readings Reached"
+    );
+
+    guidedSpeak(
+      "You have added seven readings. Now click on the Graph button to plot the graph."
+    );
+
+    voiceStage = "seven_completed";
   }
 }
  
@@ -431,7 +451,7 @@ document.addEventListener("click", function (e) {
  
     if (currentVoltage === 0 || currentRPM === 0) {
       showPopup(
-        "First, set the armature rheostat to a specific step.",
+        "First, set the field rheostat. ",
         "Step Required"
       );
  
@@ -449,7 +469,7 @@ document.addEventListener("click", function (e) {
  
         if (v === currentVoltage && r === currentRPM) {
           showPopup(
-            "This reading is already in the observation table.",
+            "This reading is already added to the table.",
             "Duplicate Entry"
           );
           return;
@@ -715,19 +735,19 @@ if (graphCanvas) {
 
   // ✅ SIMPLE: Direct angle for each step
   const needleAngles = [
-    -41,    // Step 1 (132V)
-    -39,    // Step 2 (139V)
-    -32,    // Step 3 (152V)
-    -29.5,  // Step 4 (166V)
-    -24.5,  // Step 5 (176V)
-    -18.5,   // Step 6 (198V)
-    -7.5    // Step 7 (220V)
+    -35,    // Step 1 (132V)
+    -30,    // Step 2 (139V)
+    -24.5,    // Step 3 (152V)
+    -21.5,  // Step 4 (166V)
+    -17.5,  // Step 5 (176V)
+    -8,   // Step 6 (198V)
+    -1    // Step 7 (220V)
   ];
   
   const voltAngle = needleAngles[stepIndex];
   
   voltNeedle.style.transform = 
-    `translate(-60%, -90%) rotate(${voltAngle}deg)`;
+    `translate(-75%, -82%) rotate(${voltAngle}deg)`;
  
     // 🔥 RPM DIGITAL DISPLAY UPDATE
     if (rpmDisplay) {
@@ -781,7 +801,7 @@ if (graphCanvas) {
  
  
   function setFieldDefaultMeters() {
-    const ampAngle = -70 + (7.5 / 10) * 140;
+    const ampAngle = -70 + (7.7 / 10) * 140;
     ampNeedle.style.transform =
       `translate(-30%, -90%) rotate(${ampAngle}deg)`;
   }
@@ -919,7 +939,7 @@ if (graphCanvas) {
  
     if (voltNeedle) {
       voltNeedle.style.transform =
-        "translate(-70%, -90%) rotate(-70deg)";
+        "translate(-75%, -82%) rotate(-75deg)";
     }
  
     if (rotor) {
@@ -1044,9 +1064,7 @@ if (graphCanvas) {
       if (mcbState === "ON") {
         turnMCBOff("MCB turned OFF manually");
         showPopup(
-          "⚠️ DC SUPPLY has been turned OFF.",
-          "MCB OFF"
-        );
+          "You turned off the DC Supply.<br>Turn it back on to continue the simulation.");
 
           // ✅ RE-ENABLE CHECK & AUTO CONNECT BUTTONS
         enableCheckAndAutoConnect();
@@ -1076,7 +1094,7 @@ if (graphCanvas) {
       }
  
  
-      showPopup("DC Supply is turned ON", "Power ON");
+      showPopup(" DC supply has been turned ON.<br> Now move the starter handle from left to right.");
       console.log("MCB ON");
       if (isGuideActive()) {
         labSpeech.speak(
@@ -1709,7 +1727,7 @@ currentStepIndex = getFirstMissingStepIndex();
 
       // 🔒 PREVENT REMOVAL WHEN MCB IS ON
       if (mcbState === "ON") {
-        showPopup("⚠️ Cannot remove wires while DC supply is ON.\n\nPlease turn OFF the MCB first.", "MCB Active");
+        showPopup("Turn off the DC Supply before removing the connection");
         return;
       }
  
@@ -1812,72 +1830,190 @@ if (guideActive) {
  
  
     // Replace your checkBtn.addEventListener with this DEBUG VERSION:
- checkBtn.addEventListener("click", function () {
-      const connections = jsPlumb.getAllConnections();
+ // ============================================================
+// ✅ CHECK BUTTON — FULL LOGIC (Reference Style for Doc-2 Lab)
+// ============================================================
+//
+// BEHAVIOUR SUMMARY:
+// ──────────────────
+// Case 1 → No wires at all
+//           Popup: "Please make all the connections first."
+//           Speech (if guide active): same text
+//
+// Case 2 → Some wires exist, but wrong connections present
+//           Popup: "Wrong connection(s): PointA - PointB [, ...]
+//                   Missing connection(s): PointX - PointY [, ...]"
+//           Speech: "Remove wrong connection point A to point B.
+//                    Next missing connection: point X to point Y."
+//
+// Case 3 → Some wires exist, no wrong ones, but missing connections remain
+//           Popup: "Missing connection(s): PointX - PointY  [, ...]"
+//           Speech: "Next missing connection: point X to point Y."
+//
+// Case 4 → All required connections are present and correct
+//           Popup: "Connections are correct. Click on the DC Supply to turn it ON."
+//           Speech: "The connections are correct. Now turn on the DC supply."
+//           Sets checkClickedAfterCompletion = true
+//
+// NOTE: Speech fires REGARDLESS of guide state for wrong/missing
+//       (via speakOrAlert helper which picks voice or popup).
+//       The popup fires ALWAYS for wrong/missing/empty cases.
+// ============================================================
 
-      // ✅ AUTO CONNECT MODE CHECK
-      if (autoConnectUsed) {
-        if (areAllConnectionsCorrect()) {
-          checkClickedAfterCompletion = true;
-          showPopup(
-            " Connections are correct, click on the DC Supply to turn it ON."
-           
-          );
+checkBtn.addEventListener("click", function () {
 
-          if (guideActive) {
-            labSpeech.speak(
-              "The connections are correct. Now turn on the DC supply."
-            );
-          }
-        } else {
-          showPopup(
-            "❌ Wiring incorrect!\n\nPlease review connections.",
-            "Wiring Error"
-          );
-        }
-        return;
-      }
+  // ── 0. Gather live state ──────────────────────────────────
+  const connections      = jsPlumb.getAllConnections();
+  const totalWiresMade   = connections.length;
 
-      // 🔒 CHECK EACH REQUIRED PAIR IN SEQUENCE
-      for (let i = 0; i < requiredPairs.length; i++) {
-        const [a, b] = requiredPairs[i].split("-");
-        const stepNo = i + 1;
+  // Build a set of normalised keys for every wire currently on canvas
+  const seenKeys = new Set();
+  connections.forEach(conn => {
+    seenKeys.add(connectionKey(conn.sourceId, conn.targetId));
+  });
 
-        // ❌ If this step is missing
-        if (!isPairConnected(a, b, connections)) {
-          
-          // Show which connection is missing
-          showPopup(
-            ` Step ${stepNo} of ${requiredPairs.length} Connections\n\nMissing: ${a} ↔ ${b}`,
-            "Connection Required"
-          );
+  // ── 1. ALLOWED connections set (same as requiredConnections) ─
+  // Any wire NOT in allowedConnections is "illegal / wrong".
+  // We reuse the existing `requiredConnections` Set which stores
+  // sorted "a-b" keys built from requiredPairs.
 
-          // Update current step index
-          currentStepIndex = i;
-          return;
-        }
-      }
-    
+  // ── 2. Classify every drawn wire as correct or wrong ─────────
+  const illegalRaw = [];   // raw "sourceId-targetId" (unsorted) for display
+  connections.forEach(conn => {
+    const key = connectionKey(conn.sourceId, conn.targetId);
+    if (!requiredConnections.has(key)) {
+      // Keep original direction for readable display
+      illegalRaw.push({ src: conn.sourceId, tgt: conn.targetId });
+    }
+  });
 
-      // ✅ ALL CONNECTIONS COMPLETE
-      if (currentStepIndex >= requiredPairs.length || areAllConnectionsCorrect()) {
-        checkClickedAfterCompletion = true;
-        currentStepIndex = requiredPairs.length;
+  // ── 3. Find missing connections (in requiredPairs ORDER) ─────
+  const missingPairs = requiredPairs.filter(pair => {
+    const [a, b] = pair.split("-");
+    return !seenKeys.has(connectionKey(a, b));
+  });
 
-        showPopup(
-          "🎉 All wiring connections are correct and completed!",
-          "Success"
-        );
+  // ── 4. Helper: human-readable point name ─────────────────────
+  function toLabel(id) {
+    return id.replace(/^point/i, "Point");         // "pointA1" → "PointA1"
+  }
+  function toSpeech(id) {
+    // "pointA1" → "A 1" (space between letters and digits for TTS)
+    return id
+      .replace(/^point/i, "")
+      .replace(/([A-Za-z]+)(\d+)/g, "$1 $2")       // "A1" → "A 1"
+      .toUpperCase();
+  }
 
-        if (guideActive) {
-          labSpeech.speak(
-            "The connections are correct. Now turn on the DC supply."
-          );
-        }
-        return;
-      }
+  // ── 5. Helper: first entry only for speech focus ─────────────
+  const firstIllegal = illegalRaw[0] || null;
+  const firstMissing = missingPairs[0] || null;   // full "pointA-pointB" string
 
-    });
+
+  // ════════════════════════════════════════════════════════════
+  // CASE 1 — No wires drawn at all
+  // ════════════════════════════════════════════════════════════
+  if (totalWiresMade === 0) {
+    const msg = "Please make all the connections first.";
+    showPopup(msg);
+    if (guideActive) labSpeech.speak(msg);
+    // Reset check state just in case
+    checkClickedAfterCompletion = false;
+    currentStepIndex = 0;
+    return;
+  }
+
+
+  // ════════════════════════════════════════════════════════════
+  // CASE 2 + 3 — Wires exist but wrong / missing
+  // ════════════════════════════════════════════════════════════
+  if (illegalRaw.length > 0 || missingPairs.length > 0) {
+
+    // ── Build POPUP message ──────────────────────────────────
+    let popupMessage = "";
+
+    // Wrong connections section (show up to 3, then "+ N more")
+    if (illegalRaw.length > 0) {
+      const wrongLabels = illegalRaw.map(
+        ({ src, tgt }) => `${toLabel(src)} ↔ ${toLabel(tgt)}`
+      );
+      const preview   = wrongLabels.slice(0, 3).join(", ");
+      const extraCount = Math.max(0, wrongLabels.length - 3);
+      const extraText  = extraCount ? ` and ${extraCount} more` : "";
+      popupMessage += `Wrong connection${illegalRaw.length > 1 ? "s" : ""}: ${preview}${extraText}.\n`;
+    }
+
+    // Missing connections section — in requiredPairs sequence (up to 3)
+    if (missingPairs.length > 0) {
+      const missingLabels = missingPairs.map(pair => {
+        const [a, b] = pair.split("-");
+        return `${toLabel(a)} ↔ ${toLabel(b)}`;
+      });
+      const preview    = missingLabels.slice(0, 3).join(", ");
+      const extraCount = Math.max(0, missingLabels.length - 3);
+      const extraText  = extraCount ? ` and ${extraCount} more` : "";
+      popupMessage += `Missing connection${missingPairs.length > 1 ? "s" : ""}: ${preview}${extraText}.`;
+    }
+
+    // Trim any trailing whitespace / newlines
+    popupMessage = popupMessage.trim();
+
+    // ── Build SPEECH message ─────────────────────────────────
+    let speechMessage = "";
+
+    if (firstIllegal) {
+      // Speak ONLY the first wrong connection to avoid overwhelming TTS
+      speechMessage +=
+        `Wrong connection: point ${toSpeech(firstIllegal.src)} to point ${toSpeech(firstIllegal.tgt)}. ` +
+        `Please remove it. `;
+    }
+
+    if (firstMissing) {
+      const [ma, mb] = firstMissing.split("-");
+      const stepNo   = requiredPairs.indexOf(firstMissing) + 1;
+      speechMessage +=
+        `Next missing connection: step ${stepNo}, ` +
+        `connect point ${toSpeech(ma)} to point ${toSpeech(mb)}.`;
+    }
+
+    // ── Show popup (always) ──────────────────────────────────
+    const popupTitle = illegalRaw.length > 0 ? "Wiring Error" : "Connections Incomplete";
+    showPopup(popupMessage, popupTitle);
+
+    // ── Speak (always, if guide active) ─────────────────────
+    if (guideActive && speechMessage) {
+      labSpeech.speak(speechMessage);
+    }
+
+    // ── Reset verification state ─────────────────────────────
+    checkClickedAfterCompletion = false;
+    // Sync step index to the first real missing step
+    currentStepIndex = getFirstMissingStepIndex();
+
+    return;
+  }
+
+
+  // ════════════════════════════════════════════════════════════
+  // CASE 4 — All connections correct ✅
+  // ════════════════════════════════════════════════════════════
+  checkClickedAfterCompletion = true;
+  currentStepIndex = requiredPairs.length;
+
+  const successMsg = "Connections are correct! Click on the DC Supply to turn it ON.";
+  showPopup(successMsg);
+
+  if (guideActive) {
+    labSpeech.speak(
+      "The connections are correct. Now turn on the DC supply."
+    );
+  }
+
+});
+
+// ============================================================
+// END OF CHECK BUTTON LOGIC
+// ============================================================
   }
  
   // Also add this helper function if it doesn't exist:
