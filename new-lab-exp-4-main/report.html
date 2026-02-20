@@ -1,443 +1,572 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <title>Simulation Report</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulation Report – Speed Control of DC Motor</title>
+  <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    <style>
-        /* Base Styles */
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #eef2f7;
-            color: #2c3e50;
-            margin: 40px auto;
-            max-width: 900px;
-            padding: 40px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            border: 1px solid #d3d3d3;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            line-height: 1.6;
-            transition: all 0.3s ease-in-out;
-        }
+    body {
+      font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+      background: #eef2f7;
+      color: #1f2d3d;
+      padding: 40px 20px;
+      line-height: 1.65;
+    }
 
-        /* Headings */
-        h1,
-        h2,
-        h3 {
-            color: #2c3e50;
-            margin-top: 0;
-            font-weight: 600;
-        }
+    #report-root {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #e5e9f2;
+      box-shadow: 0 10px 30px rgba(31, 45, 61, 0.12);
+      padding: 36px 40px;
+    }
 
-        h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 8px;
-        }
+    /* ── HEADER ROW ── */
+ 
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 30px;
+                                    
+}
 
-        h2 {
-            font-size: 22px;
-            margin-bottom: 10px;
-            color: #34495e;
-        }
+.header-row h1 {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  padding-bottom: 10px;             
+  border-bottom: 3px solid #2f7bfa;  
+}
 
-        h3 {
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
+    .vl-logo {
+      height: 90px;
+      width: auto;
+      max-width: 180px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
 
-        /* Sections */
-        .section {
-            background-color: #fafafa;
-            padding: 20px;
-            margin-bottom: 35px;
-            border-radius: 8px;
-            border-left: 5px solid #3498db;
-        }
+    /* ── SECTION CARDS ── */
+    .section {
+      background: linear-gradient(135deg, #f8fbff 0%, #f3f6fb 100%);
+      padding: 22px 24px;
+      margin-bottom: 28px;
+      border-radius: 12px;
+      border: 1px solid #e5e9f2;
+      box-shadow: 0 4px 12px rgba(31, 45, 61, 0.06);
+    }
 
-        /* Labels */
-        .label {
-            font-weight: bold;
-            color: #2a2a2a;
-        }
+    .section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2d3d;
+      margin-bottom: 14px;
+    }
 
-        /* Lists */
-        ul {
-            padding-left: 20px;
-            margin-top: 10px;
-        }
+    .section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2b3f55;
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
 
-        .two-column-list {
-            column-count: 2;
-            column-gap: 40px;
-            list-style-position: inside;
-            margin-top: 10px;
-        }
+    .section h3:first-child {
+      margin-top: 0;
+    }
 
-        /* Observation Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            background-color: white;
-            border-radius: 6px;
-            overflow: hidden;
-        }
+    .section p {
+      font-size: 14px;
+      color: #374151;
+      text-align: justify;
+      margin-bottom: 8px;
+    }
 
-        th,
-        td {
-            border: 1px solid #e0e0e0;
-            padding: 12px;
-            text-align: center;
-            font-size: 15px;
-        }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: #e8f1ff;
+      color: #1f62d0;
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
 
-        th {
-            background-color: #3498db;
-            color: white;
-            font-weight: 600;
-        }
+    .label {
+      font-weight: 600;
+      color: #1f2d3d;
+    }
 
-        tr:nth-child(even) {
-            background-color: #f5faff;
-        }
+    /* ── INFO GRID ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
 
-        /* Graph Section */
-        .graph {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            border: 1px solid #dcdcdc;
-            border-radius: 10px;
-            background: #fefefe;
-        }
+    .info-card {
+      background: #fff;
+      border: 1px solid #e5e9f2;
+      border-radius: 10px;
+      padding: 12px 14px;
+      box-shadow: 0 4px 10px rgba(31, 45, 61, 0.05);
+      font-size: 14px;
+      color: #374151;
+    }
 
-        /* Logo and Title Row */
-        .header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .info-card .label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
 
-        .header-row img {
-            width: 120px;
-            height: auto;
-        }
+    .info-card span:last-child {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1f2d3d;
+    }
 
-        .header-row h1 {
-            flex: 1;
-        }
+    /* ── COMPONENTS LIST ── */
+    .two-column-list {
+      column-count: 2;
+      column-gap: 40px;
+      list-style-position: inside;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #374151;
+    }
 
-        /* Buttons */
-        .print-btn {
-            margin-top: 30px;
-            padding: 12px 28px;
-            font-size: 16px;
-            background: linear-gradient(to right, #3498db, #2980b9);
-            color: white;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+    .two-column-list li {
+      margin-bottom: 6px;
+    }
 
-        .print-btn:hover {
-            background: linear-gradient(to right, #2980b9, #1c6ea4);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
+    /* ── OBSERVATION TABLE ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(31, 45, 61, 0.06);
+      font-size: 14px;
+    }
 
-        /* Responsive Design */
-        @media screen and (max-width: 600px) {
-            .two-column-list {
-                column-count: 1;
-            }
+    th, td {
+      border: 1px solid #e5e9f2;
+      padding: 12px 16px;
+      text-align: center;
+    }
 
-            .header-row {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+    th {
+      background: linear-gradient(135deg, #2f7bfa 0%, #1f62d0 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+    }
 
-            .header-row img {
-                margin-top: 10px;
-            }
+    tr:nth-child(even) td {
+      background: #f8fbff;
+    }
 
-            .section {
-                padding: 15px;
-            }
+    tr:hover td {
+      background: #eef4ff;
+    }
 
-            table,
-            th,
-            td {
-                font-size: 14px;
-            }
-        }
+    /* ── GRAPH SECTION ── */
+    .graph-section {
+      text-align: center;
+      padding: 20px;
+      border: 1px solid #e5e9f2;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(31, 45, 61, 0.06);
+      margin-top: 8px;
+    }
 
-        /* Print */
-        @page {
-            size: A4 portrait;
-            margin: 20mm;
-        }
+    #report-graph {
+      width: 100%;
+      height: 380px;
+      position: relative;
+    }
 
-        @media print {
-            body {
-                width: auto;
-                margin: 0;
-                box-shadow: none;
-                border: none;
-                padding: 0;
-                font-size: 12pt;
-            }
+    /* ── ACTION BUTTONS ── */
+    .report-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 30px;
+    }
 
-            .print-btn {
-                display: none;
-            }
+    .print-btn,
+    .download-btn {
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 30px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 0.3px;
+    }
 
-            .page-break {
-                page-break-before: always;
-                break-before: page;
-            }
+    .print-btn {
+      background: linear-gradient(to right, #2f7bfa, #1f62d0);
+    }
 
-            .section {
-                page-break-inside: avoid;
-            }
+    .download-btn {
+      background: linear-gradient(to right, #28a745, #1e8c38);
+    }
 
-            table {
-                page-break-inside: auto;
-            }
+    .print-btn:hover,
+    .download-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(31, 45, 61, 0.15);
+    }
 
-            tr,
-            td,
-            th {
-                page-break-inside: avoid;
-                page-break-after: auto;
-            }
-        }
-    </style>
+    .print-btn:active,
+    .download-btn:active {
+      transform: translateY(0);
+    }
 
-    <script src="https://cdn.plot.ly/plotly-3.0.1.min.js" charset="utf-8"></script>
+    /* ── NO DATA MESSAGE ── */
+    .no-data {
+      text-align: center;
+      color: #9ca3af;
+      font-style: italic;
+      padding: 20px;
+    }
+
+    /* ── PRINT STYLES ── */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      #report-root {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        padding: 20px;
+      }
+
+      .report-actions {
+        display: none;
+      }
+
+      .section {
+        break-inside: avoid;
+        box-shadow: none;
+      }
+
+      .header-row {
+        break-after: avoid;
+      }
+    }
+  </style>
 </head>
-
-
 <body>
+<div id="report-root">
 
-    <div class="header-row">
-        <img src="images/logo.png" alt="Lab Logo">
-        <h1>Virtual Lab Simulation Report</h1>
+  <!-- ── HEADER ── -->
+  <div class="header-row">
+    <img src="images/IIT Logo.png" class="vl-logo" alt="IIT Logo"
+         onerror="this.style.display='none'" />
+    <h1>Virtual Labs Simulation Report</h1>
+    <img src="images/logo.png" class="vl-logo" alt="Lab Logo"
+         onerror="this.style.display='none'" />
+  </div>
+
+  <!-- ── EXPERIMENT INFO ── -->
+  <div class="section">
+    <span class="badge">Electrical Machines Lab</span>
+    <p><span class="label">Experiment Title:</span> Speed control of DC Shunt Motor using armature voltage control method.</p>
+    <p id="reportDate"><span class="label">Date:</span> —</p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <span class="label">Start Time</span>
+        <span id="startTimeVal">—</span>
+      </div>
+      <div class="info-card">
+        <span class="label">End Time</span>
+        <span id="endTimeVal">—</span>
+      </div>
+      <div class="info-card">
+        <span class="label">Total Time Spent</span>
+        <span id="durationVal">—</span>
+      </div>
     </div>
+  </div>
 
+  <!-- ── SUMMARY ── -->
+  <div class="section">
+    <h2>Summary</h2>
 
+    <h3>Aim</h3>
+    <p>
+      To study the speed control of a DC shunt motor by armature resistance control method, and plot the graph between the speed and armature voltage by varying the armature resistance.
+    </p>
 
-    <script>
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, '0');
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-        const year = today.getFullYear();
+    <h3>Simulation Summary</h3>
+    <p>
+      The connections were completed as per the instructions. The DC supply was switched ON, the starter handle was moved from left to right to start the motor safely, and the field resistance was set. The armature resistance was then varied step by step, and the corresponding armature voltage and motor speed readings were recorded in the observation table. A Speed vs. Armature Voltage graph was plotted using the recorded data.
+    </p>
 
-        const formattedDate = `${day}-${month}-${year}`;
+    <h3>Components and Key Parameters</h3>
+    <ul class="two-column-list">
+      <li>DC Supply</li>
+      <li>3-Point Starter: 220V DC, 7.5 HP</li>
+      <li>DC Shunt Motor: 5 HP, 220 V DC, 19 A (max), 1500 RPM</li>
+      <li>Field Rheostat: 300 ohm, 3A</li>
+      <li>Armature Rheostat: 75 ohm, 5A</li>
+      <li>DC Voltmeter: 0-420 V</li>
+      <li>DC Ammeter: 0-1 A</li>
+      <li>RPM Indicator: 0-2000 RPM</li>
+      <li>Connecting Leads</li>
+    </ul>
+  </div>
 
-    </script>
+  <!-- ── OBSERVATION TABLE ── -->
+  <div class="section">
+    <h2>Observation Table</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>S.No.</th>
+          <th>Armature Voltage (V)</th>
+          <th>Speed (RPM)</th>
+        </tr>
+      </thead>
+      <tbody id="reportTableBody">
+        <tr>
+          <td colspan="3" class="no-data">No readings recorded.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <div class="section">
-        <p><span class="label">Experiment Title:</span> Speed Control of DC Shunt Motor by Armature Voltage Control</p>
-        <p><span class="label">Date:</span> <span id="dateField"></span></p>
-        <div style="display: flex;flex-direction: row;justify-content: space-between">
-            <div>
-                <span id="start">Start Time:</span>
-            </div>
-            <div>
-                <span id="end">End Time:</span>
-            </div>
-
-            <div>
-                <span id="total">Total Time Spent:</span>
-            </div>
-        </div>
-
+  <!-- ── GRAPH ── -->
+  <div class="section">
+    <h2>Graph</h2>
+    <div class="graph-section">
+      <div id="report-graph"></div>
     </div>
+  </div>
 
-    <div class="section">
-        <h2>Summary</h2>
-
-        <h3>Aim</h3>
-        <p style="text-align: justify;">The aim of this experiment is to study the speed control of a DC shunt motor by
-            armature voltage control method and to plot the graph between armature voltage and motor speed.
-        </p>
-
-        <h3>Simulation Summary</h3>
-        <p style="text-align: justify;">Connections were made as per the circuit diagram. The DC motor was started using
-            the starter. Armature voltage was varied gradually using the rheostat. For each voltage setting, the
-            corresponding motor speed was noted. Readings were recorded in the observation table and a graph between
-            armature voltage and speed was plotted.</p>
-
-        <h3>Components</h3>
-        <ul class="two-column-list ">
-            <li>DC Power Supply</li>
-            <li>Starter</li>
-            <li>Field Rheostat</li>
-            <li>Armature Rheostat</li>
-            <li>DC Shunt Motor</li>
-            <li>DC Voltmeter</li>
-            <li>DC Ammeter</li>
-            <li>RPM Indicator</li>
-        </ul>
-
-        <h3>Key Parameters</h3>
-        <ul class="two-column-list ">
-            <!-- <li>Field Resistance: Ω</li>
-        <li>Armature Resistance:  Ω</li> -->
-            <li>Voltmeter Range: 0 to 410 V</li>
-            <li>Ammeter Range: 0 to 1 A</li>
-            <li>Speed Range: 0 to 2000 RPM</li>
-        </ul>
-    </div>
-
-
-    <div class="section">
-        <h3 style="text-align:center"><b>Observation Table</b></h3>
-
-        <table id="myTable" width="250" border="5" style="text-align:center">
-            <thead>
-                <tr>
-                    <th width="25"><b>S.No.</b></th>
-                    <th width="25"><b>Armature Voltage (V)</b></th>
-                    <th width="25"><b>Speed (RPM)</b></th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <!-- JS will insert rows here -->
-            </tbody>
-        </table>
-    </div>
-
-
-    <div class="section">
-        <h3 style="text-align:center"><b>Graph</b></h3>
-
-        <div id="myDiv2" style="width:600px;height:300px;margin:auto;">
-        </div>
-    </div>
-
-
-    <!-- 
-        <div>
-    <div class="section graph">
-        <h3>Graph</h3>
-    
-        <div id="myDiv2" style="position:relative;width:600px;height:300px;opacity:1;margin:auto "></div>
-    </div>
-        </div>
-    </div> -->
-
-
+  <!-- ── ACTION BUTTONS ── -->
+  <div class="report-actions">
     <button class="print-btn" onclick="window.print()">PRINT</button>
+    <button class="download-btn" onclick="downloadReport()">DOWNLOAD PDF</button>
+  </div>
 
-    <script>
+</div><!-- /#report-root -->
 
-        document.getElementById("dateField").innerText = formattedDate;
+<script>
+  // ══════════════════════════════════════════
+  //  1. READ DATA FROM localStorage
+  // ══════════════════════════════════════════
+  function safeJSON(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
 
-        var serializedData = localStorage.getItem('experimentReport');
-        var reportData = serializedData ? JSON.parse(serializedData) : [];
+  const tableData    = safeJSON("tableData", []);
+  const graphData    = safeJSON("experimentReport", []);
+  const startTime    = localStorage.getItem("reportStartTime")  || "—";
+  const endTime      = localStorage.getItem("reportEndTime")    || "—";
+  const duration     = localStorage.getItem("reportDuration")   || "—";
 
-        var xValues = reportData.map(d => d.voltage);
-        var yValues = reportData.map(d => d.rpm);
+  // ══════════════════════════════════════════
+  //  2. FILL DATE & TIME FIELDS
+  // ══════════════════════════════════════════
+ document.getElementById("reportDate").innerHTML =
+  '<span class="label">Date:</span> ' +
+  new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
 
-        var trace2 = {
-            x: xValues,
-            y: yValues,
-            mode: "lines+markers",
-            type: "scatter"
+  document.getElementById("startTimeVal").textContent = startTime;
+  document.getElementById("endTimeVal").textContent   = endTime;
+  document.getElementById("durationVal").textContent  = duration;
+
+  // ══════════════════════════════════════════
+  //  3. POPULATE OBSERVATION TABLE
+  // ══════════════════════════════════════════
+  const tbody = document.getElementById("reportTableBody");
+
+  if (tableData.length > 0) {
+    tbody.innerHTML = tableData.map(function(row) {
+      return (
+        "<tr>" +
+          "<td>" + row.count   + "</td>" +
+          "<td>" + row.voltage + "</td>" +
+          "<td>" + row.rpm     + "</td>" +
+        "</tr>"
+      );
+    }).join("");
+  }
+
+  // ══════════════════════════════════════════
+  //  4. PLOT GRAPH WITH PLOTLY
+  // ══════════════════════════════════════════
+  var graphReady = Promise.resolve();
+
+  if (graphData.length > 0) {
+    var xValues = graphData.map(function(r) { return r.voltage; });
+    var yValues = graphData.map(function(r) { return r.rpm; });
+
+    var trace = {
+      x: xValues,
+      y: yValues,
+      mode: "lines+markers",
+      type: "scatter",
+      name: "Speed vs Armature Voltage",
+      marker: { color: "#1b6fb8", size: 8 },
+      line:   { color: "#1b6fb8", width: 3 }
+    };
+
+    var layout = {
+  title: {
+    text: "<b>Speed (RPM) vs Armature Voltage (V)</b>",
+    font: { size: 16 }
+  },
+
+  margin: { l: 120, r: 30, t: 60, b: 100 },
+
+  xaxis: {
+    title: {
+      text: "Armature Voltage (V)",
+      standoff: 40,
+      font: {
+        color: "#2c1a0a",
+        size: 14,
+        family: "Arial Black"
+      }
+    },
+    type: "category",
+    categoryarray: xValues.map(String),
+    showgrid: true,
+    gridcolor: "rgba(0, 0, 0, 0.07)",
+    zeroline: false
+  },
+
+  yaxis: {
+    title: {
+      text: "Speed (RPM)",
+      standoff: 50,
+      font: {
+        color: "#2c1a0a",
+        size: 14,
+        family: "Arial Black"
+      }
+    },
+    type: "category",
+    categoryarray: yValues.map(String),
+    showgrid: true,
+    gridcolor: "rgba(0, 0, 0, 0.07)",
+    zeroline: false
+  },
+
+  paper_bgcolor: "rgba(0,0,0,0)",
+  plot_bgcolor: "rgba(0,0,0,0)"
+};
+
+   graphReady = Plotly.newPlot("report-graph", [trace], layout, {
+  displaylogo: false,
+  responsive: true
+});
+
+  } else {
+    document.getElementById("report-graph").innerHTML =
+      '<p class="no-data">No readings available to plot.</p>';
+  }
+
+  window.reportGraphReady = graphReady;
+
+  // ══════════════════════════════════════════
+  //  5. PDF DOWNLOAD (html2pdf)
+  // ══════════════════════════════════════════
+  function ensureHtml2Pdf() {
+    return new Promise(function(resolve, reject) {
+      if (window.html2pdf) return resolve();
+      var script = document.createElement("script");
+      script.src =
+        "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+      script.onload  = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  function downloadReport() {
+    var waitForGraph = window.reportGraphReady || Promise.resolve();
+
+    waitForGraph
+      .then(ensureHtml2Pdf)
+      .then(function() {
+        var element = document.getElementById("report-root") || document.body;
+
+        var opts = {
+          margin:     [0.3, 0.3, 0.3, 0.3],
+          filename:   "simulation-report.pdf",
+          image:      { type: "jpeg", quality: 0.98 },
+          html2canvas: {
+            scale:   2,
+            useCORS: true,
+            scrollX: 0,
+            scrollY: 0
+          },
+          jsPDF: {
+            unit:        "in",
+            format:      "a4",
+            orientation: "portrait"
+          }
         };
 
-        // ✅ READ FINAL TIME DATA (display only)
-        const startTime =
-            localStorage.getItem("reportStartTime") || "N/A";
+        return window.html2pdf().set(opts).from(element).save();
+      })
+      .catch(function() {
+        alert(
+          "Unable to download automatically.\n" +
+          "Please use your browser's Save as PDF option (Ctrl+P or Cmd+P)."
+        );
+      });
+  }
 
-        const endTime =
-            localStorage.getItem("reportEndTime") || "N/A";
-
-        const duration =
-            localStorage.getItem("reportDuration") || "0";
-
-
-
-
-        // Reference to the table in the second file
-        let table = document.getElementById("myTable");
-        let tbody = table.querySelector("tbody");
-
-
-        // Get data from localStorage
-        // Rebuild rows from stored data
-        let tableData = JSON.parse(localStorage.getItem("tableData")) || [];
-
-        tableData.forEach(item => {
-            let row = tbody.insertRow(-1);
-            row.insertCell(0).innerHTML = item.count;
-            row.insertCell(1).innerHTML = item.voltage;
-            row.insertCell(2).innerHTML = item.rpm;
-        });
-
-
-
-
-
-        // document.getElementById('start').textContent = '<b>Start Time:</b>' + startTime;
-        // document.getElementById('end').textContent = '<b>End Time:</b>' + endTime;
-
-        //     document.getElementById('total').textContent = '<b>Total Time Spent:</b>' + duration + ' minutes';
-
-        document.getElementById('start').innerHTML =
-            '<b>Start Time:</b> ' + startTime;
-
-        document.getElementById('end').innerHTML =
-            '<b>End Time:</b> ' + endTime;
-
-        document.getElementById('total').innerHTML =
-            '<b>Total Time Spent:</b> ' + duration + ' minutes';
-
-
-        report_graph()
-        function report_graph() {
-
-            var data = [trace2];
-            var layout = {
-                title: {
-                    text: 'Armature Voltage (V) vs Speed (RPM)'
-                },
-                width: 580,
-
-                margin: {
-                    r: 15,
-                    t: 90,
-                    b: 50,
-                },
-                xaxis: {
-                    title: { text: "Armature Voltage (V)" },
-                    type: "category",
-                    categoryarray: xValues.map(String)
-                },
-                yaxis: {
-                    title: { text: "Speed (RPM)" },
-                    type: "category",
-                    categoryarray: yValues.map(String)
-                }
-
-            };
-            Plotly.newPlot('myDiv2', data, layout, {
-                displaylogo: false
-            });
-
-        }
-    </script>
-
+  // ══════════════════════════════════════════
+  //  6. CLEAN UP localStorage AFTER READING
+  // ══════════════════════════════════════════
+  // Uncomment if you want to clear data after report loads:
+  // localStorage.removeItem("tableData");
+  // localStorage.removeItem("experimentReport");
+  // localStorage.removeItem("reportStartTime");
+  // localStorage.removeItem("reportEndTime");
+  // localStorage.removeItem("reportDuration");
+  // localStorage.removeItem("experimentStartTime");
+  // localStorage.removeItem("experimentEndTime");
+</script>
 </body>
-
 </html>

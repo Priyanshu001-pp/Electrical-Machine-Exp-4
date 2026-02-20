@@ -325,6 +325,39 @@ function onReadingAdded(total) {
     return modal && modal.classList.contains("show");
   }
  
+  function waitForWarningModalAcknowledgement() {
+    return new Promise((resolve) => {
+      const modal = document.getElementById("warningModal");
+      if (!modal) {
+        resolve();
+        return;
+      }
+
+      const closeBtn = modal.querySelector("[data-modal-close]");
+      let resolved = false;
+
+      const cleanup = () => {
+        if (resolved) return;
+        resolved = true;
+        closeBtn?.removeEventListener("click", onClose);
+        modal.removeEventListener("click", onBackdrop);
+        document.removeEventListener("keydown", onEsc);
+        resolve();
+      };
+
+      const onClose = () => cleanup();
+      const onBackdrop = (event) => {
+        if (event.target === modal) cleanup();
+      };
+      const onEsc = (event) => {
+        if (event.key === "Escape") cleanup();
+      };
+
+      closeBtn?.addEventListener("click", onClose, { once: true });
+      modal.addEventListener("click", onBackdrop, { once: true });
+      document.addEventListener("keydown", onEsc, { once: true });
+    });
+  }
  
  
   window.closeModal = closeModal;
@@ -643,7 +676,7 @@ if (graphCanvas) {
   const armatureTable = [
     { voltage: 132, rpm: 1085 },
     { voltage: 139, rpm: 1170 },
-    { voltage: 152, rpm: 1501 },
+    { voltage: 152, rpm: 1301 },
     { voltage: 166, rpm: 1400 },
     { voltage: 176, rpm: 1507 },
     { voltage: 198, rpm: 1690 },
@@ -763,8 +796,7 @@ if (graphCanvas) {
     armatureKnob.addEventListener("mousedown", (e) => {
       if (mcbState !== "ON" || !starterEngaged || !fieldLocked) {
         showPopup(
-          "⚠️ First turn ON MCB and Starter",
-          "Step Violation"
+          "First turn ON DC Supply"
         );
         return;
       }
@@ -1004,7 +1036,7 @@ if (graphCanvas) {
  
      if (!checkClickedAfterCompletion || !areAllConnectionsCorrect()) {
   showPopup(
-    "⚠️ Make and check all connections before turning ON the MCB."
+    "⚠️ Make and check the connections before turning ON the DC Supply."
   );
   return;
 }
@@ -1172,10 +1204,8 @@ if (graphCanvas) {
     starterHandle.style.cursor = "default";
  
  
-    // ✅ STORE START TIME HERE (ONLY ONCE)
-    if (!localStorage.getItem("experimentStartTime")) {
-      localStorage.setItem("experimentStartTime", Date.now());
-    }
+  // ✅ FIX (always set fresh time when starter is engaged):
+localStorage.setItem("experimentStartTime", Date.now());
  
     console.log("✅ Starter ON");
  
@@ -1770,8 +1800,8 @@ if (guideActive) {
         if (areAllConnectionsCorrect()) {
           checkClickedAfterCompletion = true;
           showPopup(
-            "🎉 All wiring connections are correct and completed!",
-            "Success"
+            " Connections are correct, click on the DC Supply to turn it ON."
+           
           );
 
           if (guideActive) {
@@ -2084,8 +2114,8 @@ graphCanvas?.classList.remove("is-plotting");
 
  
  
-  reportBtn.addEventListener("click", () => {
- 
+ reportBtn.addEventListener("click", () => {
+
     // 🚨 SAFETY CHECK: EXPERIMENT STARTED OR NOT
     const startTimeCheck = localStorage.getItem("experimentStartTime");
     if (!startTimeCheck) {
@@ -2095,62 +2125,63 @@ graphCanvas?.classList.remove("is-plotting");
       );
       return;
     }
- 
- 
+
     if (graphReadings.length === 0) {
       showPopup("⚠️ No observation data available for report.", "Report Error");
       return;
     }
- 
-    // ===== TIME STORE =====
-    // ===== TIME STORE (FINAL & CORRECT) =====
-    // ===== STORE EXPERIMENT END TIME =====
-    const endTime = Date.now();
-    localStorage.setItem("experimentEndTime", endTime);
- 
-    // ===== CALCULATE TOTAL DURATION =====
-    const startTime = parseInt(localStorage.getItem("experimentStartTime"));
- 
-    const durationMs = endTime - startTime;
-    const durationMinutes = Math.round((durationMs / 60000) * 10) / 10;
- 
-    // ===== STORE READABLE VALUES FOR REPORT =====
-    localStorage.setItem(
-      "reportStartTime",
-      new Date(startTime).toLocaleTimeString()
+
+    // ✅ SHOW REPORT READY POPUP FIRST (reference style)
+    showPopup(
+      "Your report has been generated successfully. Click OK to view your report.",
+      "Report Ready"
     );
- 
-    localStorage.setItem(
-      "reportEndTime",
-      new Date(endTime).toLocaleTimeString()
-    );
- 
-    localStorage.setItem("reportDuration", durationMinutes);
- 
- 
- 
- 
-    // ===== DATA STORE =====
-    localStorage.setItem(
-      "experimentReport",
-      JSON.stringify(graphReadings)
-    );
- 
-    localStorage.setItem(
-      "tableData",
-      JSON.stringify(
-        graphReadings.map((row, index) => ({
-          count: index + 1,
-          voltage: row.voltage,
-          rpm: row.rpm
-        }))
-      )
-    );
- 
-    window.open("report.html", "_blank");
-    // 🔊 VOICE AFTER REPORT
-    onReportGenerated();
- 
+
+    // 🔊 VOICE (only if guide is active)
+    if (isGuideActive()) {
+      labSpeech.speak("Your report has been generated successfully. Click OK to view your report.");
+    }
+
+    // ⏳ WAIT FOR USER TO CLICK OK, THEN OPEN REPORT
+    waitForWarningModalAcknowledgement().then(() => {
+
+      // ===== STORE EXPERIMENT END TIME =====
+      const endTime = Date.now();
+      localStorage.setItem("experimentEndTime", endTime);
+
+      // ===== CALCULATE TOTAL DURATION =====
+      const startTime = parseInt(localStorage.getItem("experimentStartTime"));
+      const durationMs = endTime - startTime;
+      const durationTotalSeconds = Math.floor(durationMs / 1000);
+const durationMins = Math.floor(durationTotalSeconds / 60);
+const durationSecs = durationTotalSeconds % 60;
+const durationText = `${durationMins} min ${String(durationSecs).padStart(2, "0")} sec`;
+
+      // ===== STORE READABLE VALUES FOR REPORT =====
+      localStorage.setItem("reportStartTime", new Date(startTime).toLocaleTimeString());
+      localStorage.setItem("reportEndTime", new Date(endTime).toLocaleTimeString());
+      localStorage.setItem("reportDuration", durationText);
+
+      // ===== DATA STORE =====
+      localStorage.setItem("experimentReport", JSON.stringify(graphReadings));
+      localStorage.setItem(
+        "tableData",
+        JSON.stringify(
+          graphReadings.map((row, index) => ({
+            count: index + 1,
+            voltage: row.voltage,
+            rpm: row.rpm
+          }))
+        )
+      );
+
+      // ✅ OPEN REPORT ONLY AFTER OK CLICKED
+      window.open("report.html", "_blank");
+
+      // 🔊 VOICE AFTER REPORT
+      onReportGenerated();
+    });
+
   });
  
 });
