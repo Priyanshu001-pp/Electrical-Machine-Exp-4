@@ -411,7 +411,7 @@ document.addEventListener("click", function (e) {
  
     if (currentVoltage === 0 || currentRPM === 0) {
       showPopup(
-        "⚠️ First, set the armature rheostat to a specific step.",
+        "First, set the armature rheostat to a specific step.",
         "Step Required"
       );
  
@@ -429,7 +429,7 @@ document.addEventListener("click", function (e) {
  
         if (v === currentVoltage && r === currentRPM) {
           showPopup(
-            "⚠️ This reading is already in the observation table.",
+            "This reading is already in the observation table.",
             "Duplicate Entry"
           );
           return;
@@ -1036,7 +1036,7 @@ if (graphCanvas) {
  
      if (!checkClickedAfterCompletion || !areAllConnectionsCorrect()) {
   showPopup(
-    "⚠️ Make and check the connections before turning ON the DC Supply."
+    "Make and check the connections before turning ON the DC Supply."
   );
   return;
 }
@@ -1056,7 +1056,7 @@ if (graphCanvas) {
       }
  
  
-      showPopup("✅ DC SUPPLY is turned ON", "Power ON");
+      showPopup("DC Supply is turned ON", "Power ON");
       console.log("MCB ON");
       if (isGuideActive()) {
         labSpeech.speak(
@@ -1828,7 +1828,7 @@ if (guideActive) {
           
           // Show which connection is missing
           showPopup(
-            `🔧 Step ${stepNo} of ${requiredPairs.length} Connections\n\nMissing: ${a} ↔ ${b}`,
+            ` Step ${stepNo} of ${requiredPairs.length} Connections\n\nMissing: ${a} ↔ ${b}`,
             "Connection Required"
           );
 
@@ -1982,7 +1982,7 @@ if (guideActive) {
       turnMCBOff("");
       // ✅ Show new reset message
 showPopup(
-  "🔄 The Simulation has been reset.\n\nYou can start again.",
+  "The Simulation has been reset.\n\nYou can start again.",
   "Simulation Reset"
 );
       localStorage.removeItem("experimentStartTime");
