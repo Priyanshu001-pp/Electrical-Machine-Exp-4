@@ -1,6 +1,26 @@
 jsPlumb.ready(function () {
  
- 
+ // ✅ GLOBAL showPopup so it works before jsPlumb.ready fires
+window.showPopup = function(message, title = "Alert") {
+  const modal = document.getElementById("warningModal");
+  if (!modal) return;
+  const box = modal.querySelector(".modal-box");
+  const msg = document.getElementById("modalMessage");
+  const ttl = document.getElementById("modalTitle");
+  const sound = document.getElementById("alertSound");
+
+if (ttl) ttl.textContent = title;
+  if (msg) msg.innerHTML = message;
+  if (box) box.classList.add("danger");
+  modal.classList.add("show");
+
+  if (sound) {
+    sound.currentTime = 0;
+    sound.play().catch(() => {});
+  }
+};
+
+
   // =====================
   // 🔊 VOICE ENGINE (GLOBAL)
   // =====================
@@ -286,7 +306,7 @@ function onReadingAdded(total) {
     const sound = document.getElementById("alertSound");
  
     ttl.textContent = title;
-    msg.textContent = message;
+  msg.innerHTML = message;
  
     box.classList.add("danger");
     modal.classList.add("show");
@@ -2190,31 +2210,76 @@ const durationText = `${durationMins} min ${String(durationSecs).padStart(2, "0"
 // COMPONENT WINDOW AUTO OPEN
 // ==============================
  
-function openComponentsWindow() {
+// Storage keys (matching reference project)
+const COMPONENTS_SEEN_KEY    = "vl_components_seen";
+const COMPONENTS_ALERT_KEY   = "vl_components_alert_shown";
+
+function hasSeenComponents() {
+  try { return localStorage.getItem(COMPONENTS_SEEN_KEY) === "1"; } catch(e) { return false; }
+}
+function markComponentsSeen() {
+  try { localStorage.setItem(COMPONENTS_SEEN_KEY, "1"); } catch(e) {}
+}
+function hasShownComponentsAlert() {
+  try { return localStorage.getItem(COMPONENTS_ALERT_KEY) === "1"; } catch(e) { return false; }
+}
+function markComponentsAlertShown() {
+  try { localStorage.setItem(COMPONENTS_ALERT_KEY, "1"); } catch(e) {}
+}
+
+function openComponentsWindow({ force = false, auto = false } = {}) {
   const modal = document.getElementById("componentsModal");
   if (!modal) return;
- 
-   // 🔇 STEP 1: DISABLE SIMULATION VOICE
+
+  // ✅ SKIP if already seen (unless force opened via icon)
+  if (!force && auto && hasSeenComponents()) return;
+
   if (window.labSpeech) {
     labSpeech.enabled = false;
     labSpeech.stop();
   }
- 
+
   modal.classList.remove("is-hidden");
   document.body.classList.add("is-modal-open");
+
+  if (auto) markComponentsSeen(); // mark as seen on auto-open
 }
  
-function closeComponentsWindow() {
+const COMPONENTS_EXIT_MESSAGE =
+  "Now that you are familiar with all the components used in this experiment, " +
+  "you may now start the simulation.<br><br>An AI guide is available to assist you at every step.";
+
+function showComponentsExitAlert() {
+  if (hasShownComponentsAlert()) return; // ✅ only once ever
+  markComponentsAlertShown();
+
+  // ✨ Highlight the speak button to draw attention
+  const speakBtn = document.querySelector(".speak-btn");
+  if (speakBtn) {
+    speakBtn.classList.add("speak-attention");
+    speakBtn.addEventListener("click", () => {
+      speakBtn.classList.remove("speak-attention");
+    }, { once: true });
+  }
+
+  showPopup(COMPONENTS_EXIT_MESSAGE, "Instruction");
+}
+
+function closeComponentsWindow({ showAlert = false } = {}) {
   const modal = document.getElementById("componentsModal");
   if (!modal) return;
- 
-    // 🔊 STEP 2: RE-ENABLE SIMULATION VOICE
+
   if (window.labSpeech) {
     labSpeech.enabled = true;
   }
- 
+
   modal.classList.add("is-hidden");
   document.body.classList.remove("is-modal-open");
+
+  // ✅ Show first-time instruction alert
+  if (showAlert) {
+    showComponentsExitAlert();
+  }
 }
  
 // ==============================
@@ -2223,17 +2288,16 @@ function closeComponentsWindow() {
 document.addEventListener("click", (e) => {
   const launcher = e.target.closest("[data-open-components]");
   if (!launcher) return;
- 
-  openComponentsWindow();
+  openComponentsWindow({ force: true }); // always open from icon
 });
  
  
 // ==============================
-/* Auto open when simulation loads */
+// Auto open on load (skips if already seen)
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", openComponentsWindow);
+  document.addEventListener("DOMContentLoaded", () => openComponentsWindow({ auto: true }));
 } else {
-  openComponentsWindow();
+  openComponentsWindow({ auto: true });
 }
  
  
@@ -2256,14 +2320,15 @@ document.addEventListener("click", (e) => {
  
  
     // 🔴 STEP 3: close modal
-    closeComponentsWindow();
+    closeComponentsWindow({ showAlert: true });
   }
 });
  
  
+// ESC key closes chatbot panel
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    closeComponentsWindow();
+  if (e.key === "Escape" && panel.classList.contains("open")) {
+    closePanel();
   }
 });
  
@@ -2349,7 +2414,7 @@ if (skipBtn && iframe) {
  
  
     // 3️⃣ Close component modal
-    closeComponentsWindow();
+    closeComponentsWindow({ showAlert: true });
   });
 }
 
@@ -2425,10 +2490,10 @@ if (skipBtn && iframe) {
 
     // ESC key closes chatbot
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && panel.classList.contains("open")) {
-        closePanel();
-      }
-    });
+  if (e.key === "Escape") {
+    closeComponentsWindow({ showAlert: true });
+  }
+});
   }
 
   if (document.readyState === "loading") {
