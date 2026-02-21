@@ -946,17 +946,37 @@ if (graphCanvas) {
     });
  
  
-    document.addEventListener("mousemove", (e) => {
-      if (!isDragging || mcbState !== "ON") return;
- 
-      const deltaX = e.clientX - startX;
-      armatureX = knobStartX + deltaX;
- 
-      armatureX = Math.max(MIN_X, Math.min(MAX_X, armatureX));
- 
-      armatureKnob.style.transform =
-        `translateX(${armatureX - KNOB_START_X}px)`;
-    });
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging || mcbState !== "ON") return;
+
+  const deltaX = e.clientX - startX;
+  const rawX = knobStartX + deltaX;
+
+  // 🔒 Clamp to valid range
+  const clampedX = Math.max(MIN_X, Math.min(MAX_X, rawX));
+
+  // 🎯 Snap to nearest step DURING drag (not just on mouseup)
+  const rawStep = (clampedX - MIN_X) / STEP_WIDTH;
+  const stepIndex = Math.round(rawStep);
+  const safeIndex = Math.max(0, Math.min(stepIndex, armatureTable.length - 1));
+
+  // ✅ Only update if step actually changed
+  const snappedX = MIN_X + safeIndex * STEP_WIDTH;
+
+  if (snappedX !== armatureX) {
+    armatureX = snappedX;
+    armatureKnob.style.transform = `translateX(${armatureX - KNOB_START_X}px)`;
+
+    // 🔊 Update meters + RPM + voice live during drag
+    updateVoltmeterByArmature(safeIndex);
+
+    // 🔄 Start rotor if not already running
+    if (!rotorRunning && mcbState === "ON" && starterEngaged) {
+      rotorRunning = true;
+      requestAnimationFrame(runRotor);
+    }
+  }
+});
  
   }
   function turnMCBOff(reason = "") {
