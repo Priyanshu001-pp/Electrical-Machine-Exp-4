@@ -2334,3 +2334,45 @@ body.is-modal-open {
   font-weight: 600;
   color: #152a44;
 }
+
+
+/* ===============================
+   🎯 SPEAK-GLOW HIGHLIGHT SYSTEM
+   Add these rules to your styles.css
+   =============================== */
+
+/* Pulse animation for glowing buttons */
+@keyframes speakGlowPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(46, 130, 255, 0.7), 0 4px 15px rgba(0,0,0,0.2); }
+  50%  { box-shadow: 0 0 0 6px rgba(46, 130, 255, 0.15), 0 6px 20px rgba(0,0,0,0.3); }
+  100% { box-shadow: 0 0 0 0 rgba(46, 130, 255, 0.7), 0 4px 15px rgba(0,0,0,0.2); }
+}
+
+/* Glow effect on label buttons (e.g. .point-R, .point-B …) */
+[class^="point-"].speak-glow,
+[class*=" point-"].speak-glow {
+  outline: 3px solid rgba(46, 130, 255, 0.85);
+  outline-offset: 2px;
+ 
+  animation: speakGlowPulse 1.35s ease-in-out infinite;
+  z-index: 9999;
+  
+}
+
+/* Glowing ring on endpoint dots (.point divs used by jsPlumb) */
+.point.speak-glow {
+  position: relative;
+}
+
+.point.speak-glow::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 196, 46, 0.95);
+  box-shadow:
+    0 0 10px rgba(255, 196, 46, 0.5),
+    0 0 20px rgba(255, 196, 46, 0.3);
+  pointer-events: none;
+  animation: speakGlowPulse 1.35s ease-in-out infinite;
+}

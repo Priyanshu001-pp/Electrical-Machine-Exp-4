@@ -68,13 +68,85 @@ if (ttl) ttl.textContent = title;
   let introSpoken = false;
 
   // =====================
-// 🎯 HIGHLIGHT SYSTEM FOR SPEAKING
-// =====================
-const SPEAK_HIGHLIGHT_CLASS = "speak-glow";
-const SPEAK_LINE_COLOR = "#f59e0b";
-const SPEAK_LINE_WIDTH = 7;
-const activeSpeakLabels = new Set();
-const activeSpeakConnections = new Map();
+  // 🎯 HIGHLIGHT SYSTEM FOR SPEAKING
+  // =====================
+  const SPEAK_HIGHLIGHT_CLASS = "speak-glow";
+  const SPEAK_LINE_COLOR = "#f59e0b";
+  const SPEAK_LINE_WIDTH = 7;
+  const activeSpeakLabels = new Set();
+  const activeSpeakConnections = new Map();
+
+  // Maps "pointR" → finds button with class "point-R"
+  function getPointLabelEl(id) {
+    const suffix = String(id || "").replace(/^point/i, "");
+    if (!suffix) return null;
+    return document.querySelector(`.point-${suffix}`);
+  }
+
+  function addSpeakGlow(el, bucket) {
+    if (!el) return;
+    el.classList.add(SPEAK_HIGHLIGHT_CLASS);
+    bucket.add(el);
+  }
+
+  function clearSpeakGlow(bucket) {
+    bucket.forEach(el => el.classList.remove(SPEAK_HIGHLIGHT_CLASS));
+    bucket.clear();
+  }
+
+  function clearSpeakConnectionHighlights() {
+    activeSpeakConnections.forEach((style, conn) => {
+      if (conn && typeof conn.setPaintStyle === "function" && style) {
+        conn.setPaintStyle(style);
+      }
+    });
+    activeSpeakConnections.clear();
+  }
+
+  function clearSpeakHighlights() {
+    clearSpeakGlow(activeSpeakLabels);
+    clearSpeakConnectionHighlights();
+  }
+
+  // Highlight the FROM and TO label buttons for the current step,
+  // and also re-colour any existing wire for that pair in amber/gold
+  function highlightStep(fromId, toId) {
+    clearSpeakHighlights();
+
+    addSpeakGlow(getPointLabelEl(fromId), activeSpeakLabels);
+    addSpeakGlow(getPointLabelEl(toId),   activeSpeakLabels);
+
+    // Highlight the wire if it already exists
+    if (typeof jsPlumb !== "undefined" && typeof jsPlumb.getAllConnections === "function") {
+      const key = connectionKey(fromId, toId);
+      jsPlumb.getAllConnections().forEach(conn => {
+        if (connectionKey(conn.sourceId, conn.targetId) !== key) return;
+
+        const baseStyle =
+          typeof conn.getPaintStyle === "function"
+            ? conn.getPaintStyle()
+            : conn.paintStyle;
+        const storedStyle = baseStyle
+          ? { ...baseStyle }
+          : { stroke: "#1b6fb8", strokeWidth: 4 };
+
+        activeSpeakConnections.set(conn, storedStyle);
+
+        const baseWidth = Number(storedStyle.strokeWidth) || 4;
+        if (typeof conn.setPaintStyle === "function") {
+          conn.setPaintStyle({
+            ...storedStyle,
+            stroke: SPEAK_LINE_COLOR,
+            strokeWidth: Math.max(SPEAK_LINE_WIDTH, baseWidth + 2)
+          });
+        }
+      });
+    }
+  }
+  // =====================
+  // END HIGHLIGHT SYSTEM
+  // =====================
+
  
   function speakCurrentStep() {
     if (!guideActive) return;
@@ -91,6 +163,7 @@ if (checkClickedAfterCompletion && mcbState === "OFF") {
   });
 
   if (allStillConnected) {
+    clearSpeakHighlights(); // 🎯 no step to highlight here
     labSpeech.speak(
       "Connections are already verified. Now turn on the DC supply."
     );
@@ -104,6 +177,7 @@ if (checkClickedAfterCompletion && mcbState === "OFF") {
 }
     // 2️⃣ DC ON, starter OFF
     if (mcbState === "ON" && !starterEngaged) {
+      clearSpeakHighlights(); // 🎯 no wiring step active
       labSpeech.speak(
         "DC supply is already on. Now turn on the starter by moving the handle from left to right."
       );
@@ -112,6 +186,7 @@ if (checkClickedAfterCompletion && mcbState === "OFF") {
  
     // 3️⃣ Starter ON, field NOT set
     if (starterEngaged && !fieldLocked) {
+      clearSpeakHighlights(); // 🎯 no wiring step active
       labSpeech.speak(
         "Starter is already on. Now set the field resistance."
       );
@@ -120,6 +195,7 @@ if (checkClickedAfterCompletion && mcbState === "OFF") {
  
     // 4️⃣ Field set (your required unified condition ✅)
     if (starterEngaged && fieldLocked) {
+      clearSpeakHighlights(); // 🎯 no wiring step active
       labSpeech.speak(
         `Field resistance is already set. The armature voltage is ${currentVoltage} volts and the speed is ${currentRPM} RPM. Now adjust the armature rheostat to take readings.`
       );
@@ -140,6 +216,7 @@ if (
   });
 
   if (allStillConnected) {
+    clearSpeakHighlights(); // 🎯 wiring done, nothing to highlight
     labSpeech.speak(
       "The connections are now complete. Click the Check button to confirm them."
     );
@@ -151,9 +228,11 @@ if (
   }
 }
  
-    // 6️⃣ Normal wiring steps
+    // 6️⃣ Normal wiring steps — 🎯 HIGHLIGHT the two endpoint label buttons
     const [a, b] = requiredPairs[currentStepIndex].split("-");
     const stepNo = currentStepIndex + 1;
+
+    highlightStep(a, b); // 🎯 highlight FROM and TO labels (+ wire if exists)
  
     labSpeech.speak(
       `Step ${stepNo}. Please connect point ${a.replace("point", "")} to point ${b.replace("point", "")}.`
@@ -209,6 +288,7 @@ if (
       // ⏹ STOP GUIDE
       guideActive = false;
       labSpeech.stop();
+      clearSpeakHighlights(); // 🎯 clear all highlights when guide stops
       speakBtn.setAttribute("aria-pressed", "false");
       speakBtn.querySelector(".speak-btn__label").textContent = "TAP TO LISTEN";
  
@@ -337,14 +417,6 @@ function onReadingAdded(total) {
     }
   }
  
-  // function closeModal() {
-  //   const modal = document.getElementById("warningModal");
-  //   const sound = document.getElementById("alertSound");
- 
-  //   modal.classList.remove("show");
-  //   if (sound) sound.pause();
-  // }
- 
   function closeModal() {
     const modal = document.getElementById("warningModal");
     const box = modal.querySelector(".modal-box");
@@ -424,7 +496,6 @@ document.addEventListener("click", function (e) {
   const observationContainer = document.getElementById("observation-container");
  
   let observationBody;
-  // let observationCount = 0;
  
   function createObservationTable() {
  
@@ -583,9 +654,6 @@ if (graphCanvas) {
         },
  
         margin: { l: 120, r: 30, t: 60, b: 100 },
- 
-        //margin: { l: 80, r: 30, t: 50, b: 70 },
- 
  
         xaxis: {
           title: {
@@ -782,11 +850,6 @@ if (graphCanvas) {
   ];
  
  
-  // ===== ROTOR SPEED STATES =====
-  // let fieldRPM = 1085;      // 🔥 Base speed from field resistance
-  // let armatureRPM = 0;     // 🔧 Extra speed from armature resistance
- 
- 
   function runRotor() {
     if (!rotorRunning) return;
  
@@ -806,8 +869,6 @@ if (graphCanvas) {
       `translate(-30%, -90%) rotate(${ampAngle}deg)`;
   }
  
- 
-  // `translate(-60%, -90%) rotate(${voltAngle}deg)`;
  
   const KNOB_START_X = 28;   // CSS me .nob2 ka left
   let armatureX = KNOB_START_X;
@@ -950,9 +1011,6 @@ if (graphCanvas) {
       rotorSpeed = 0;
       lastFrameTime = null;
  
- 
- 
- 
       rotor.style.transform =
         "translate(-50%, -50%) rotate(0deg)";
  
@@ -1082,8 +1140,6 @@ if (graphCanvas) {
       mcbState = "ON";
       mcbReady = true;
  
- 
- 
       this.src = "images/mcb-on.png";
 
         // 🔒 DISABLE CHECK & AUTO CONNECT BUTTONS
@@ -1173,23 +1229,8 @@ if (graphCanvas) {
  
     fieldKnob.style.left = `${newPercent}%`;
  
-    // 🔥 FIELD → BASE RPM (default ≈1085)
     const fieldPercent =
       (newPercent - FIELD_MIN) / (FIELD_MAX - FIELD_MIN);
- 
-    // Field RPM range: 900 → 1085
-    // fieldRPM = 900 + fieldPercent * 185;
- 
- 
-    // // existing meter behavior
-    // setFieldDefaultMeters();
- 
-    // if (mcbState === "ON") {
-    //   updateVoltmeterByArmature(0);
-    // }
- 
- 
- 
  
   });
  
@@ -1241,9 +1282,7 @@ if (graphCanvas) {
       `translate(${END_X}px, 0px)`;
     starterHandle.style.cursor = "default";
  
- 
-  // ✅ FIX (always set fresh time when starter is engaged):
-localStorage.setItem("experimentStartTime", Date.now());
+  localStorage.setItem("experimentStartTime", Date.now());
  
     console.log("✅ Starter ON");
  
@@ -1275,7 +1314,7 @@ localStorage.setItem("experimentStartTime", Date.now());
     const fieldKnob = document.querySelector(".nob1");
     if (!fieldKnob) return;
  
-    fieldLocked = true;                 // 🔒 lock
+    fieldLocked = true;
     fieldKnob.style.cursor = "not-allowed";
  
     if (isGuideActive()) {
@@ -1288,13 +1327,7 @@ localStorage.setItem("experimentStartTime", Date.now());
   }
  
  
-  // Wire curviness (higher = more curved).
-  // Change this to adjust the default curve for all wires.
   const WIRE_CURVINESS = 80;
- 
-  // Wire curve shape:
-  // - "u": U-shaped curves (go down by default; negative curviness goes up)
-  // - "side": original side-curves (uses each point's anchor direction)
   const WIRE_CURVE_SHAPE = "u";
  
   function getWireAnchorForShape(anchor) {
@@ -1302,8 +1335,8 @@ localStorage.setItem("experimentStartTime", Date.now());
     if (WIRE_CURVE_SHAPE !== "u") return anchor;
  
     const uAnchor = anchor.slice();
-    uAnchor[2] = 0; // dx
-    uAnchor[3] = 1; // dy (screen coordinates: +y is down)
+    uAnchor[2] = 0;
+    uAnchor[3] = 1;
     return uAnchor;
   }
  
@@ -1316,7 +1349,6 @@ localStorage.setItem("experimentStartTime", Date.now());
         <circle cx="13" cy="13" r="6" fill="black"/>
       </svg>
     `);
-  // Base endpoint options (no connectorStyle here; we'll set per-endpoint dynamically)
   const baseEndpointOptions = {
     endpoint: ["Image", { url: ringSvg, width: 26, height: 26 }],
     isSource: true,
@@ -1330,21 +1362,18 @@ localStorage.setItem("experimentStartTime", Date.now());
   } else {
     console.warn('jsPlumb: container ".top-row" not found.');
   }
-  // anchors for each point (you can tweak these)
   const anchors = {
-    pointR: [1, 0.5, 1, 0], // right side
-    pointB: [0, 0.5, -1, 0], // left side
-    pointL: [1, 0.5, 1, 0], // right
-    pointF: [0, 0.5, -1, 0], // left
-    pointA: [1, 0.5, 1, 0], // right
+    pointR: [1, 0.5, 1, 0],
+    pointB: [0, 0.5, -1, 0],
+    pointL: [1, 0.5, 1, 0],
+    pointF: [0, 0.5, -1, 0],
+    pointA: [1, 0.5, 1, 0],
     pointC: [0, 0.5, -1, 0],
     pointD: [1, 0.5, 1, 0],
     pointE: [0, 0.5, -1, 0],
     pointG: [1, 0.5, 1, 0],
     pointH: [0.5, 0.5, 0, 0],
-    pointI: [0.5, 0.5, 0, 0],  /* Center */
-    // pointH: [0, 0.5, -1, 0],
-    // pointI: [1, 0.5, 1, 0],
+    pointI: [0.5, 0.5, 0, 0],
     pointJ: [0, 0.5, -1, 0],
     pointK: [1, 0.5, 1, 0],
     pointA1: [0, 0.5, -1, 0],
@@ -1358,7 +1387,6 @@ localStorage.setItem("experimentStartTime", Date.now());
     pointL1: [0, 0.5, -1, 0],
     pointF2: [1, 0.5, 1, 0],
     pointF1: [1, 0.5, -1, 0]
- 
   };
   const endpointsById = new Map();
   const loopbackTargets = new Map();
@@ -1395,31 +1423,26 @@ localStorage.setItem("experimentStartTime", Date.now());
     loopbackTargets.set(id, ep);
     return ep;
   }
-  // helper to safely add endpoint if element exists
+
   function addEndpointIfExists(id, anchor) {
     const el = document.getElementById(id);
     if (!el) {
       console.warn("jsPlumb: element not found:", id);
       return;
     }
-    // raise z-index so endpoint image stays visible above other elements
     el.style.zIndex = 2000;
-    // Determine color based on anchor side (left: blue, right: red)
-    const isLeftSide = anchor[0] === 0; // x=0 is left side
+    const isLeftSide = anchor[0] === 0;
     const wireColor = isLeftSide ? "blue" : "red";
     const endpointAnchor = getWireAnchorForShape(anchor);
-    // Create per-endpoint options with connectorStyle for drag preview
     const endpointOptions = { ...baseEndpointOptions };
     endpointOptions.connectorStyle = {
       stroke: wireColor,
       strokeWidth: 4
     };
-    // Use a stable uuid so Auto Connect can reuse the same styled endpoint
     const ep = jsPlumb.addEndpoint(el, { anchor: endpointAnchor, uuid: id }, endpointOptions);
     endpointsById.set(id, ep);
     return ep;
   }
-  // add endpoints for the points
   Object.keys(anchors).forEach(id => addEndpointIfExists(id, anchors[id]));
  
   function getOrCreateEndpoint(id) {
@@ -1438,10 +1461,6 @@ localStorage.setItem("experimentStartTime", Date.now());
     return [a, b].sort().join("-");
   }
  
-// ===============================
-// 🎯 WIRE CURVINESS LOGIC 
-// ===============================
- 
 const WIRE_CURVE_OVERRIDES = new Map([
   [connectionKey("pointR", "pointL"), -70],
   [connectionKey("pointB", "pointD"), -70],
@@ -1459,7 +1478,6 @@ const WIRE_CURVE_OVERRIDES = new Map([
 function getWireCurvinessForConnection(sourceId, targetId) {
   const key = connectionKey(sourceId, targetId);
   const override = WIRE_CURVE_OVERRIDES.get(key);
- 
   if (typeof override === "number") return override;
   return WIRE_CURVINESS;
 }
@@ -1484,7 +1502,6 @@ function getWireCurvinessForConnection(sourceId, targetId) {
     });
   }
  
-  // Check if connection between src and tgt is allowed up to the given index in requiredPairs
   function isConnectionAllowed(src, tgt, uptoIndex) {
     const key = [src, tgt].sort().join("-");
     for (let i = 0; i <= uptoIndex; i++) {
@@ -1499,11 +1516,7 @@ function getWireCurvinessForConnection(sourceId, targetId) {
  
  
   let autoConnectUsed = false;
- 
-  // 🔥 remembers user-removed wire
   let completedByAutoConnect = false;
- 
-  // Required connections: unsorted list for iteration order in auto-connect, sorted Set for checking
  
   const requiredPairs = [
     "pointR-pointL",
@@ -1520,8 +1533,6 @@ function getWireCurvinessForConnection(sourceId, targetId) {
   ];
  
  
-  // Auto-connect all required pairs
- 
   function areAllConnectionsCorrect() {
     const connections = jsPlumb.getAllConnections();
     return requiredPairs.every(pair => {
@@ -1537,7 +1548,7 @@ function getFirstMissingStepIndex() {
   for (let i = 0; i < requiredPairs.length; i++) {
     const [a, b] = requiredPairs[i].split("-");
     if (!isPairConnected(a, b, connections)) {
-      return i; // ✅ first real missing step
+      return i;
     }
   }
 
@@ -1545,28 +1556,6 @@ function getFirstMissingStepIndex() {
 }
 
  
- 
-  // function getFirstMissingStepIndex() {
-  //   const connections = jsPlumb.getAllConnections();
- 
-  //   for (let i = 0; i < requiredPairs.length; i++) {
-  //     const [a, b] = requiredPairs[i].split("-");
-  //     if (!isPairConnected(a, b, connections)) {
-  //       return i;   // 🔥 FIRST missing step
-  //     }
-  //   }
-  //   return requiredPairs.length;
-  // }
- 
- 
- 
-  // function areAllConnectionsCorrect() {
-  //   const connections = jsPlumb.getAllConnections();
- 
-  //   return requiredPairs.every(([a, b]) =>
-  //     isPairConnected(a, b, connections)
-  //   );
-  // }
  
   function connectRequiredPair(req, seenKeys, index = -1) {
     const [a, b] = req.split("-");
@@ -1593,16 +1582,14 @@ function getFirstMissingStepIndex() {
       sourceId = a;
       targetId = a;
     } else if (aIsLeft !== bIsLeft) {
-      // Mixed sides: alternate preference for balance (even index: prefer right source -> red; odd: left -> blue)
       const preferRight = (index % 2 === 0) || (index < 0);
       if (preferRight) {
-        sourceId = aIsLeft ? b : a; // Choose right as source
+        sourceId = aIsLeft ? b : a;
       } else {
-        sourceId = bIsLeft ? b : a; // Choose left as source
+        sourceId = bIsLeft ? b : a;
       }
       targetId = sourceId === a ? b : a;
     } else {
-      // Same side: default to a as source
       sourceId = a;
       targetId = b;
     }
@@ -1618,14 +1605,12 @@ function getFirstMissingStepIndex() {
       return false;
     }
  
-    // Connect using existing endpoints to keep point design unchanged.
     const connectionParams = {
       sourceEndpoint,
       targetEndpoint,
       connector: ["Bezier", { 
-  curviness: getWireCurvinessForConnection(sourceId, targetId)
-}],
- 
+        curviness: getWireCurvinessForConnection(sourceId, targetId)
+      }],
       paintStyle: { stroke: wireColor, strokeWidth: 4 }
     };
  
@@ -1646,7 +1631,7 @@ function getFirstMissingStepIndex() {
     return !!conn;
   }
  
-  // Dynamic wire color based on source anchor side (left: blue, right: red) - Now sets on connection for consistency
+  // Dynamic wire color + curviness on connection
 jsPlumb.bind("connection", function (info) {
 
   const curviness =
@@ -1656,7 +1641,6 @@ jsPlumb.bind("connection", function (info) {
     ["Bezier", { curviness }]
   );
 
-  // existing color logic
   const src = info.sourceId;
   const tgt = info.targetId;
 
@@ -1669,14 +1653,14 @@ jsPlumb.bind("connection", function (info) {
     return isPairConnected(a, b, connections);
   });
 
-  // ✅ IF ALL COMPLETE → SPEAK COMPLETE MESSAGE
   if (allConnected) {
     currentStepIndex = requiredPairs.length;
+    clearSpeakHighlights(); // 🎯 all done, nothing to highlight
     speakCurrentStep();
     return;
   }
 
-  // 🔍 OTHERWISE, CHECK IF THIS CONNECTION WAS CORRECT FOR CURRENT STEP
+  // 🔍 CHECK IF THIS CONNECTION WAS CORRECT FOR CURRENT STEP
   const [expectedA, expectedB] =
     requiredPairs[currentStepIndex].split("-");
 
@@ -1685,27 +1669,22 @@ jsPlumb.bind("connection", function (info) {
     (src === expectedB && tgt === expectedA);
 
   if (!isCorrect) {
-
-    // 🧠 Extract readable point names
     const wrongFrom = src.replace("point", "");
     const wrongTo = tgt.replace("point", "");
-
     const rightFrom = expectedA.replace("point", "");
     const rightTo = expectedB.replace("point", "");
 
-    // 🔊 Speak in 3 clear steps
     labSpeech.speak(
       `Wrong connection. You connected point ${wrongFrom} to point ${wrongTo}. Please connect point ${rightFrom} to point ${rightTo}.`
     );
 
+    // 🎯 Re-highlight correct step even after wrong connection
+    highlightStep(expectedA, expectedB);
     return;
   }
-// 🔄 HAR CONNECTION KE BAAD REAL STATE SE CALCULATE KARO
-currentStepIndex = getFirstMissingStepIndex();
 
-
-
-  // 🔊 SPEAK NEXT STEP AUTOMATICALLY
+  // 🔄 CORRECT — recalculate and speak/highlight next step
+  currentStepIndex = getFirstMissingStepIndex();
   speakCurrentStep();
 });
  
@@ -1715,17 +1694,16 @@ currentStepIndex = getFirstMissingStepIndex();
     return [a, b].sort().join("-");
   }));
  
-  // Click on label buttons (e.g., .point-R) to remove connections from corresponding point
+  // Click on label buttons to remove connections
   document.querySelectorAll('[class^="point-"]').forEach(btn => {
-    btn.style.cursor = "pointer"; // Ensure pointer cursor
+    btn.style.cursor = "pointer";
  
     btn.addEventListener("click", function () {
  
-      if (isModalOpen()) return;   // 🛑 ADD THIS LINE
+      if (isModalOpen()) return;
  
       const className = this.className;
 
-      // 🔒 PREVENT REMOVAL WHEN MCB IS ON
       if (mcbState === "ON") {
         showPopup("Turn off the DC Supply before removing the connection");
         return;
@@ -1738,83 +1716,71 @@ currentStepIndex = getFirstMissingStepIndex();
         const pointEl = document.getElementById(pointId);
         if (pointEl) {
  
-          // 🔥 Remove ONLY connections related to this point
           const relatedConnections = jsPlumb.getAllConnections().filter(c =>
             c.sourceId === pointId || c.targetId === pointId
           );
  
           if (relatedConnections.length === 0) return;
  
-          // remove ONLY one connection (latest / first)
           const conn = relatedConnections[0];
  
-      
           jsPlumb.deleteConnection(conn);
+          jsPlumb.repaintEverything();
 
-           jsPlumb.repaintEverything();
+          autoConnectUsed = false;
+          currentStepIndex = getFirstMissingStepIndex();
+          checkClickedAfterCompletion = false;
 
-              autoConnectUsed = false;
-                       currentStepIndex = getFirstMissingStepIndex();
+          turnMCBOff("Wire removed from " + pointId);
 
-                       checkClickedAfterCompletion = false;  // 🔥 ADD THIS LINE HERE
-
-                   turnMCBOff("Wire removed from " + pointId);
-
-// 🔊 SPEAK MISSING STEP AFTER WIRE REMOVAL
-if (guideActive) {
-  setTimeout(() => {
-    speakCurrentStep();
-  }, 500);
-}
+          // 🔊 SPEAK MISSING STEP AFTER WIRE REMOVAL
+          if (guideActive) {
+            setTimeout(() => {
+              speakCurrentStep(); // speakCurrentStep will call highlightStep internally
+            }, 500);
+          }
  
         }
       }
     });
   });
  
-  // Existing: make clickable elements (endpoint divs) removable
- 
+  // Endpoint dot clicks to remove connections
   document.querySelectorAll(".point").forEach(p => {
     p.style.cursor = "pointer";
  
     p.addEventListener("click", function () {
  
-      if (isModalOpen()) return;   // 🛑 ADD THIS LINE
+      if (isModalOpen()) return;
  
       const id = this.id;
  
- // 🔒 PREVENT REMOVAL WHEN MCB IS ON
       if (mcbState === "ON") {
         showPopup("⚠️ Cannot remove wires while DC supply is ON.\n\nPlease turn OFF the MCB first.", "MCB Active");
         return;
       }
  
-      // Get connections only related to this point
       const conns = jsPlumb.getAllConnections().filter(conn =>
         conn.sourceId === id || conn.targetId === id
       );
  
       if (conns.length === 0) return;
  
-      // Remove only this point's connection
-     
-jsPlumb.deleteConnection(conns[0]);
+      jsPlumb.deleteConnection(conns[0]);
+      jsPlumb.repaintEverything();
 
-jsPlumb.repaintEverything();
+      autoConnectUsed = false;
+      currentStepIndex = getFirstMissingStepIndex();
+      checkClickedAfterCompletion = false;
 
-autoConnectUsed = false;
-currentStepIndex = getFirstMissingStepIndex();
+      turnMCBOff("Wire disconnected");
 
-checkClickedAfterCompletion = false;  // 🔥 ADD THIS LINE HERE
-
-turnMCBOff("Wire disconnected");
-
-// 🔊 SPEAK MISSING STEP AFTER WIRE REMOVAL
-if (guideActive) {
-  setTimeout(() => {
-    speakCurrentStep();
-  }, 500);
-}
+      // 🔊 SPEAK MISSING STEP AFTER WIRE REMOVAL
+      if (guideActive) {
+        setTimeout(() => {
+          speakCurrentStep(); // speakCurrentStep will call highlightStep internally
+        }, 500);
+      }
  
     });
   });
@@ -1822,117 +1788,72 @@ if (guideActive) {
  
  
  
-  // Check button - Robust selection by text content (no ID needed)
+  // ============================================================
+  // ✅ CHECK BUTTON
+  // ============================================================
   let guideStepIndex = 0;
   const checkBtn = document.getElementById("checkBtn");
   if (checkBtn) {
-    console.log("Check button found and wired."); // Debug log
- 
- 
-    // Replace your checkBtn.addEventListener with this DEBUG VERSION:
- // ============================================================
-// ✅ CHECK BUTTON — FULL LOGIC (Reference Style for Doc-2 Lab)
-// ============================================================
-//
-// BEHAVIOUR SUMMARY:
-// ──────────────────
-// Case 1 → No wires at all
-//           Popup: "Please make all the connections first."
-//           Speech (if guide active): same text
-//
-// Case 2 → Some wires exist, but wrong connections present
-//           Popup: "Wrong connection(s): PointA - PointB [, ...]
-//                   Missing connection(s): PointX - PointY [, ...]"
-//           Speech: "Remove wrong connection point A to point B.
-//                    Next missing connection: point X to point Y."
-//
-// Case 3 → Some wires exist, no wrong ones, but missing connections remain
-//           Popup: "Missing connection(s): PointX - PointY  [, ...]"
-//           Speech: "Next missing connection: point X to point Y."
-//
-// Case 4 → All required connections are present and correct
-//           Popup: "Connections are correct. Click on the DC Supply to turn it ON."
-//           Speech: "The connections are correct. Now turn on the DC supply."
-//           Sets checkClickedAfterCompletion = true
-//
-// NOTE: Speech fires REGARDLESS of guide state for wrong/missing
-//       (via speakOrAlert helper which picks voice or popup).
-//       The popup fires ALWAYS for wrong/missing/empty cases.
-// ============================================================
+    console.log("Check button found and wired.");
 
 checkBtn.addEventListener("click", function () {
 
-  // ── 0. Gather live state ──────────────────────────────────
   const connections      = jsPlumb.getAllConnections();
   const totalWiresMade   = connections.length;
 
-  // Build a set of normalised keys for every wire currently on canvas
   const seenKeys = new Set();
   connections.forEach(conn => {
     seenKeys.add(connectionKey(conn.sourceId, conn.targetId));
   });
 
-  // ── 1. ALLOWED connections set (same as requiredConnections) ─
-  // Any wire NOT in allowedConnections is "illegal / wrong".
-  // We reuse the existing `requiredConnections` Set which stores
-  // sorted "a-b" keys built from requiredPairs.
-
-  // ── 2. Classify every drawn wire as correct or wrong ─────────
-  const illegalRaw = [];   // raw "sourceId-targetId" (unsorted) for display
+  const illegalRaw = [];
   connections.forEach(conn => {
     const key = connectionKey(conn.sourceId, conn.targetId);
     if (!requiredConnections.has(key)) {
-      // Keep original direction for readable display
       illegalRaw.push({ src: conn.sourceId, tgt: conn.targetId });
     }
   });
 
-  // ── 3. Find missing connections (in requiredPairs ORDER) ─────
   const missingPairs = requiredPairs.filter(pair => {
     const [a, b] = pair.split("-");
     return !seenKeys.has(connectionKey(a, b));
   });
 
-  // ── 4. Helper: human-readable point name ─────────────────────
   function toLabel(id) {
-    return id.replace(/^point/i, "Point");         // "pointA1" → "PointA1"
+    return id.replace(/^point/i, "Point");
   }
   function toSpeech(id) {
-    // "pointA1" → "A 1" (space between letters and digits for TTS)
     return id
       .replace(/^point/i, "")
-      .replace(/([A-Za-z]+)(\d+)/g, "$1 $2")       // "A1" → "A 1"
+      .replace(/([A-Za-z]+)(\d+)/g, "$1 $2")
       .toUpperCase();
   }
 
-  // ── 5. Helper: first entry only for speech focus ─────────────
   const firstIllegal = illegalRaw[0] || null;
-  const firstMissing = missingPairs[0] || null;   // full "pointA-pointB" string
+  const firstMissing = missingPairs[0] || null;
 
 
-  // ════════════════════════════════════════════════════════════
-  // CASE 1 — No wires drawn at all
-  // ════════════════════════════════════════════════════════════
+  // CASE 1 — No wires drawn
   if (totalWiresMade === 0) {
     const msg = "Please make all the connections first.";
     showPopup(msg);
     if (guideActive) labSpeech.speak(msg);
-    // Reset check state just in case
     checkClickedAfterCompletion = false;
     currentStepIndex = 0;
+    // 🎯 Highlight step 0 since nothing is connected yet
+    if (guideActive && requiredPairs.length > 0) {
+      const [a, b] = requiredPairs[0].split("-");
+      highlightStep(a, b);
+    }
     return;
   }
 
 
-  // ════════════════════════════════════════════════════════════
-  // CASE 2 + 3 — Wires exist but wrong / missing
-  // ════════════════════════════════════════════════════════════
+  // CASE 2 + 3 — Wrong or missing
   if (illegalRaw.length > 0 || missingPairs.length > 0) {
 
-    // ── Build POPUP message ──────────────────────────────────
     let popupMessage = "";
 
-    // Wrong connections section (show up to 3, then "+ N more")
     if (illegalRaw.length > 0) {
       const wrongLabels = illegalRaw.map(
         ({ src, tgt }) => `${toLabel(src)} ↔ ${toLabel(tgt)}`
@@ -1943,7 +1864,6 @@ checkBtn.addEventListener("click", function () {
       popupMessage += `Wrong connection${illegalRaw.length > 1 ? "s" : ""}: ${preview}${extraText}.\n`;
     }
 
-    // Missing connections section — in requiredPairs sequence (up to 3)
     if (missingPairs.length > 0) {
       const missingLabels = missingPairs.map(pair => {
         const [a, b] = pair.split("-");
@@ -1955,14 +1875,11 @@ checkBtn.addEventListener("click", function () {
       popupMessage += `Missing connection${missingPairs.length > 1 ? "s" : ""}: ${preview}${extraText}.`;
     }
 
-    // Trim any trailing whitespace / newlines
     popupMessage = popupMessage.trim();
 
-    // ── Build SPEECH message ─────────────────────────────────
     let speechMessage = "";
 
     if (firstIllegal) {
-      // Speak ONLY the first wrong connection to avoid overwhelming TTS
       speechMessage +=
         `Wrong connection: point ${toSpeech(firstIllegal.src)} to point ${toSpeech(firstIllegal.tgt)}. ` +
         `Please remove it. `;
@@ -1976,29 +1893,31 @@ checkBtn.addEventListener("click", function () {
         `connect point ${toSpeech(ma)} to point ${toSpeech(mb)}.`;
     }
 
-    // ── Show popup (always) ──────────────────────────────────
     const popupTitle = illegalRaw.length > 0 ? "Wiring Error" : "Connections Incomplete";
     showPopup(popupMessage, popupTitle);
 
-    // ── Speak (always, if guide active) ─────────────────────
     if (guideActive && speechMessage) {
       labSpeech.speak(speechMessage);
     }
 
-    // ── Reset verification state ─────────────────────────────
     checkClickedAfterCompletion = false;
-    // Sync step index to the first real missing step
     currentStepIndex = getFirstMissingStepIndex();
+
+    // 🎯 Highlight the first missing step after failed check
+    if (guideActive && currentStepIndex < requiredPairs.length) {
+      const [a, b] = requiredPairs[currentStepIndex].split("-");
+      highlightStep(a, b);
+    }
 
     return;
   }
 
 
-  // ════════════════════════════════════════════════════════════
-  // CASE 4 — All connections correct ✅
-  // ════════════════════════════════════════════════════════════
+  // CASE 4 — All correct ✅
   checkClickedAfterCompletion = true;
   currentStepIndex = requiredPairs.length;
+
+  clearSpeakHighlights(); // 🎯 wiring verified — clear all highlights
 
   const successMsg = "Connections are correct! Click on the DC Supply to turn it ON.";
   showPopup(successMsg);
@@ -2011,28 +1930,11 @@ checkBtn.addEventListener("click", function () {
 
 });
 
-// ============================================================
-// END OF CHECK BUTTON LOGIC
-// ============================================================
   }
  
-  // Also add this helper function if it doesn't exist:
-  // function isPairConnected(a, b, connections) {
-  //   return connections.some(conn => {
-  //     const srcId = conn.sourceId || (conn.source && conn.source.id);
-  //     const tgtId = conn.targetId || (conn.target && conn.target.id);
- 
-  //     return (
-  //       (srcId === a && tgtId === b) ||
-  //       (srcId === b && tgtId === a)
-  //     );
-  //   });
-  // }
-  //   }
  
  
- 
-  // Auto Connect button - creates all required connections automatically
+  // Auto Connect button
   const autoConnectBtn = document.getElementById("auto");
  
   if (autoConnectBtn) {
@@ -2047,7 +1949,6 @@ checkBtn.addEventListener("click", function () {
       const runBatch = typeof jsPlumb.batch === "function" ? jsPlumb.batch.bind(jsPlumb) : (fn => fn());
  
       runBatch(function () {
-        // Clear existing connections so the final wiring is always correct
         if (typeof jsPlumb.deleteEveryConnection === "function") {
           jsPlumb.deleteEveryConnection();
         } else {
@@ -2058,7 +1959,6 @@ checkBtn.addEventListener("click", function () {
         requiredPairs.forEach((req, index) => connectRequiredPair(req, seenKeys, index));
       });
  
-      // Ensure rendering completes; retry any missing connections once.
       requestAnimationFrame(() => {
         jsPlumb.repaintEverything();
  
@@ -2083,7 +1983,8 @@ checkBtn.addEventListener("click", function () {
         console.log(`Auto Connect: required=${requiredConnections.size}, missing after retry=${missing.length}`);
  
         completedByAutoConnect = true;
-        // 🔊 SPEAK AFTER AUTO CONNECT COMPLETES
+
+        clearSpeakHighlights(); // 🎯 auto connect fills all wires — clear highlights
         if (guideActive) {
           labSpeech.speak(
             "The connections are now complete. Click the Check button to confirm them."
@@ -2093,11 +1994,11 @@ checkBtn.addEventListener("click", function () {
       });
     });
   } else {
-    console.error("Auto Connect button not found! Looking for '.pill-btn' with text 'Auto Connect'.");
+    console.error("Auto Connect button not found!");
   }
  
  
-  // Reset button - remove ALL connections
+  // Reset button
   const resetBtn = document.getElementById("resetBtn");
  
   if (resetBtn) {
@@ -2107,12 +2008,14 @@ checkBtn.addEventListener("click", function () {
       labSpeech.stop();
       guideActive = false;
 
+      clearSpeakHighlights(); // 🎯 clear all highlights on reset
+
       if (reportBtn) {
-  reportBtn.disabled = true;
-  reportBtn.style.opacity = "0.5";
-  reportBtn.style.cursor = "not-allowed";
-  reportBtn.style.pointerEvents = "none";
-}
+        reportBtn.disabled = true;
+        reportBtn.style.opacity = "0.5";
+        reportBtn.style.cursor = "not-allowed";
+        reportBtn.style.pointerEvents = "none";
+      }
 
  
       if (speakBtn) {
@@ -2120,10 +2023,8 @@ checkBtn.addEventListener("click", function () {
         speakBtn.querySelector(".speak-btn__label").textContent = "TAP TO LISTEN";
       }
 
-        // ✅ RE-ENABLE CHECK & AUTO CONNECT BUTTONS
       enableCheckAndAutoConnect();
  
-      // Remove all connections safely
       if (typeof jsPlumb.deleteEveryConnection === "function") {
         jsPlumb.deleteEveryConnection();
       } else {
@@ -2133,14 +2034,14 @@ checkBtn.addEventListener("click", function () {
       }
  
  
-      // Force repaint so no ghost wires remain
       jsPlumb.repaintEverything();
       turnMCBOff("");
-      // ✅ Show new reset message
-showPopup(
-  "The Simulation has been reset.\n\nYou can start again.",
-  "Simulation Reset"
-);
+
+      showPopup(
+        "The Simulation has been reset.\n\nYou can start again.",
+        "Simulation Reset"
+      );
+
       localStorage.removeItem("experimentStartTime");
       localStorage.removeItem("experimentEndTime");
       localStorage.removeItem("reportStartTime");
@@ -2148,7 +2049,6 @@ showPopup(
       localStorage.removeItem("reportDuration");
  
  
-      // Reset state variables
       autoConnectUsed = false;
       currentStepIndex = 0;
       checkClickedAfterCompletion = false;
@@ -2156,7 +2056,6 @@ showPopup(
       completedByAutoConnect = false;
  
  
-      // ===== RESET GRAPH =====
       graphReadings.length = 0;
       updateGraphButtonState();
  
@@ -2177,9 +2076,8 @@ showPopup(
       }
  
       const graphCanvas = document.querySelector(".graph-canvas");
-graphCanvas?.classList.remove("is-plotting");
+      graphCanvas?.classList.remove("is-plotting");
  
-      // 🔊 VOICE AFTER RESET
       onExperimentReset();
  
       console.log("Reset: all connections removed");
@@ -2188,7 +2086,6 @@ graphCanvas?.classList.remove("is-plotting");
     console.error("Reset button not found!");
   }
  
-  // Lock every point to its initial coordinates so resizing the window cannot drift them
   const pinnedSelectors = [
     ".point",
     ".point-R", ".point-B", ".point-L", ".point-F", ".point-A",
@@ -2235,9 +2132,9 @@ graphCanvas?.classList.remove("is-plotting");
 
  
   createObservationTable();
-  currentStepIndex = 0;   // 🔁 Reset guided steps
+  currentStepIndex = 0;
 
-  updateGraphButtonState();   // 🔒 Graph disabled initially
+  updateGraphButtonState();
 
  
  
@@ -2262,17 +2159,16 @@ graphCanvas?.classList.remove("is-plotting");
   const reportBtn = document.getElementById("reportBtn");
 
   if (reportBtn) {
-  reportBtn.disabled = true;
-  reportBtn.style.opacity = "0.5";
-  reportBtn.style.cursor = "not-allowed";
-  reportBtn.style.pointerEvents = "none";
-}
+    reportBtn.disabled = true;
+    reportBtn.style.opacity = "0.5";
+    reportBtn.style.cursor = "not-allowed";
+    reportBtn.style.pointerEvents = "none";
+  }
 
  
  
  reportBtn.addEventListener("click", () => {
 
-    // 🚨 SAFETY CHECK: EXPERIMENT STARTED OR NOT
     const startTimeCheck = localStorage.getItem("experimentStartTime");
     if (!startTimeCheck) {
       showPopup(
@@ -2287,38 +2183,31 @@ graphCanvas?.classList.remove("is-plotting");
       return;
     }
 
-    // ✅ SHOW REPORT READY POPUP FIRST (reference style)
     showPopup(
       "Your report has been generated successfully. Click OK to view your report.",
       "Report Ready"
     );
 
-    // 🔊 VOICE (only if guide is active)
     if (isGuideActive()) {
       labSpeech.speak("Your report has been generated successfully. Click OK to view your report.");
     }
 
-    // ⏳ WAIT FOR USER TO CLICK OK, THEN OPEN REPORT
     waitForWarningModalAcknowledgement().then(() => {
 
-      // ===== STORE EXPERIMENT END TIME =====
       const endTime = Date.now();
       localStorage.setItem("experimentEndTime", endTime);
 
-      // ===== CALCULATE TOTAL DURATION =====
       const startTime = parseInt(localStorage.getItem("experimentStartTime"));
       const durationMs = endTime - startTime;
       const durationTotalSeconds = Math.floor(durationMs / 1000);
-const durationMins = Math.floor(durationTotalSeconds / 60);
-const durationSecs = durationTotalSeconds % 60;
-const durationText = `${durationMins} min ${String(durationSecs).padStart(2, "0")} sec`;
+      const durationMins = Math.floor(durationTotalSeconds / 60);
+      const durationSecs = durationTotalSeconds % 60;
+      const durationText = `${durationMins} min ${String(durationSecs).padStart(2, "0")} sec`;
 
-      // ===== STORE READABLE VALUES FOR REPORT =====
       localStorage.setItem("reportStartTime", new Date(startTime).toLocaleTimeString());
       localStorage.setItem("reportEndTime", new Date(endTime).toLocaleTimeString());
       localStorage.setItem("reportDuration", durationText);
 
-      // ===== DATA STORE =====
       localStorage.setItem("experimentReport", JSON.stringify(graphReadings));
       localStorage.setItem(
         "tableData",
@@ -2331,10 +2220,8 @@ const durationText = `${durationMins} min ${String(durationSecs).padStart(2, "0"
         )
       );
 
-      // ✅ OPEN REPORT ONLY AFTER OK CLICKED
       window.open("report.html", "_blank");
 
-      // 🔊 VOICE AFTER REPORT
       onReportGenerated();
     });
 
@@ -2346,7 +2233,6 @@ const durationText = `${durationMins} min ${String(durationSecs).padStart(2, "0"
 // COMPONENT WINDOW AUTO OPEN
 // ==============================
  
-// Storage keys (matching reference project)
 const COMPONENTS_SEEN_KEY    = "vl_components_seen";
 const COMPONENTS_ALERT_KEY   = "vl_components_alert_shown";
 
@@ -2367,7 +2253,6 @@ function openComponentsWindow({ force = false, auto = false } = {}) {
   const modal = document.getElementById("componentsModal");
   if (!modal) return;
 
-  // ✅ SKIP if already seen (unless force opened via icon)
   if (!force && auto && hasSeenComponents()) return;
 
   if (window.labSpeech) {
@@ -2378,7 +2263,7 @@ function openComponentsWindow({ force = false, auto = false } = {}) {
   modal.classList.remove("is-hidden");
   document.body.classList.add("is-modal-open");
 
-  if (auto) markComponentsSeen(); // mark as seen on auto-open
+  if (auto) markComponentsSeen();
 }
  
 const COMPONENTS_EXIT_MESSAGE =
@@ -2386,10 +2271,9 @@ const COMPONENTS_EXIT_MESSAGE =
   "you may now start the simulation.<br><br>An AI guide is available to assist you at every step.";
 
 function showComponentsExitAlert() {
-  if (hasShownComponentsAlert()) return; // ✅ only once ever
+  if (hasShownComponentsAlert()) return;
   markComponentsAlertShown();
 
-  // ✨ Highlight the speak button to draw attention
   const speakBtn = document.querySelector(".speak-btn");
   if (speakBtn) {
     speakBtn.classList.add("speak-attention");
@@ -2412,24 +2296,18 @@ function closeComponentsWindow({ showAlert = false } = {}) {
   modal.classList.add("is-hidden");
   document.body.classList.remove("is-modal-open");
 
-  // ✅ Show first-time instruction alert
   if (showAlert) {
     showComponentsExitAlert();
   }
 }
  
-// ==============================
-// COMPONENT LAUNCHER ICON CLICK
-// ==============================
 document.addEventListener("click", (e) => {
   const launcher = e.target.closest("[data-open-components]");
   if (!launcher) return;
-  openComponentsWindow({ force: true }); // always open from icon
+  openComponentsWindow({ force: true });
 });
  
  
-// ==============================
-// Auto open on load (skips if already seen)
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => openComponentsWindow({ auto: true }));
 } else {
@@ -2437,25 +2315,19 @@ if (document.readyState === "loading") {
 }
  
  
-/* Close handlers */
 document.addEventListener("click", (e) => {
   if (e.target.matches("[data-components-close]")) {
  
-    // 🔴 STEP 1: tell iframe to stop audio HARD
     const iframe = document.querySelector("#componentsModal iframe");
     iframe?.contentWindow?.postMessage(
       { type: "component-audio-stop" },
       "*"
     );
  
-    // 🔴 STEP 2: stop lab voice (safety)
     if (window.labSpeech) {
       labSpeech.stop();
     }
  
- 
- 
-    // 🔴 STEP 3: close modal
     closeComponentsWindow({ showAlert: true });
   }
 });
@@ -2469,7 +2341,7 @@ document.addEventListener("keydown", (e) => {
 });
  
 // ==============================
-// COMPONENT AUDIO BRIDGE (REFERENCE STYLE)
+// COMPONENT AUDIO BRIDGE
 // ==============================
  
 const iframe = document.querySelector("#componentsModal iframe");
@@ -2478,29 +2350,26 @@ const skipBtn = document.getElementById("skipComponentsBtn");
  
 if (audioBtn && iframe) {
  
-  // 🔁 Audio button only SENDS TO IFRAME
- audioBtn.addEventListener("click", () => {
-  const isPlaying =
-    audioBtn.getAttribute("aria-pressed") === "true";
+  audioBtn.addEventListener("click", () => {
+    const isPlaying =
+      audioBtn.getAttribute("aria-pressed") === "true";
  
-  iframe.contentWindow?.postMessage(
-    {
-      type: isPlaying
-        ? "component-audio-pause"
-        : "component-audio-play"
-    },
-    "*"
-  );
-});
+    iframe.contentWindow?.postMessage(
+      {
+        type: isPlaying
+          ? "component-audio-pause"
+          : "component-audio-play"
+      },
+      "*"
+    );
+  });
  
  
-  // 📩 LISTEN to iframe for REAL audio state
   window.addEventListener("message", (event) => {
     if (event.source !== iframe.contentWindow) return;
  
     const data = event.data || {};
  
-    // ✅ Real audio state from iframe
     if (data.type === "component-audio-state") {
       const { playing, disabled, label } = data;
  
@@ -2516,14 +2385,12 @@ if (audioBtn && iframe) {
       audioBtn.disabled = !!disabled;
     }
  
-    // 🚫 Autoplay blocked case
     if (data.type === "component-audio-blocked") {
       audioBtn.textContent = "Tap to enable audio";
       audioBtn.setAttribute("aria-pressed", "false");
     }
   });
  
-  // 📤 Ask iframe current audio state on load
   iframe.addEventListener("load", () => {
     iframe.contentWindow?.postMessage(
       { type: "component-audio-request" },
@@ -2532,30 +2399,24 @@ if (audioBtn && iframe) {
   });
 }
  
-// ⏭️ SKIP BUTTON — EXACT REFERENCE BEHAVIOUR
 if (skipBtn && iframe) {
   skipBtn.addEventListener("click", () => {
  
-    // 1️⃣ Stop component audio (iframe side)
     iframe.contentWindow?.postMessage(
       { type: "component-audio-stop" },
       "*"
     );
  
-    // 2️⃣ Stop lab voice if running
     if (window.labSpeech) {
       labSpeech.stop();
     }
  
- 
- 
-    // 3️⃣ Close component modal
     closeComponentsWindow({ showAlert: true });
   });
 }
 
 // ==============================
-// 🤖 CHATBOT PANEL (REFERENCE STYLE - FINAL)
+// 🤖 CHATBOT PANEL
 // ==============================
 (function initChatbotWidget() {
   function setup() {
@@ -2582,7 +2443,6 @@ if (skipBtn && iframe) {
       widget.classList.add("chatbot-open");
       toggleBtn.setAttribute("aria-expanded", "true");
 
-      // 🔹 Lazy load iframe ONLY ONCE
       if (!isLoaded) {
         if (placeholder) placeholder.style.display = "flex";
 
@@ -2593,7 +2453,6 @@ if (skipBtn && iframe) {
             iframe.classList.add("chatbot-frame-visible");
             if (placeholder) placeholder.style.display = "none";
 
-            // 🔔 Play notification sound ONCE
             const notifyAudio = document.getElementById(
               "chatbot-notification-audio"
             );
@@ -2616,20 +2475,17 @@ if (skipBtn && iframe) {
       toggleBtn.setAttribute("aria-expanded", "false");
     }
 
-    // Toggle button
     toggleBtn.addEventListener("click", () => {
       panel.classList.contains("open") ? closePanel() : openPanel();
     });
 
-    // Close button
     closeBtn?.addEventListener("click", closePanel);
 
-    // ESC key closes chatbot
     document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    closeComponentsWindow({ showAlert: true });
-  }
-});
+      if (e.key === "Escape") {
+        closeComponentsWindow({ showAlert: true });
+      }
+    });
   }
 
   if (document.readyState === "loading") {
@@ -2642,13 +2498,11 @@ if (skipBtn && iframe) {
 
 /* ===============================
    🎯 COMPONENT TOOLTIP SYSTEM
-   (REFERENCE-STYLE, CSS-MATCHED)
 =============================== */
 (function initComponentTooltips() {
 
   function setup() {
 
-    /* ---------- 1. CREATE TOOLTIP ELEMENT (ONCE) ---------- */
     if (document.querySelector(".hover-tooltip")) return;
 
     const tooltip = document.createElement("div");
@@ -2665,7 +2519,6 @@ if (skipBtn && iframe) {
 
     let activeTarget = null;
 
-    /* ---------- 2. TOOLTIP DEFINITIONS (REFERENCE STYLE) ---------- */
     const tooltips = [
       {
         id: "mcb",
@@ -2683,7 +2536,7 @@ if (skipBtn && iframe) {
         text: "Lamp Load: Variable resistive bulb bank used to change load; select the number of bulbs to vary current and observe voltage regulation."
       },
       {
-       id: "voltmeter",
+        id: "voltmeter",
         selector: ".meters > .meter-card:nth-of-type(1)",
         text: "Voltmeter: Measures the supply/line voltage (connected across the source)."
       },
@@ -2693,11 +2546,11 @@ if (skipBtn && iframe) {
         text: "Ammeter: Measures the generator terminal voltage (connected across generator terminals)."
       },
       {
-       id: "rpm-display",
-       selector: ".rpm-image, .rpm-display, #rpmDisplay",
-       text: "RPM Indicator: Displays the rotational speed of the DC motor in revolutions per minute. The speed increases as armature voltage is increased while field current remains constant."
+        id: "rpm-display",
+        selector: ".rpm-image, .rpm-display, #rpmDisplay",
+        text: "RPM Indicator: Displays the rotational speed of the DC motor in revolutions per minute. The speed increases as armature voltage is increased while field current remains constant."
       },
-       {
+      {
         id: "field-rheostat",
         selector: ".rheostat-img-1, .nob1",
         text: "Field Rheostat: Controls the field current of the DC machine. Adjusting it changes the magnetic flux and hence affects the speed of the motor."
@@ -2708,25 +2561,23 @@ if (skipBtn && iframe) {
         text: "Armature Rheostat: Controls the armature voltage. Increasing armature voltage increases motor speed while field current remains constant."
       },
       {
-  id: "motor-box",
-  selector: ".motor-box, .motor-box img",
-  text: "DC Shunt Motor: Converts electrical energy to mechanical energy. Speed varies with armature voltage while field current remains constant."
-},
-{
-  id: "generator-box",
-  selector: ".generator-box, .generator-body, .generator-rotor, #gr",
-  text: "Rotor View: Visual representation of motor shaft rotation. Speed increases as armature voltage rises, shown by faster rotation and RPM display."
-}
+        id: "motor-box",
+        selector: ".motor-box, .motor-box img",
+        text: "DC Shunt Motor: Converts electrical energy to mechanical energy. Speed varies with armature voltage while field current remains constant."
+      },
+      {
+        id: "generator-box",
+        selector: ".generator-box, .generator-body, .generator-rotor, #gr",
+        text: "Rotor View: Visual representation of motor shaft rotation. Speed increases as armature voltage rises, shown by faster rotation and RPM display."
+      }
     ];
 
-    /* ---------- 3. REMOVE DEFAULT BROWSER TOOLTIPS ---------- */
     tooltips.forEach(t => {
       document.querySelectorAll(t.selector).forEach(el => {
         el.removeAttribute("title");
       });
     });
 
-    /* ---------- 4. FIND MATCHING TOOLTIP ---------- */
     function findTooltip(target) {
       for (const t of tooltips) {
         const match = target.closest(t.selector);
@@ -2737,13 +2588,11 @@ if (skipBtn && iframe) {
       return null;
     }
 
-    /* ---------- 5. POSITION NEAR CURSOR ---------- */
     function moveTooltip(e) {
       tooltip.style.left = e.clientX + 16 + "px";
       tooltip.style.top  = e.clientY + 16 + "px";
     }
 
-    /* ---------- 6. SHOW / HIDE ---------- */
     function showTooltip(text, e) {
       tooltipText.textContent = text;
       moveTooltip(e);
@@ -2755,7 +2604,6 @@ if (skipBtn && iframe) {
       activeTarget = null;
     }
 
-    /* ---------- 7. CLICK HANDLER ---------- */
     document.addEventListener("click", (e) => {
       const found = findTooltip(e.target);
 
@@ -2772,24 +2620,21 @@ if (skipBtn && iframe) {
       activeTarget = found.el;
       showTooltip(found.text, e);
 
-       // 🔴 NEW: AUTO-HIDE WHEN MOUSE LEAVES THE ELEMENT
-  activeTarget.addEventListener(
-    "mouseleave",
-    () => {
-      hideTooltip();
-    },
-    { once: true }
-  );
+      activeTarget.addEventListener(
+        "mouseleave",
+        () => {
+          hideTooltip();
+        },
+        { once: true }
+      );
     });
 
-    /* ---------- 8. FOLLOW MOUSE ---------- */
     document.addEventListener("mousemove", (e) => {
       if (tooltip.classList.contains("show")) {
         moveTooltip(e);
       }
     });
 
-    /* ---------- 9. ESC KEY CLOSE ---------- */
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         hideTooltip();
@@ -2797,7 +2642,6 @@ if (skipBtn && iframe) {
     });
   }
 
-  /* ---------- SAFE DOM READY ---------- */
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", setup, { once: true });
   } else {
