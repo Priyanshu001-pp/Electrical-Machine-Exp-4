@@ -667,7 +667,7 @@
 
     .data-table {
         width: 100%;
-        border: 3px solid #111;
+        border: 2px solid #111;
         /* 🔥 single outer border */
         border-collapse: collapse;
         /* 🔥 sab borders merge */
@@ -715,7 +715,7 @@
   padding: 6px;
 } */
     .data-table-wrapper {
-        width: 100%;
+        width: 121%;
         background: transparent;
         padding: 0;
     
@@ -1068,8 +1068,7 @@
 
     .mcb-label {
         position: absolute;
-        letter-spacing: 0.1em;
-        top: 232px;
+        top: 233px;
         left: 37%;
         /* top: calc(100% + clamp(8px, 1.5vw, 12px));
         left: calc((100% / 4) * 0.5); */
@@ -1084,9 +1083,8 @@
 
     .starter-label {
         position: absolute;
-        top: 278px;
+        top: 279px;
         left: 49%;
-        letter-spacing: 3px;
         transform: translateX(-50%);
         font-size: clamp(0.5rem, 0.9vw, 0.7rem);
         color: #3b2f24;

@@ -2246,7 +2246,222 @@ checkBtn.addEventListener("click", function () {
     });
 
   });
- 
+// ============================================================
+// 🖨️ PRINT BUTTON FIX — Replace the existing printBtn listener
+// in script.js with this entire block
+// ============================================================
+
+document.getElementById('printBtn')?.addEventListener('click', function () {
+
+  const printStyle = document.createElement('style');
+  printStyle.id = 'dynamic-print-style';
+  printStyle.textContent = `
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 8mm;
+      }
+
+      html, body {
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+
+      /* ── HIDE UI CONTROLS ── */
+      /* NOTE: .pill-btn and .pill-stack are NOT in this list anymore */
+      /* We selectively hide only action buttons below */
+      .chatbot-widget,
+      .components-overlay,
+      #warningModal,
+      .speak-btn,
+      #auto,
+      #checkBtn,
+      #addTableBtn,
+      #plotGraphBtn,
+      #reportBtn,
+      #resetBtn,
+      #printBtn,
+      .instructions-wrapper,
+      .panel-footer__copyright {
+        display: none !important;
+      }
+
+      /* Hide only action pill-btns inside pill-stack, NOT the table */
+      .pill-stack > .pill-btn,
+      .instructions-wrapper .pill-btn {
+        display: none !important;
+      }
+
+      body {
+        background: #d7d0c4 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        align-items: unset !important;
+        justify-content: unset !important;
+      }
+
+      .panel,
+      .panel-footer {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        border: 2px solid #111 !important;
+        margin: 0 auto !important;
+        transform: none !important;
+      }
+
+      /* ── RIGHT COLUMN: MAKE VISIBLE ── */
+      .right-column {
+        display: flex !important;
+        width: auto !important;
+        min-width: 220px !important;
+        border-right: none !important;
+        overflow: visible !important;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
+      }
+
+      /* Show pill-stack so the observation table inside it renders */
+      .pill-stack {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        overflow: visible !important;
+        gap: 0 !important;
+      }
+
+      /* ── OBSERVATION TABLE: FORCE VISIBLE ── */
+      .data-section {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin-top: 0 !important;
+      }
+
+      .data-table-wrapper {
+        width: 100% !important;
+        background: transparent !important;
+        display: block !important;
+        visibility: visible !important;
+      }
+
+      .obs-title {
+        display: block !important;
+        visibility: visible !important;
+        text-align: center !important;
+        margin-bottom: 6px !important;
+      }
+
+      #observation-container {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+      }
+
+      .data-table {
+        display: table !important;
+        width: 100% !important;
+        border: 2px solid #111 !important;
+        border-collapse: collapse !important;
+        background: #f3efe6 !important;
+        visibility: visible !important;
+      }
+
+      .data-table thead,
+      .data-table tbody {
+        display: table-row-group !important;
+      }
+
+      .data-table tr {
+        display: table-row !important;
+      }
+
+      .data-table th,
+      .data-table td {
+        display: table-cell !important;
+        border: 1.5px solid #111 !important;
+        padding: 6px 10px !important;
+        text-align: center !important;
+        font-weight: 600 !important;
+        background: #e8dcc6 !important;
+        color: #000 !important;
+      }
+
+      /* ── REST OF EXISTING STYLES (unchanged) ── */
+      .mcb-starter-section,
+      .meter-panel {
+        background-color: #c8a97e !important;
+        border: 3px solid #8c6a48 !important;
+      }
+
+      .workspace {
+        background: #d7d0c4 !important;
+        border: 3px solid #111 !important;
+      }
+
+      .motor-box, .generator-box {
+        background: linear-gradient(180deg, #b7b2a6, #c5bfb2) !important;
+        border: 3px solid #111 !important;
+      }
+
+      .graph-section {
+        background: #d7d0c4 !important;
+      }
+
+      .graph-canvas {
+        background: linear-gradient(180deg, #f3efe6, #e5dfd3) !important;
+        min-height: 250px !important;
+      }
+
+      .rpm-display {
+        background: black !important;
+        color: #ff2b2b !important;
+      }
+
+      h3 {
+        background: linear-gradient(135deg, #fdf7e7, #e8d6b8 55%, #d7bc90) !important;
+        color: #2c1a0a !important;
+      }
+    }
+  `;
+
+  document.getElementById('dynamic-print-style')?.remove();
+  document.head.appendChild(printStyle);
+
+  // 🧊 Freeze dynamic visuals before print
+rotorRunning = false;
+
+if (rotor) {
+  rotor.style.animation = "none";
+}
+
+if (window.Plotly) {
+  const graphPlot = document.getElementById("graphPlot");
+  if (graphPlot) {
+    Plotly.Plots.resize(graphPlot);
+  }
+}
+
+// Force jsPlumb repaint
+if (window.jsPlumb) {
+  jsPlumb.repaintEverything();
+}
+
+  window.print();
+
+  window.addEventListener('afterprint', () => {
+    document.getElementById('dynamic-print-style')?.remove();
+  }, { once: true });
+
+});
 });
  
 // ==============================
