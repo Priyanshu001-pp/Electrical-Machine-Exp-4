@@ -28,19 +28,16 @@
     }
 
     .graph-actions .pill-btn {
-        width: 160px;
-        /* 🔥 button width increase */
-        padding: 10px 18px;
-        /* left-right space control */
-
-        display: flex;
-        /* icon + text side by side */
-        align-items: center;
-        justify-content: center;
-        gap: 2px;
-        /* icon-text gap */
-    }
-
+    width: 160px;
+    height: 48px;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 15px;
+    white-space: nowrap;
+}
 
 
 
@@ -776,47 +773,69 @@
 }
 
     .pill-btn {
-        position: relative;
-        width: 100%;
-        color: #fff;
-        border: none;
-        padding: 10px 38px;
-        border-radius: 50px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-        background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
-        background-size: 200% auto;
-    }
+    position: relative;
+    width: 100%;
+    color: #c1865c;                          /* gold text */
+    border: 1px solid #B89B3E;              /* gold border */
+    padding: 10px 18px;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: linear-gradient(135deg, #2C2C2C, #3B3B3B);  /* dark charcoal */
+    background-size: 200% 200%;
+    box-shadow:
+        0 8px 18px rgba(15, 23, 42, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 -3px 10px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease, background-position 0.4s ease;
+}
 
-    .pill-btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-        transition: left 0.3s ease;
-    }
+  .pill-btn::before {
+    display: none;
+}
 
-    .pill-btn:hover::before {
-        left: 0;
-    }
+.pill-btn:hover {
+    background-position: right center;
+    color: #fff;
+    transform: none;
+    box-shadow:
+        0 0 25px rgba(193, 134, 92, 1),
+        0 12px 24px rgba(15, 23, 42, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        inset 0 -4px 12px rgba(0, 0, 0, 0.45);
+    filter: saturate(1.02) brightness(1.12);
+}
 
-    .pill-btn:hover {
-        background-position: right center;
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    }
+.pill-btn:active {
+    transform: translateY(-1px);
+    box-shadow:
+        0 6px 12px rgba(15, 23, 42, 0.35),
+        inset 0 2px 8px rgba(0, 0, 0, 0.45);
+    filter: saturate(1.01);
+}
 
-    .pill-btn:active {
-        transform: translateY(-1px);
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-    }
+.pill-btn:focus-visible {
+    outline: 3px solid rgba(255, 217, 132, 0.8);
+    outline-offset: 4px;
+}
+
+.pill-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.pill-btn:disabled::before {
+    display: none;
+}
 
     .bottom-row {
     display: flex;
@@ -1386,7 +1405,7 @@
     min-height: 180px;   /* ✅ Keeps height same */
 
     text-align: center;
-    border: 2px solid #8b1e3f;
+    border: 2px solid #c1865c;
 
     animation:
         slideFromTop 0.5s ease-in,
@@ -1413,14 +1432,22 @@
 
 
     .modal-box button {
-        margin-top: 15px;
-        padding: 10px 18px;
-        border: none;
-        background: #8b1e3f;
-        color: white;
-        border-radius: 8px;
-        cursor: pointer;
-    }
+    margin-top: 15px;
+    padding: 10px 18px;
+    border: 1px solid #B89B3E;
+    background: linear-gradient(135deg, #2C2C2C, #3B3B3B);
+    color: #c1865c;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-box button:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(184, 155, 62, 0.4);
+    background: linear-gradient(135deg, #3B3B3B, #2C2C2C);
+}
 
     @keyframes popup {
         from {
@@ -1557,10 +1584,17 @@
     /* Default wave state */
     .speak-btn__wave {
         fill: none;
-        stroke: white;
+        stroke: #c1865c;
         stroke-width: 3;
         opacity: 0.35;
     }
+    
+  /* White waves on hover — same as other pill-btn hover */
+.speak-btn:hover .speak-btn__wave {
+    stroke: white;
+    opacity: 0.7;
+}
+
 
     /* Animate ONLY when listening */
     .speak-btn[aria-pressed="true"] .speak-btn__wave {
