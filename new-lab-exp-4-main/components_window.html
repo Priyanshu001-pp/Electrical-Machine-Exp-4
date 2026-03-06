@@ -649,8 +649,8 @@
         let speechToken = 0;
         let activeSpeechToken = 0;
         let activeComponent = components[0];
-        const autoPlayByDefault = !isEmbedded;
-        let autoPlayOnChange = false;
+        const autoPlayByDefault = true;
+         let autoPlayOnChange = true;
         const visitedComponents = new Set();
         let completionSent = false;
 
@@ -788,24 +788,24 @@
             sendCompletionIfReady();
         }
 
-        function playAudio(options = {}) {
-            const allowFallback = options.allowFallback === true;
-            if (audioMode === "file") {
-                if (!audioEl) return;
-                if (!audioEl.paused) {
-                    updateAudioButton(true);
-                    return;
+       function playAudio(options = {}) {
+    const allowFallback = options.allowFallback !== false;
+    if (audioMode === "file") {
+        if (!audioEl) return;
+        if (!audioEl.paused) {
+            updateAudioButton(true);
+            return;
+        }
+        const playAttempt = audioEl.play();
+        if (playAttempt && typeof playAttempt.catch === "function") {
+            playAttempt.catch(() => {
+                updateAudioButton(false);
+                if (allowFallback) {
+                    setAudioStatus("Tap to enable audio");
+                    notifyParent("component-audio-blocked");
+                    armAutoPlayFallback();
                 }
-                const playAttempt = audioEl.play();
-                if (playAttempt && typeof playAttempt.catch === "function") {
-                    playAttempt.catch(() => {
-                        updateAudioButton(false);
-                        if (allowFallback) {
-                            setAudioStatus("Tap to enable audio");
-                            notifyParent("component-audio-blocked");
-                            armAutoPlayFallback();
-                        }
-                    });
+            });
                 } else {
                     updateAudioButton(true);
                 }
@@ -904,17 +904,17 @@
                 );
             }
         }
-
-        function applyComponent(component) {
-            imageEl.src = component.image;
-            imageEl.alt = component.name;
-            titleEl.textContent = component.name;
-            definitionEl.textContent = component.description;
-            prepareAudio(component);
-            if (autoPlayByDefault || autoPlayOnChange) {
-                playAudio();
-            }
-        }
+function applyComponent(component) {
+    imageEl.src = component.image;
+    imageEl.alt = component.name;
+    titleEl.textContent = component.name;
+    definitionEl.textContent = component.description;
+    prepareAudio(component);
+    // Always auto-play on component change
+    setTimeout(() => {
+        playAudio({ allowFallback: true });
+    }, 200);
+}
 
         function restartCardAnimation() {
             cardEl.classList.remove("is-animating");
@@ -1026,7 +1026,13 @@
         }
 
         buildThumbs();
-        setActive(0, { immediate: true });
+       setActive(0, { immediate: true });
+
+// Auto-play first component audio on load
+// Small delay to let audio element load
+setTimeout(() => {
+    playAudio({ allowFallback: true });
+}, 400);
     </script>
 </body>
 </html>
