@@ -580,7 +580,7 @@
                     image: "images/component/Rheostat.png",
                     description:                   
                     "The field rheostat is set once and kept constant. Therefore, speed is controlled only through the armature rheostat. The field current is controlled by varying the field resistance in the field circuit, which in turn affects the magnetic flux and consequently the motor speed.",
-                    audio: "./audio/lampLoad.wav"
+                    audio: "./audio/FieldRheostat.wav"
                 },
 
                             {
@@ -589,7 +589,7 @@
                     image:   "images/component/Rheostat.png",
                     description:
                         "By varying the armature resistance causes a voltage drop in the armature circuit, allowing control of the motor speed below its rated speed.",
-                    audio: "./audio/lampLoad.wav"
+                    audio: "./audio/ArmatureRheostat.wav"
                 },
 
             
@@ -617,7 +617,7 @@
                     image:"images/component/rpm.png",
                     description:
                         "An RPM indicator measures the rotational speed of the motor shaft in revolutions per minute. It helps in monitoring and analyzing the speed performance of the DC machine under different operating conditions.",
-                    audio: "audio/voltmeter.wav"
+                    audio: "./audio/RPMIndicator.wav"
                 },
             
            
@@ -649,8 +649,8 @@
         let speechToken = 0;
         let activeSpeechToken = 0;
         let activeComponent = components[0];
-        const autoPlayByDefault = true;
-         let autoPlayOnChange = true;
+       const autoPlayByDefault = !isEmbedded;
+let autoPlayOnChange = false;
         const visitedComponents = new Set();
         let completionSent = false;
 
@@ -910,10 +910,9 @@ function applyComponent(component) {
     titleEl.textContent = component.name;
     definitionEl.textContent = component.description;
     prepareAudio(component);
-    // Always auto-play on component change
-    setTimeout(() => {
-        playAudio({ allowFallback: true });
-    }, 200);
+    if (autoPlayByDefault || autoPlayOnChange) {
+        playAudio();
+    }
 }
 
         function restartCardAnimation() {
@@ -1027,12 +1026,6 @@ function applyComponent(component) {
 
         buildThumbs();
        setActive(0, { immediate: true });
-
-// Auto-play first component audio on load
-// Small delay to let audio element load
-setTimeout(() => {
-    playAudio({ allowFallback: true });
-}, 400);
     </script>
 </body>
 </html>

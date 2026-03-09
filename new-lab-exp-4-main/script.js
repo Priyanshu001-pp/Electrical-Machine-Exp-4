@@ -1713,11 +1713,13 @@ function hasShownComponentsAlert() {
 function markComponentsAlertShown() {
   try { localStorage.setItem(COMPONENTS_ALERT_KEY, "1"); } catch(e) {}
 }
+let componentWindowWasActuallyOpened = false;
 
 function openComponentsWindow({ force = false, auto = false } = {}) {
   const modal = document.getElementById("componentsModal");
   if (!modal) return;
-  if (!force && auto && hasSeenComponents()) return;
+ if (!force && auto && hasSeenComponents()) return;
+  componentWindowWasActuallyOpened = true;
   // labSpeech removed — no TTS to disable here
   modal.classList.remove("is-hidden");
   document.body.classList.add("is-modal-open");
@@ -1729,6 +1731,7 @@ const COMPONENTS_EXIT_MESSAGE =
   "you may now start the simulation.<br><br>An AI guide is available to assist you at every step.";
 
 function showComponentsExitAlert() {
+  if (!componentWindowWasActuallyOpened) return;
   if (hasShownComponentsAlert()) return;
   markComponentsAlertShown();
   const speakBtn = document.querySelector(".speak-btn");
@@ -1739,12 +1742,14 @@ function showComponentsExitAlert() {
   showPopup(COMPONENTS_EXIT_MESSAGE, "Instruction");
 
 // 🔊 Component window close hone par — sirf pehli baar bajega
+if (componentWindowWasActuallyOpened) {
   const introAudio = new Audio("audiosimulation/ComponentsWindowIntro.wav");
-  window._activeComponentIntroAudio = introAudio;  // ✅ track it globally
+  window._activeComponentIntroAudio = introAudio;
   introAudio.play().catch(() => {});
   introAudio.addEventListener("ended", () => {
     window._activeComponentIntroAudio = null;
   });
+}
 }
 
 function closeComponentsWindow({ showAlert = false } = {}) {
@@ -1816,10 +1821,12 @@ if (audioBtn && iframe) {
 
 iframe.addEventListener("load", () => {
     iframe.contentWindow?.postMessage({ type: "component-audio-request" }, "*");
-    // Trigger auto-play after brief delay (user gesture from opening the window satisfies browser policy)
-    setTimeout(() => {
-        iframe.contentWindow?.postMessage({ type: "component-audio-play" }, "*");
-    }, 500);
+    // Auto-play only if component window is actually visible
+    if (componentWindowWasActuallyOpened) {
+        setTimeout(() => {
+            iframe.contentWindow?.postMessage({ type: "component-audio-play" }, "*");
+        }, 500);
+    }
 });
 }
  

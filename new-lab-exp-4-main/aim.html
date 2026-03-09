@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Virtual Labs | Electrical Machines Lab - To study the Load Characteristics of DC shunt generator</title>
+  <title>Virtual Labs | Electrical Machines Lab - Aim</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./alert-theme.css">
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -166,18 +167,21 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 1rem; /* Increased padding for better breathing room */
     }
 
-    .top-nav { gap: 1.5rem; align-items: center; }
+    .top-nav {
+      gap: 1.5rem; /* Increased gap for better spacing */
+      align-items: center;
+    }
 
     .nav-link {
       position: relative;
       color: #e2e8f0;
       font-weight: 600;
-      padding: 0.5rem 1rem;
-      transition: color 150ms ease, transform 150ms ease;
-      border-radius: 0.375rem;
+      padding: 0.5rem 1rem; /* Slightly increased padding */
+      transition: color 150ms ease, transform 150ms ease; /* Added subtle transform */
+      border-radius: 0.375rem; /* Subtle rounding */
       text-decoration: none;
     }
 
@@ -198,19 +202,36 @@
     .nav-link:hover,
     .nav-link:focus {
       color: #fff;
-      transform: translateY(-1px);
-      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px); /* Subtle lift on hover */
+      background: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
     }
 
     .nav-link:hover::after,
-    .nav-link:focus::after { transform: scaleX(1); }
+    .nav-link:focus::after {
+      transform: scaleX(1);
+    }
 
-    .logo-container { display: flex; align-items: center; gap: 0.75rem; }
+    /* Logo improvements */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem; /* Consistent gap */
+    }
 
-    .logo-glow { transition: transform 200ms ease, box-shadow 200ms ease; }
-    .logo-glow:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(11, 96, 168, 0.5); }
+    .logo-glow {
+      transition: transform 200ms ease, box-shadow 200ms ease;
+    }
 
-    .logo-text { display: flex; flex-direction: column; justify-content: center; }
+    .logo-glow:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(11, 96, 168, 0.5);
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
 
     .logo-title {
       color: #fff;
@@ -220,7 +241,12 @@
       margin: 0;
     }
 
-    .logo-subtitle { color: #bfdbfe; font-size: 0.875rem; font-weight: 500; margin: 0; }
+    .logo-subtitle {
+      color: #bfdbfe;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin: 0;
+    }
 
     .flex-1.pt-16 { flex: 1; }
 
@@ -420,7 +446,6 @@
       transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
       position: relative;
       isolation: isolate;
-      margin-top: -2rem;
       z-index: 1;
     }
 
@@ -635,6 +660,8 @@
     }
 
     .chatbot-hint-dot {
+      position: relative;
+      left: -5px;
       width: 22px;
       height: 22px;
       border-radius: 999px;
@@ -1065,7 +1092,7 @@
         0 20px 45px rgba(15, 23, 42, 0.12);
       position: relative;
       z-index: 2;
-      margin-bottom: 1rem;
+      margin-bottom: 0;
     }
 
     #intro-text::before {
@@ -1137,7 +1164,7 @@
     <!-- Header -->
     <header class="vl-header shadow-xl fixed top-0 left-0 right-0 z-50">
       <div class="header-inner px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between py-1 w-full">
+        <div class="flex items-center justify-between py-1 w-full gap-3">
           <a href="../../main.html" class="logo-container hover:no-underline focus:no-underline">
             <img
               src="./images/image.png"
@@ -1161,9 +1188,14 @@
             </svg>
           </button>
 
-          <nav class="top-nav hidden lg:flex items-center">
+          <nav class="top-nav hidden lg:flex items-center gap-2 lg:gap-3">
             <a href="../../main.html" class="nav-link">Home</a>
-            <a href="#" class="nav-link">Contact Us</a>
+            <a href="user_input.html?return=aim.html" class="nav-link nav-user-link" data-user-input-link data-redirect-return="aim.html">
+              <span class="nav-user-pill">
+        
+                <span class="nav-user-text" data-user-text>User Input</span>
+              </span>
+            </a>
           </nav>
         </div>
       </div>
@@ -1239,12 +1271,13 @@
               Contributors
             </a>
 
-            <a href="#feedback" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+           <a id="progressReportNav" href="#progressreport" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group" data-progress-report-link>
+
               <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
               </svg>
-              Feedback
+              Progress report
             </a>
           </nav>
         </div>
@@ -1260,13 +1293,13 @@
           <span>></span>
           <a href="#" class="hover:text-blue-600">AI-Enhanced Electrical Machines Lab</a>
           <span>></span>
-          <span class="text-gray-800 font-medium">To study the Load Characteristics of DC shunt generator</span>
+          <span class="text-gray-800 font-medium">Speed Control of DC motor by Armature Resistance Control</span>
         </nav>
 
         <div class="vl-card mb-4 overflow-hidden animate-fadeInUp rounded-lg">
           <div class="px-4 py-3" style="background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);">
             <h1 class="text-lg md:text-xl font-bold text-white text-center leading-snug">
-              To study the Load Characteristics of DC shunt generator
+              Speed Control of DC motor by Armature Resistance Control
             </h1>
           </div>
         </div>
@@ -1286,7 +1319,7 @@
 
             <div class="section-text text-gray-700 leading-relaxed text-lg">
               <p>
-                To study the load characteristics of DC Shunt Generator. Draw the external characteristic under different loading conditions.
+                To study the speed control of a DC shunt motor by armature resistance control method, and plot the graph between the speed and armature voltage by varying the armature resistance.
               </p>
             </div>
           </div>
@@ -1365,12 +1398,23 @@
           </div>
         </section>
 
-        <section id="feedback" class="section-content vl-card mb-8 p-6 animate-fadeInUp hidden">
-          <div class="border-l-4 border-orange-600 pl-4">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              Feedback
-            </h2>
-            <div class="section-text text-gray-700 leading-relaxed text-lg"></div>
+        <section id="progressreport" class="section-content vl-card mb-8 p-6 animate-fadeInUp hidden">
+          <div class="border-l-4 border-orange-600 pl-4 mb-4 flex items-center justify-between">
+            <div class="flex items-center">
+              <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                Progress Report
+              </h2>
+            </div>
+            <span class="text-sm text-gray-600">Embedded view (opens within this page)</span>
+          </div>
+          <div class="w-full rounded-xl overflow-hidden border border-gray-200 shadow-inner">
+            <iframe
+              src="progressreport.html"
+              title="Progress Report"
+              class="w-full"
+              style="min-height: 900px;"
+              loading="lazy"
+            ></iframe>
           </div>
         </section>
       </main>
@@ -1434,7 +1478,7 @@
   <div
     id="intro-modal"
     class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
-    data-intro-autoshow="always"
+    data-intro-autoshow="once"
     style="display: none;"
   >
     <div class="modal-container bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden">
@@ -1450,7 +1494,7 @@
               <span class="intro-badge inline-flex items-center justify-center w-8 h-8 rounded-full text-white font-semibold">i</span>
               <p class="text-lg font-semibold text-gray-800 mb-0">Experiment Sections</p>
             </div>
-            <p class="intro-note">Tap a section to jump there instantly.</p>
+             
 
             <ul id="intro-outline">
               <li class="outline-item" data-start="0">Overview</li>
@@ -1587,6 +1631,20 @@
       });
     });
 
+    // If page loads with a hash (e.g., aim.html#progressreport), show that section
+    (function showSectionFromHash() {
+      const hash = window.location.hash ? window.location.hash.replace('#', '') : '';
+      if (!hash) return;
+      const targetSection = document.getElementById(hash);
+      if (!targetSection) return;
+      document.querySelectorAll('.section-content').forEach(sec => sec.classList.add('hidden'));
+      targetSection.classList.remove('hidden');
+      document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+      const menuItem = document.querySelector(`a[href="#${hash}"]`);
+      if (menuItem) menuItem.classList.add('active');
+      targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    })();
+
     // Highlight current page
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
     const activeLink = document.querySelector(`a[href="${currentPage}"]`);
@@ -1606,21 +1664,23 @@
   <script>
     const DEFAULT_CUE_LEAD = 0.65; // seconds before narration to reveal text
     const introCues = [
-      { start: 0, end: 6, text: "Welcome to the experiment titled \"To Study the Load Characteristics of a DC Shunt Generator.\"" },
-      { start: 6, end: 17, text: "In this experiment, you will learn how to determine and analyze the load characteristics of a DC shunt generator, and how to plot external characteristic under different load conditions." },
-      { start: 17, end: 22, text: "To guide you through the learning experience, the experiment is divided into several key sections." },
-      { start: 23, end: 27, text: "We begin with the Aim, which explains what you will learn and why this experiment is important." },
-      { start: 27, end: 40, text: "Next is the Theory section, where you will find all the fundamental concepts and background knowledge required to understand the working and behaviour of a DC shunt generator." },
-      { start: 40, end: 46, text: "Before moving on to the simulation, you will go through the Pretest, which helps you check your basic understanding of the topic." },
-      { start: 46, end: 54, text: "Once you complete the Pretest, you can proceed to the Procedure, which explains each step you need to follow in order to perform the experiment correctly." },
-      { start: 55, end: 62, text: "The most interactive part is the Simulation, where you will work with a virtual setup and perform the experiment yourself." },
-      { start: 62, end: 68, text: "After completing the simulation, the Posttest allows you to assess what you have learned." },
-      { start: 68, end: 76, text: "Finally, the References and Contributors sections provide additional learning resources and acknowledge the team behind the development of this experiment." },
-      { start: 76, end: 82, text: "Together, these sections ensure a smooth, structured, and engaging learning experience from start to finish." }
+      { start: 0, end: 18, text: "Welcome to the experiment “To study the speed control of a DC motor by the armature resistance control method.” In this experiment, you will learn how to control the speed of a DC shunt motor using the armature resistance control method and plot a graph between the speed and armature voltage by varying the armature resistance." },
+      { start: 19, end: 42, text: "To guide you throughout the learning process, this experiment is organized into several key sections. We begin with the Aim, which clearly states what you will learn and why the experiment is important. This is followed by the Theory section, where you will find all the essential concepts and foundational knowledge required to understand the working and behavior of a DC shunt generator." },
+      { start: 43, end: 62, text: "Before you proceed to the simulation, the Pretest section helps you evaluate your basic understanding of the topic. Here, you will receive five questions at a time. Each time you click on the Refresh button, a new set of questions will be generated. All your attempted questions will be recorded and reflected in your Progress Report." },
+      { start: 63, end: 87, text: "Next, you can move on to the Procedure section, which outlines the step-by-step instructions required to perform the experiment correctly. The most important part of the experiment is the Simulation section, where you will first see a Demo tab to understand the basic procedure, followed by the actual Simulation tab, where you can use the virtual setup to perform the experiment yourself." },
+      { start: 88, end: 107, text: "After completing the simulation, the Posttest section helps you evaluate your understanding of the experiment. Similar to the Pretest, you will receive five questions at a time, and each time you click on the Refresh button, a new set of questions will be generated. All your attempted questions will be recorded again in your Progress Report." },
+      { start: 108, end: 117, text: "Finally, the References and Contributors sections provide the supporting resources and acknowledge the team involved in the development of this experiment." },
+      { start: 118, end: 134, text: "A Progress Report is also available for you, where you can track your real-time progress throughout the experiment. To access this feature, please enter your details such as name, email ID, and designation in the User Input tab. All your activities across the experiments will be recorded in one place." },
+      { start: 135, end: 154, text: "This report allows you to monitor your learning journey in detail, including your pre-test and post-test performance, such as the number of questions attempted and marks obtained. It also records the total time taken to complete the experiment and provides a detailed simulation summary of your activity." },
+      { start: 155, end: 167, text: "In addition, the Progress Report displays your basic information along with the report date, completing the Progress Report as a comprehensive and personalized record of your experiment." },
+      { start: 168, end: 174, text: "Together, these sections ensure a smooth, structured, and engaging learning experience from start to finish." },
+ 
     ];
 
     const INTRO_STORAGE_KEY = 'dcShuntIntroShown:aim';
     const INTRO_STORAGE_VERSION = '1';
+    const AIM_READY_NOTICE_MESSAGE = "Now that you've understood the experiment workflow, you may proceed to perform the experiment independently at your own pace.";
+    const AIM_READY_NOTICE_AUDIO_SRC = "./audio/Infopanelalert.wav";
     const INTRO_STORAGE = (() => {
       try { return window.localStorage; }
       catch (error) {
@@ -1648,6 +1708,28 @@
     let finalMessageShown = false;
     let videoShown = false;
     let audioAutoplayQueued = false;
+    let aimReadyNoticeAudioEl = null;
+
+    function playAimReadyNoticeAudio() {
+      if (!AIM_READY_NOTICE_AUDIO_SRC) return;
+      if (!aimReadyNoticeAudioEl) {
+        aimReadyNoticeAudioEl = new Audio(AIM_READY_NOTICE_AUDIO_SRC);
+        aimReadyNoticeAudioEl.preload = 'auto';
+      }
+      aimReadyNoticeAudioEl.currentTime = 0;
+      const playPromise = aimReadyNoticeAudioEl.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(() => {});
+      }
+    }
+
+    function stopAimReadyNoticeAudio() {
+      if (!aimReadyNoticeAudioEl) return;
+      aimReadyNoticeAudioEl.pause();
+      aimReadyNoticeAudioEl.currentTime = 0;
+    }
+
+    window.stopAimReadyNoticeAudio = stopAimReadyNoticeAudio;
 
     const outlineItems = outlineList ? Array.from(outlineList.querySelectorAll('.outline-item')) : [];
 
@@ -1795,11 +1877,39 @@
         videoEl.currentTime = 0;
       }
 
+      const shouldShowPostIntroNotice = !hasIntroBeenShown();
       document.body.classList.remove('body-blurred');
       if (introModal) introModal.style.display = 'none';
 
       markIntroAsShown();
       resetNarrationState();
+      if (window.VLProgress) VLProgress.mark("aimAfterIntro");
+
+      const proceedToUserPrompt = () => {
+        // The prompt logic is defined later in the page. If the user closes the
+        // intro very quickly (before that script runs), retry for a short time.
+        (function tryPrompt(attempt) {
+          if (typeof window.maybePromptUserForm === "function") {
+            window.maybePromptUserForm();
+            return;
+          }
+          if (attempt >= 25) return; // ~2.5s max
+          setTimeout(() => tryPrompt(attempt + 1), 100);
+        })(0);
+      };
+
+      if (shouldShowPostIntroNotice) {
+        const noticeMessage = AIM_READY_NOTICE_MESSAGE;
+        playAimReadyNoticeAudio();
+        if (typeof window.showAimAlert === "function") {
+          window.showAimAlert(noticeMessage, "Ready To Begin", proceedToUserPrompt);
+        } else {
+          alert(noticeMessage);
+          proceedToUserPrompt();
+        }
+      } else {
+        proceedToUserPrompt();
+      }
 
       // Always go to aim section (you are on aim.html anyway)
       const aimSection = document.getElementById('aim');
@@ -1966,8 +2076,14 @@
         showIntroModal();
       });
     }
+    function isProgressReportView() {
+      const hash = String(window.location.hash || '').toLowerCase();
+      return hash.includes('#progressreport');
+    }
+
     function autoShowIntro() {
       if (introAutoShown || !introModal) return;
+      if (isProgressReportView()) return;
       const autoShowMode = String(introModal.dataset.introAutoshow || 'once').toLowerCase();
       const shouldAutoShow = autoShowMode === 'always' || !hasIntroBeenShown();
       if (!shouldAutoShow) return;
@@ -2079,6 +2195,876 @@
       }
     })();
   </script>
+<!-- File: progress_tracker.js -->
+<script>
+(function () {
+  const KEY = "vlab_exp2_progress_v1";
+  const VERSION = 1;
+  const GENERAL_PROGRESS_KEYS = [
+    "vlab_exp2_pretest_score",
+    "vlab_exp2_pretest_total",
+    "vlab_exp2_pretest_updated_at",
+    "vlab_exp2_posttest_score",
+    "vlab_exp2_posttest_total",
+    "vlab_exp2_posttest_updated_at",
+    "vlab_exp2_simulation_report_html",
+    "vlab_exp2_simulation_report_updated_at"
+  ];
+
+  function nowISO() { return new Date().toISOString(); }
+  function normalizeEmail(email) {
+    if (!email || typeof email !== "string") return "";
+    return email.trim().toLowerCase();
+  }
+
+  function computeUserHash(email) {
+    const normalized = normalizeEmail(email);
+    if (!normalized) return "";
+
+    let hash = 0;
+    for (let i = 0; i < normalized.length; i += 1) {
+      hash = ((hash << 5) - hash) + normalized.charCodeAt(i);
+      hash |= 0;
+    }
+    return `u${(hash >>> 0).toString(16).padStart(8, "0")}`;
+  }
+
+  function clearGeneralProgressKeys() {
+    if (typeof localStorage === "undefined") return;
+    try {
+      for (const key of GENERAL_PROGRESS_KEYS) {
+        localStorage.removeItem(key);
+      }
+    } catch {
+      // ignore storage failures
+    }
+  }
+
+  function migrateGeneralProgressKeysToUser(userHash) {
+    if (!userHash || typeof localStorage === "undefined") return;
+    try {
+      let movedAny = false;
+      const prefix = `vlab_exp2_user_${userHash}_`;
+      for (const key of GENERAL_PROGRESS_KEYS) {
+        const value = localStorage.getItem(key);
+        if (!value || !String(value).trim()) continue;
+
+        const suffix = key.replace(/^vlab_exp2_/, "");
+        const destKey = prefix + suffix;
+        const existing = localStorage.getItem(destKey);
+        if (!existing || !String(existing).trim()) {
+          localStorage.setItem(destKey, value);
+        }
+        movedAny = true;
+      }
+
+      if (movedAny) {
+        clearGeneralProgressKeys();
+      }
+    } catch {
+      // ignore storage failures
+    }
+  }
+
+  function ensureHistory(state) {
+    if (!Array.isArray(state.userHistory)) state.userHistory = [];
+  }
+
+  function findHistoryEntry(state, normalizedEmail) {
+    if (!normalizedEmail) return null;
+    ensureHistory(state);
+    return state.userHistory.find(entry => entry.email === normalizedEmail) || null;
+  }
+
+  function safeJSONParse(s, fallback) { try { return JSON.parse(s); } catch { return fallback; } }
+
+  function loadState() {
+    const raw = localStorage.getItem(KEY);
+    const base = {
+      version: VERSION,
+      user: null,
+      flags: { reportDeclined: false },
+      timestamps: {
+        sessionStart: null,
+        aimAfterIntro: null,
+        simulationStart: null,
+        contributorsVisited: null,
+        reportViewedAt: null
+      },
+      pages: {},           // { "aim.html": { firstEnter, lastExit, timeMs, visits } }
+      steps: [],           // [{ name, ts, meta }]
+      userHistory: []
+    };
+    if (!raw) return base;
+
+    const parsed = safeJSONParse(raw, base);
+    if (!parsed || typeof parsed !== "object") return base;
+    if (!parsed.flags) parsed.flags = { reportDeclined: false };
+    if (!parsed.timestamps) parsed.timestamps = base.timestamps;
+    if (!parsed.pages) parsed.pages = {};
+    if (!parsed.steps) parsed.steps = [];
+    if (!Array.isArray(parsed.userHistory)) parsed.userHistory = [];
+    return { ...base, ...parsed };
+  }
+
+  function recordUserHistory(state, user) {
+    const normalizedEmail = normalizeEmail(user && user.email);
+    if (!normalizedEmail) return false;
+    ensureHistory(state);
+
+    const now = nowISO();
+    const existing = findHistoryEntry(state, normalizedEmail);
+    if (existing) {
+      existing.name = (user && user.name) ? user.name.trim() : "";
+      existing.designation = (user && user.designation) ? user.designation.trim() : "";
+      existing.lastSeen = now;
+      return false;
+    }
+
+    state.userHistory.push({
+      email: normalizedEmail,
+      name: (user && user.name) ? user.name.trim() : "",
+      designation: (user && user.designation) ? user.designation.trim() : "",
+      firstSeen: now,
+      lastSeen: now
+    });
+    return true;
+  }
+
+  function findUserByEmail(email) {
+    const state = loadState();
+    const normalizedEmail = normalizeEmail(email);
+    const entry = findHistoryEntry(state, normalizedEmail);
+    return entry ? Object.assign({}, entry) : null;
+  }
+
+  function isUserEmailNew(email) {
+    return !findUserByEmail(email);
+  }
+
+  function saveState(state) {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
+  }
+
+  function pageNameFromURL() {
+    const p = window.location.pathname.split("/").pop();
+    return p || "index.html";
+  }
+
+  function ensureSessionStart(state) {
+    if (!state.timestamps.sessionStart) state.timestamps.sessionStart = nowISO();
+  }
+
+  function formatMs(ms) {
+    const s = Math.max(0, Math.floor(ms / 1000));
+    const hh = String(Math.floor(s / 3600)).padStart(2, "0");
+    const mm = String(Math.floor((s % 3600) / 60)).padStart(2, "0");
+    const ss = String(s % 60).padStart(2, "0");
+    return `${hh}:${mm}:${ss}`;
+  }
+
+  function initPage() {
+    const state = loadState();
+    ensureSessionStart(state);
+
+    const page = pageNameFromURL();
+    const pageRec = state.pages[page] || { firstEnter: null, lastExit: null, timeMs: 0, visits: 0 };
+
+    if (!pageRec.firstEnter) pageRec.firstEnter = nowISO();
+    pageRec.visits += 1;
+
+    state.pages[page] = pageRec;
+    saveState(state);
+
+    // store enter time in sessionStorage to compute time-on-page
+    try {
+      sessionStorage.setItem("vlab_exp2_current_page", page);
+      sessionStorage.setItem("vlab_exp2_page_enter_ms", String(Date.now()));
+    } catch {}
+
+    // helpful special timestamps
+    if (page === "aim.html" && !state.timestamps.aimAfterIntro) {
+      // aimAfterIntro is set when intro closes (we set it from aim.html),
+      // but if intro doesn't show, at least we have sessionStart + page time tracking.
+    }
+    if (page === "contributors.html" && !state.timestamps.contributorsVisited) {
+      state.timestamps.contributorsVisited = nowISO();
+      saveState(state);
+    }
+    if (page === "index.html" && window.location.pathname.includes("/simulation/")) {
+      if (!state.timestamps.simulationStart) {
+        state.timestamps.simulationStart = nowISO();
+        saveState(state);
+      }
+    }
+  }
+
+  function recordPageExit() {
+    const state = loadState();
+    const page = (() => {
+      try { return sessionStorage.getItem("vlab_exp2_current_page") || pageNameFromURL(); }
+      catch { return pageNameFromURL(); }
+    })();
+
+    let enterMs = null;
+    try {
+      const s = sessionStorage.getItem("vlab_exp2_page_enter_ms");
+      enterMs = s ? Number(s) : null;
+    } catch {}
+
+    const nowMs = Date.now();
+    const delta = (enterMs && Number.isFinite(enterMs)) ? (nowMs - enterMs) : 0;
+
+    const pageRec = state.pages[page] || { firstEnter: null, lastExit: null, timeMs: 0, visits: 0 };
+    pageRec.timeMs = (pageRec.timeMs || 0) + Math.max(0, delta);
+    pageRec.lastExit = nowISO();
+
+    state.pages[page] = pageRec;
+    saveState(state);
+  }
+
+  function logStep(name, meta = {}) {
+    const state = loadState();
+    ensureSessionStart(state);
+    state.steps.push({ name, ts: nowISO(), meta });
+    saveState(state);
+  }
+
+  function setUser(user) {
+    const trimmedUser = {
+      name: (user.name || "").trim(),
+      email: (user.email || "").trim(),
+      designation: (user.designation || "").trim()
+    };
+    const normalizedEmail = normalizeEmail(trimmedUser.email);
+    const newHash = normalizedEmail ? computeUserHash(normalizedEmail) : "";
+    let prevHash = "";
+    try { prevHash = localStorage.getItem("vlab_exp2_active_user_hash") || ""; } catch {}
+
+    const state = loadState();
+    const isNewUserByEmail = recordUserHistory(state, trimmedUser);
+
+    state.user = {
+      name: trimmedUser.name,
+      email: trimmedUser.email,
+      designation: trimmedUser.designation,
+      submittedAt: nowISO()
+    };
+    // once user fills form, allow report again
+    state.flags.reportDeclined = false;
+
+    try {
+      if (newHash) {
+        localStorage.setItem("vlab_exp2_active_user_hash", newHash);
+      } else {
+        localStorage.removeItem("vlab_exp2_active_user_hash");
+      }
+    } catch {
+      // ignore storage errors
+    }
+
+    // If user details are filled after completing parts of the experiment,
+    // migrate the general keys into the user-scoped keys so the Progress Report
+    // still shows the recorded results.
+    if (isNewUserByEmail && newHash) {
+      if (!prevHash) {
+        migrateGeneralProgressKeysToUser(newHash);
+      } else if (prevHash && prevHash !== newHash) {
+        clearGeneralProgressKeys();
+      }
+    } else if (newHash) {
+      migrateGeneralProgressKeysToUser(newHash);
+    }
+
+    saveState(state);
+  }
+
+  function hasUser() {
+    const state = loadState();
+    return !!(state.user && state.user.name && state.user.email && state.user.designation);
+  }
+
+  function declineReport() {
+    const state = loadState();
+    state.flags.reportDeclined = true;
+    saveState(state);
+  }
+
+  function clearDecline() {
+    const state = loadState();
+    state.flags.reportDeclined = false;
+    saveState(state);
+  }
+
+  function mark(key) {
+    const state = loadState();
+    state.timestamps[key] = nowISO();
+    saveState(state);
+  }
+
+  function markReportViewed() {
+    const state = loadState();
+    if (!state.timestamps.reportViewedAt) state.timestamps.reportViewedAt = nowISO();
+    saveState(state);
+  }
+
+  function resetAll() {
+    try { localStorage.removeItem(KEY); } catch {}
+    try {
+      sessionStorage.removeItem("vlab_exp2_current_page");
+      sessionStorage.removeItem("vlab_exp2_page_enter_ms");
+    } catch {}
+  }
+
+  // attach exit handlers
+  window.addEventListener("pagehide", recordPageExit);
+  window.addEventListener("beforeunload", recordPageExit);
+
+  // expose API
+  window.VLProgress = {
+    initPage,
+    recordPageExit,
+    logStep,
+    setUser,
+    hasUser,
+    declineReport,
+    clearDecline,
+    mark,
+    markReportViewed,
+    getState: loadState,
+    saveState,
+    formatMs,
+    findUserByEmail,
+    isUserEmailNew,
+    resetAll
+  };
+})();
+</script>
+<!-- USER FORM PROMPT MODAL -->
+<div id="userFormPrompt"
+     class="fixed inset-0 hidden items-center justify-center z-[99999] bg-black/60 p-4">
+  <div class="w-full max-w-lg rounded-2xl bg-white shadow-xl border border-gray-200 p-6">
+    <h3 class="text-xl font-bold text-gray-900">Important Note</h3>
+    <p class="text-gray-700 mt-2">
+      If you want to generate a progress report, first you have to fill your details in the user form.
+    </p>
+    <div class="mt-5 flex justify-end gap-3">
+      <button id="promptNo"
+              class="px-4 py-2 rounded-lg border border-gray-300 font-semibold text-gray-700 hover:bg-gray-100">
+        NO
+      </button>
+      <button id="promptYes"
+              class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700">
+        YES
+      </button>
+    </div>
+  </div>
+</div>
+<div id="userInputModal" class="hidden fixed inset-0 z-[100000] bg-black/60 px-4 py-8 items-center justify-center">
+  <div class="relative w-full max-w-4xl h-[85vh] bg-white shadow-2xl rounded-3xl overflow-hidden border border-slate-200">
+    <div class="flex items-center justify-between px-5 py-3 border-b border-slate-200 bg-gradient-to-r from-[#f8fbff] to-[#eef5ff]">
+      <div class="flex items-center gap-3">
+        <div id="userInputModalAvatar"
+             class="h-11 w-11 rounded-full bg-gradient-to-br from-[#021a2c] to-[#0b60a8] text-white font-extrabold flex items-center justify-center shadow-md ring-2 ring-white/80"
+             aria-hidden="true">
+          U
+        </div>
+        <div class="leading-tight">
+          
+          <div class="flex items-center gap-2">
+            <span id="userInputModalName" class="text-base font-bold text-slate-900">User Input Form</span>
+            <span id="userInputModalDesignation" class="hidden text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-900/5 text-slate-700 border border-slate-200"></span>
+          </div>
+        </div>
+      </div>
+      <button id="userInputModalClose" type="button" class="text-slate-600 hover:text-slate-900 rounded-full focus:outline-none">
+        <span aria-hidden="true" class="text-2xl leading-none">&times;</span>
+        <span class="sr-only">Close</span>
+      </button>
+    </div>
+    <iframe id="userInputIframe" class="w-full h-full border-0" src="" title="User Input Form"></iframe>
+  </div>
+</div>
+<div id="aimAlertModal" class="modal" role="alertdialog" aria-modal="true" aria-labelledby="aimAlertTitle" aria-describedby="aimAlertMessage">
+  <div class="modal-box" role="document">
+    <h2 id="aimAlertTitle">Alert</h2>
+    <p id="aimAlertMessage"></p>
+    <button type="button" class="modal-close-btn" data-aim-alert-close>OK</button>
+  </div>
+</div>
+<script src="./progress_tracker.js"></script>
+
+<script>
+(function () {
+  if (!window.VLProgress) return;
+
+  // track this page time
+  VLProgress.initPage();
+
+  // expose for intro script to call after intro closes
+  window.maybePromptUserForm = function maybePromptUserForm() {
+    const st = VLProgress.getState();
+    if (VLProgress.hasUser()) return;                  // already filled
+    if (st.flags && st.flags.reportDeclined) return;    // user said NO
+
+    // show prompt once per session load
+    const sessionKey = "vlab_exp2_prompted_once";
+    try {
+      if (sessionStorage.getItem(sessionKey) === "1") return;
+      sessionStorage.setItem(sessionKey, "1");
+    } catch {}
+
+    openPrompt();
+  };
+
+  const modal = document.getElementById("userFormPrompt");
+  const yesBtn = document.getElementById("promptYes");
+  const noBtn  = document.getElementById("promptNo");
+  const AIM_USER_FORM_PROMPT_AUDIO_SRC = "./audio/userinput.wav";
+  const AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE =
+    "To access the progress report, first fill out the user form and generate the simulation report by performing the experiment.";
+  const AIM_PROGRESS_REPORT_ACCESS_ALERT_USER_ONLY_MESSAGE =
+    "Please fill out the user form to access the progress report.";
+  const AIM_PROGRESS_REPORT_ACCESS_ALERT_SIM_ONLY_MESSAGE =
+    "Please generate the simulation report by performing the experiment.";
+  const AIM_PROGRESS_REPORT_ACCESS_ALERT_AUDIO_SRC = "./audio/progressreportalert.wav";
+  let aimUserFormPromptAudioEl = null;
+  let aimProgressReportAccessAlertAudioEl = null;
+
+  function playAimUserFormPromptAudio() {
+    if (!AIM_USER_FORM_PROMPT_AUDIO_SRC) return;
+    if (!aimUserFormPromptAudioEl) {
+      aimUserFormPromptAudioEl = new Audio(AIM_USER_FORM_PROMPT_AUDIO_SRC);
+      aimUserFormPromptAudioEl.preload = "auto";
+    }
+    aimUserFormPromptAudioEl.currentTime = 0;
+    const playPromise = aimUserFormPromptAudioEl.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {});
+    }
+  }
+
+  function stopAimUserFormPromptAudio() {
+    if (!aimUserFormPromptAudioEl) return;
+    aimUserFormPromptAudioEl.pause();
+    aimUserFormPromptAudioEl.currentTime = 0;
+  }
+
+  function getAimProgressReportAccessAlertMessage(needUser, needSim) {
+    if (window.VLProgress && typeof window.VLProgress.getProgressReportBlockMessage === "function") {
+      const mapped = window.VLProgress.getProgressReportBlockMessage(needUser, needSim);
+      if (String(mapped || "").trim()) return String(mapped).trim();
+    }
+    if (needUser && needSim) return AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE;
+    if (needUser) return AIM_PROGRESS_REPORT_ACCESS_ALERT_USER_ONLY_MESSAGE;
+    if (needSim) return AIM_PROGRESS_REPORT_ACCESS_ALERT_SIM_ONLY_MESSAGE;
+    return AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE;
+  }
+
+  function playAimProgressReportAccessAlertAudio(message) {
+    const normalizedMessage = String(message || "").trim();
+    if (normalizedMessage !== AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE) return;
+    if (!AIM_PROGRESS_REPORT_ACCESS_ALERT_AUDIO_SRC) return;
+    if (!aimProgressReportAccessAlertAudioEl) {
+      aimProgressReportAccessAlertAudioEl = new Audio(AIM_PROGRESS_REPORT_ACCESS_ALERT_AUDIO_SRC);
+      aimProgressReportAccessAlertAudioEl.preload = "auto";
+    }
+    aimProgressReportAccessAlertAudioEl.currentTime = 0;
+    const playPromise = aimProgressReportAccessAlertAudioEl.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {});
+    }
+  }
+
+  function stopAimProgressReportAccessAlertAudio() {
+    if (!aimProgressReportAccessAlertAudioEl) return;
+    aimProgressReportAccessAlertAudioEl.pause();
+    aimProgressReportAccessAlertAudioEl.currentTime = 0;
+  }
+
+  function openPrompt() {
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    playAimUserFormPromptAudio();
+  }
+
+  function closePrompt() {
+    stopAimUserFormPromptAudio();
+    if (!modal) return;
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
+
+  const userInputModal = document.getElementById("userInputModal");
+  const userInputIframe = document.getElementById("userInputIframe");
+  const userInputModalClose = document.getElementById("userInputModalClose");
+  const userInputNavLink = document.querySelector("[data-user-input-link]");
+  const userInputNavAvatar = userInputNavLink?.querySelector("[data-user-avatar]");
+  const userInputNavText = userInputNavLink?.querySelector("[data-user-text]");
+  const userInputModalAvatar = document.getElementById("userInputModalAvatar");
+  const userInputModalName = document.getElementById("userInputModalName");
+  const userInputModalDesignation = document.getElementById("userInputModalDesignation");
+  const aimAlertModal = document.getElementById("aimAlertModal");
+  const aimAlertTitle = document.getElementById("aimAlertTitle");
+  const aimAlertMessage = document.getElementById("aimAlertMessage");
+  const aimAlertClose = aimAlertModal?.querySelector("[data-aim-alert-close]");
+  let aimAlertOnClose = null;
+
+  const defaultUserInputNavLabel = "User Input";
+
+  function getFirstName(fullName) {
+    if (!fullName || typeof fullName !== "string") return "";
+    const trimmed = fullName.trim();
+    if (!trimmed) return "";
+    return trimmed.split(/\s+/)[0];
+  }
+
+  function pickUserColors(seed) {
+    const palettes = [
+      ["#0b60a8", "#021a2c"],
+      ["#2563eb", "#0b60a8"],
+      ["#0ea5e9", "#0369a1"],
+      ["#22c55e", "#14532d"],
+      ["#f97316", "#c2410c"]
+    ];
+    const key = (seed || "user").toLowerCase();
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash * 31 + key.charCodeAt(i)) & 0xffffffff;
+    }
+    const idx = Math.abs(hash) % palettes.length;
+    return palettes[idx];
+  }
+
+  function paintAvatar(el, seed, fallbackInitial = "U") {
+    if (!el) return;
+    const [c1, c2] = pickUserColors(seed);
+    const initial = (seed && seed[0] ? seed[0] : fallbackInitial).toUpperCase();
+    el.textContent = initial;
+    el.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+  }
+
+  function refreshUserInputModalBadge(firstName, designation) {
+    if (userInputModalName) {
+      userInputModalName.textContent = firstName || "User Input Form";
+    }
+    if (userInputModalAvatar) {
+      paintAvatar(userInputModalAvatar, firstName || "User");
+    }
+    if (userInputModalDesignation) {
+      if (designation) {
+        userInputModalDesignation.textContent = designation;
+        userInputModalDesignation.classList.remove("hidden");
+      } else {
+        userInputModalDesignation.textContent = "";
+        userInputModalDesignation.classList.add("hidden");
+      }
+    }
+  }
+
+  function refreshUserInputNavLabel() {
+    const state = VLProgress.getState();
+    const firstName = getFirstName(state.user?.name);
+    const designation = (state.user?.designation || "").trim();
+
+    if (userInputNavText) {
+      userInputNavText.textContent = firstName || defaultUserInputNavLabel;
+    } else if (userInputNavLink) {
+      userInputNavLink.textContent = firstName || defaultUserInputNavLabel;
+    }
+
+    if (userInputNavAvatar) {
+      if (firstName) {
+        paintAvatar(userInputNavAvatar, firstName, "U");
+      } else {
+        userInputNavAvatar.textContent = "UI";
+        userInputNavAvatar.style.background = "linear-gradient(135deg, #94a3b8, #475569)";
+      }
+    }
+
+    if (userInputNavLink) {
+      if (firstName) {
+        userInputNavLink.setAttribute("title", state.user?.name || firstName);
+        userInputNavLink.classList.add("nav-user-link-active");
+      } else {
+        userInputNavLink.removeAttribute("title");
+        userInputNavLink.classList.remove("nav-user-link-active");
+      }
+    }
+
+    refreshUserInputModalBadge(firstName, designation);
+  }
+
+  function openUserInputModal(returnUrl = "aim.html") {
+    if (!userInputModal || !userInputIframe) return;
+    refreshUserInputNavLabel();
+    const params = new URLSearchParams();
+    if (returnUrl) params.set("return", returnUrl);
+    userInputIframe.src = `user_input.html${params.toString() ? `?${params}` : ""}`;
+    userInputModal.classList.remove("hidden");
+    userInputModal.classList.add("flex");
+    document.body.classList.add("overflow-hidden");
+  }
+
+  function closeUserInputModal() {
+    if (!userInputModal) return;
+    userInputModal.classList.add("hidden");
+    userInputModal.classList.remove("flex");
+    document.body.classList.remove("overflow-hidden");
+    if (userInputIframe) {
+      userInputIframe.src = "about:blank";
+    }
+  }
+
+  function showAimAlert(message, title = "Notice", onClose = null) {
+    if (!aimAlertModal) {
+      alert(message);
+      if (typeof onClose === "function") onClose();
+      return;
+    }
+    if (aimAlertTitle) aimAlertTitle.textContent = title;
+    if (aimAlertMessage) aimAlertMessage.textContent = message;
+    aimAlertOnClose = typeof onClose === "function" ? onClose : null;
+    aimAlertModal.classList.add("show");
+    document.body.classList.add("is-modal-open");
+    aimAlertClose?.focus?.();
+    playAimProgressReportAccessAlertAudio(message);
+  }
+
+  window.showAimAlert = showAimAlert;
+
+  function closeAimAlert() {
+    stopAimProgressReportAccessAlertAudio();
+    if (typeof window.stopAimReadyNoticeAudio === "function") {
+      window.stopAimReadyNoticeAudio();
+    }
+    if (!aimAlertModal) return;
+    aimAlertModal.classList.remove("show");
+    document.body.classList.remove("is-modal-open");
+    if (aimAlertOnClose) {
+      const callback = aimAlertOnClose;
+      aimAlertOnClose = null;
+      callback();
+    }
+  }
+
+  if (aimAlertClose) {
+    aimAlertClose.addEventListener("click", closeAimAlert);
+  }
+
+  aimAlertModal?.addEventListener("click", (event) => {
+    if (event.target === aimAlertModal) closeAimAlert();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && aimAlertModal?.classList.contains("show")) {
+      closeAimAlert();
+    }
+  });
+
+  if (userInputModalClose) {
+    userInputModalClose.addEventListener("click", closeUserInputModal);
+  }
+
+  if (userInputModal) {
+    userInputModal.addEventListener("click", (event) => {
+      if (event.target === userInputModal) {
+        closeUserInputModal();
+      }
+    });
+  }
+
+  if (userInputNavLink) {
+    userInputNavLink.addEventListener("click", (event) => {
+      if (VLProgress.hasUser()) return; // already filled; let it behave as normal link (no modal)
+      event.preventDefault();
+      openUserInputModal(userInputNavLink.dataset.redirectReturn || "aim.html");
+    });
+  }
+
+  refreshUserInputNavLabel();
+
+  window.addEventListener("message", (event) => {
+    const allowedOrigin = window.location.origin;
+    const fromNullOrigin = event.origin === "null";
+    if (allowedOrigin !== "null" && event.origin !== allowedOrigin && !fromNullOrigin) return;
+    const data = event.data;
+    if (!data || !data.type) return;
+
+    if (data.type === "vlab:simulation_report_generated") {
+      const html = typeof data.html === "string" ? data.html : "";
+      const updatedAt = (data.updatedAt || String(Date.now())).toString();
+      if (html && html.trim()) {
+        try {
+          localStorage.setItem("vlab_exp2_simulation_report_html", html);
+          localStorage.setItem("vlab_exp2_simulation_report_updated_at", updatedAt);
+          const activeHash = localStorage.getItem("vlab_exp2_active_user_hash");
+          if (activeHash) {
+            localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_html`, html);
+            localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_updated_at`, updatedAt);
+          }
+        } catch (e) {}
+
+        try {
+          const PREFIX = "VLAB_EXP2::";
+          if (html.length <= 1500000) {
+            let wn = {};
+            if (typeof window.name === "string" && window.name.startsWith(PREFIX)) {
+              wn = JSON.parse(window.name.slice(PREFIX.length)) || {};
+            }
+            wn["vlab_exp2_simulation_report_html"] = html;
+            wn["vlab_exp2_simulation_report_updated_at"] = updatedAt;
+            window.name = PREFIX + JSON.stringify(wn);
+          }
+        } catch (e) {}
+      }
+
+      ensureProgressReportState();
+      return;
+    }
+
+    if (data.type === "vlab:user_input_cancel") {
+      closeUserInputModal();
+      return;
+    }
+
+    if (data.type !== "vlab:user_input_submitted") return;
+    closeUserInputModal();
+    refreshUserInputNavLabel();
+    ensureProgressReportState();
+    if (data.returnUrl) {
+      window.location.href = data.returnUrl;
+    }
+  });
+
+  const progressReportLinks = Array.from(document.querySelectorAll("[data-progress-report-link]"));
+
+  // Make sure Progress Report never opens in a new tab/window
+  const allProgressReportLinks = Array.from(document.querySelectorAll('a[href*="progressreport"]'));
+  [...new Set([...progressReportLinks, ...allProgressReportLinks])].forEach((link) => {
+    link.removeAttribute("target");
+    link.setAttribute("target", "_self");
+  });
+
+  function hasSimulationReport() {
+    try {
+      const activeHash = localStorage.getItem("vlab_exp2_active_user_hash") || "";
+      const keys = [];
+      if (activeHash) keys.push(`vlab_exp2_user_${activeHash}_simulation_report_html`);
+      keys.push("vlab_exp2_simulation_report_html");
+      for (const k of keys) {
+        const html = localStorage.getItem(k);
+        if (html && String(html).trim()) return true;
+      }
+    } catch {}
+
+    try {
+      const PREFIX = "VLAB_EXP2::";
+      if (typeof window.name === "string" && window.name.startsWith(PREFIX)) {
+        const data = JSON.parse(window.name.slice(PREFIX.length)) || {};
+        const html = (data["vlab_exp2_simulation_report_html"] || "").toString();
+        if (html.trim()) return true;
+      }
+    } catch {}
+    return false;
+  }
+
+  function disableProgressReportUI(message = AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE) {
+    progressReportLinks.forEach((link) => {
+      link.classList.add("opacity-50", "cursor-not-allowed");
+      link.setAttribute("aria-disabled", "true");
+      link.setAttribute("title", message);
+      // Fallback if Tailwind classes are unavailable (offline).
+      link.style.opacity = "0.55";
+      link.style.cursor = "not-allowed";
+    });
+  }
+
+  function enableProgressReportUI() {
+    progressReportLinks.forEach((link) => {
+      link.classList.remove("opacity-50", "cursor-not-allowed");
+      link.removeAttribute("aria-disabled");
+      link.removeAttribute("title");
+      link.style.opacity = "";
+      link.style.cursor = "";
+    });
+  }
+
+  function ensureProgressReportState() {
+    const needUser = !VLProgress.hasUser();
+    const needSim = !hasSimulationReport();
+    if (!needUser && !needSim) {
+      enableProgressReportUI();
+    } else {
+      disableProgressReportUI(getAimProgressReportAccessAlertMessage(needUser, needSim));
+    }
+  }
+
+  ensureProgressReportState();
+  window.addEventListener("storage", ensureProgressReportState);
+
+  // YES → go to form
+  if (yesBtn) yesBtn.addEventListener("click", () => {
+    closePrompt();
+    openUserInputModal("aim.html");
+  });
+
+  // NO → stay, but block report
+  if (noBtn) noBtn.addEventListener("click", () => {
+    closePrompt();
+    VLProgress.declineReport();
+    disableProgressReportUI();
+  });
+
+  // Block progress report access unless form is filled
+  progressReportLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      const needUser = !VLProgress.hasUser();
+      const needSim = !hasSimulationReport();
+      if (!needUser && !needSim) {
+        enableProgressReportUI();
+        return;
+      }
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      const msg = getAimProgressReportAccessAlertMessage(needUser, needSim);
+      showAimAlert(msg, "Instructions");
+    }, true);
+  });
+
+  // Delegated guard for any missed Progress Report links (safety net)
+  document.addEventListener("click", (event) => {
+    const target = event.target.closest("a");
+    if (!target) return;
+    const href = (target.getAttribute("href") || "").trim();
+    const isProgressLink =
+      target.hasAttribute("data-progress-report-link") ||
+      href.toLowerCase().includes("progressreport") ||
+      href === "#progressreport" ||
+      href.endsWith("#progressreport");
+    if (!isProgressLink) return;
+    const needUser = !VLProgress.hasUser();
+    const needSim = !hasSimulationReport();
+    if (!needUser && !needSim) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const msg = getAimProgressReportAccessAlertMessage(needUser, needSim);
+    showAimAlert(msg, "Instructions");
+  }, true);
+
+  // If user loads aim.html#progressreport directly without user form
+  if (window.location.hash === "#progressreport" && (!VLProgress.hasUser() || !hasSimulationReport())) {
+    const needUser = !VLProgress.hasUser();
+    const needSim = !hasSimulationReport();
+    const msg = getAimProgressReportAccessAlertMessage(needUser, needSim);
+    showAimAlert(msg, "Instructions");
+  }
+
+  // If intro is not shown (already shown earlier), still prompt on load (optional but useful)
+})();
+</script>
 
 </body>
 </html>

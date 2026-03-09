@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Virtual Labs | Electrical Machines Lab - Procedure</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./alert-theme.css">
+
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Page blur when intro popup is open */
+    body.body-blurred #page-wrapper {
+      filter: blur(5px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    body.body-blurred {
+      overflow: hidden;
+    }
+
+    /* Custom Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fadeInUp {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .animate-slideInLeft {
+      animation: slideInLeft 0.5s ease-out forwards;
+    }
+
+    @keyframes chatbot-float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-4px);
+      }
+    }
+
+    @keyframes chatbot-hint-pulse {
+      0%, 65% {
+        opacity: 0;
+        transform: translate(8px, -50%) scale(0.94);
+      }
+      10%, 40% {
+        opacity: 1;
+        transform: translate(0, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(8px, -50%) scale(0.94);
+      }
+    }
+
+    /* Stagger animation for menu items */
+    .menu-item:nth-child(1) { animation-delay: 0.1s; }
+    .menu-item:nth-child(2) { animation-delay: 0.2s; }
+    .menu-item:nth-child(3) { animation-delay: 0.3s; }
+    .menu-item:nth-child(4) { animation-delay: 0.4s; }
+    .menu-item:nth-child(5) { animation-delay: 0.5s; }
+    .menu-item:nth-child(6) { animation-delay: 0.6s; }
+    .menu-item:nth-child(7) { animation-delay: 0.7s; }
+    .menu-item:nth-child(8) { animation-delay: 0.8s; }
+
+    /* Section stagger */
+    .section-content:nth-child(even) { animation-delay: 0.2s; }
+    .section-content:nth-child(odd) { animation-delay: 0.1s; }
+
+    /* Virtual Labs specific styling */
+    .vl-header {
+       height: 70px;
+      background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+      box-shadow: 0 10px 30px rgba(2, 26, 44, 0.35);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem; /* Increased padding for better breathing room */
+    }
+
+    .top-nav {
+      gap: 1.5rem; /* Increased gap for better spacing */
+      align-items: center;
+    }
+
+    .nav-link {
+      position: relative;
+      color: #e2e8f0;
+      font-weight: 600;
+      padding: 0.5rem 1rem; /* Slightly increased padding */
+      transition: color 150ms ease, transform 150ms ease; /* Added subtle transform */
+      border-radius: 0.375rem; /* Subtle rounding */
+      text-decoration: none;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -6px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 200ms ease;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus {
+      color: #fff;
+      transform: translateY(-1px); /* Subtle lift on hover */
+      background: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
+    }
+
+    .nav-link:hover::after,
+    .nav-link:focus::after {
+      transform: scaleX(1);
+    }
+
+    /* Logo improvements */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem; /* Consistent gap */
+    }
+
+    .logo-glow {
+      transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+
+    .logo-glow:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(11, 96, 168, 0.5);
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .logo-title {
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .logo-subtitle {
+      color: #bfdbfe;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin: 0;
+    }
+
+   .flex-1.pt-16 {
+    flex: 1;
+  }
+
+  .vl-footer {
+    background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+    color: #e2e8f0;
+    padding: 1.25rem 0;
+    box-shadow: 0 -10px 30px rgba(2, 26, 44, 0.5);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 50;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 1.5rem;
+  }
+
+    .vl-sidebar {
+      background: #f8fafc;
+      border-right: 1px solid #e2e8f0;
+    }
+    .vl-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .menu-item {
+      border-left: 3px solid transparent;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 0.75rem;
+      transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(4px);
+      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.6);
+    }
+
+    .menu-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(11, 96, 168, 0.15), transparent 60%);
+      opacity: 0;
+      transform: translateX(-100%);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .menu-item:hover::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      border-left-color: #0b60a8;
+      background: rgba(255, 255, 255, 0.85);
+      transform: translateX(6px);
+      box-shadow: 0 12px 30px rgba(2, 26, 44, 0.15);
+    }
+
+    .menu-item.active::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Override Tailwind blue accents with lab primary theme */
+    .bg-blue-600,
+    .hover\:bg-blue-700:hover {
+      background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+    }
+
+    .text-blue-600,
+    .hover\:text-blue-600:hover {
+      color: #0b60a8;
+    }
+
+    .border-blue-600 {
+      border-color: #0b60a8;
+    }
+
+    #intro-text .intro-line {
+      margin: 0 0 0.85rem;
+      color: #1f2933;
+      line-height: 1.6;
+      opacity: 0.65;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    #intro-text .intro-line:last-child {
+      margin-bottom: 0;
+    }
+
+    #intro-text .intro-line.active {
+      opacity: 1;
+      color: #0f172a;
+      font-weight: 600;
+      transform: translateX(2px);
+    }
+
+    .chatbot-launcher {
+      width: 74px;
+      height: 74px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff, #dbeafe);
+      box-shadow: 0 25px 45px rgba(15, 23, 42, 0.35);
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+      position: relative;
+      z-index: 1;
+      overflow: visible;
+    }
+
+    .chatbot-launcher::before,
+    .chatbot-launcher::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      background: conic-gradient(from 160deg,
+        rgba(59, 130, 246, 0.25),
+        rgba(14, 165, 233, 0.65),
+        rgba(59, 130, 246, 0.95),
+        rgba(14, 165, 233, 0.65),
+        rgba(59, 130, 246, 0.25)
+      );
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 180ms ease, transform 180ms ease;
+      z-index: -1;
+    }
+
+    .chatbot-launcher::after {
+      filter: blur(12px);
+    }
+
+    .chatbot-launcher:hover::before,
+    .chatbot-launcher:hover::after {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    .chatbot-launcher:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(15, 23, 42, 0.45);
+    }
+
+    .chatbot-launcher-image {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.65));
+      animation: chatbot-float 2.4s ease-in-out infinite;
+    }
+
+    .chatbot-hint-bubble {
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translate(8px, -50%) scale(0.94);
+      margin-right: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      color: #e0f2fe;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.55);
+      animation: chatbot-hint-pulse 4.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .chatbot-hint-dot {
+        position: relative;
+  left: -5px;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #38bdf8;
+      box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    @media (max-width: 640px) {
+      .chatbot-launcher {
+        width: 64px;
+        height: 64px;
+      }
+
+      .chatbot-launcher-image {
+        width: 50px;
+        height: 50px;
+      }
+
+      .chatbot-hint-bubble {
+        display: none;
+      }
+    }
+
+    .chatbot-widget {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.9rem;
+      z-index: 90;
+      max-width: calc(100vw - 32px);
+    }
+
+    .chatbot-widget.chatbot-open .chatbot-hint-bubble,
+    .chatbot-widget:hover .chatbot-hint-bubble {
+      animation: none;
+      opacity: 0;
+    }
+
+    .chatbot-panel {
+      width: min(420px, calc(100vw - 40px));
+      height: min(600px, calc(100vh - 140px));
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 30px 60px rgba(2, 38, 61, 0.45);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      transform-origin: bottom right;
+      transform: translateY(12px) scale(0.94);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease, transform 220ms ease;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chatbot-panel.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+   .chatbot-panel-header {
+      padding: 1.1rem 1.35rem;
+      background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+
+    .chatbot-panel-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .chatbot-panel-caption {
+      font-size: 0.78rem;
+      opacity: 0.9;
+      margin: 0;
+    }
+
+    .chatbot-panel-close {
+      border: none;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 120ms ease;
+    }
+
+    .chatbot-panel-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .chatbot-panel-body {
+      flex: 1;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+      position: relative;
+      border-top: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .chatbot-panel-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.5rem;
+      color: #475569;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .chatbot-panel iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      display: none;
+      overflow: hidden;
+      scrollbar-width: none;
+    }
+
+    .chatbot-panel iframe::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chatbot-panel iframe.chatbot-frame-visible {
+      display: block;
+    }
+
+    /* Improved text alignment in sections */
+    .section-text {
+      text-align: left; /* Ensure left alignment for readability */
+      line-height: 1.7; /* Improved line height for better spacing */
+      hyphens: auto; /* Allow soft hyphens for long words */
+    }
+
+    .section-text p {
+      margin-bottom: 1rem; /* Consistent paragraph spacing */
+      text-indent: 0; /* No indentation, use spacing instead */
+    }
+
+    @media (max-width: 640px) {
+      .chatbot-widget {
+        bottom: 16px;
+        right: 16px;
+        width: calc(100vw - 24px);
+      }
+
+      .chatbot-panel {
+        width: 100%;
+        height: min(82vh, 580px);
+        border-radius: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .chatbot-panel {
+        height: min(88vh, 620px);
+      }
+    }
+
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- HEADER -->
+    <header class="vl-header shadow-xl fixed top-0 left-0 right-0 z-50">
+    <div class="header-inner px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-1 w-full">
+        <!-- Logo Section - Absolute Left Corner -->
+        <a href="../../main.html" class="logo-container hover:no-underline focus:no-underline"> <!-- Made logo clickable -->
+          <img 
+           src="./images/image.png" 
+            alt="Virtual Labs Logo" 
+            class="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 rounded-xl object-contain bg-white p-1.5 logo-glow"
+            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%230b60a8%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22%3EVL%3C/text%3E%3C/svg%3E'"
+          >
+          <div class="logo-text">
+          <h1 class="logo-title text-base sm:text-lg lg:text-xl">Virtual Labs</h1>
+          <p class="logo-subtitle text-[10px] sm:text-xs lg:text-sm">IIT Roorkee</p>
+
+          </div>
+        </a>
+
+        <!-- Mobile Menu Button - Right Side -->
+        <button 
+          id="mobile-menu-toggle" 
+          class="lg:hidden text-white p-2 menu-button"
+          aria-label="Toggle menu"
+        >
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+
+        <!-- Desktop Navigation (Optional) -->
+         <nav class="top-nav hidden lg:flex items-center">
+            <a href="../../main.html" class="nav-link">Home</a>
+            <a href="user_input.html?return=procedure.html" class="nav-link nav-user-link" data-user-input-link data-redirect-return="procedure.html">
+              <span class="nav-user-pill">
+               
+                <span class="nav-user-text" data-user-text>User Input</span>
+              </span>
+            </a>
+           
+          </nav>
+      </div>
+    </div>
+  </header>
+
+ <div class="flex pt-16 min-h-screen">
+    <!-- Sidebar -->
+       <aside id="sidebar" class="vl-sidebar w-64 fixed inset-y-0 left-0 z-40 overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out pt-20 lg:pt-6 pb-6">
+      <div class="px-4">
+        <h2 class="text-lg font-semibold text-gray-800 mb-6 border-b border-gray-200 pb-4">Experiment Navigation</h2>
+        <nav class="space-y-1">
+           <a href="aim.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    Aim
+  </a>
+
+  <a href="theory.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+    </svg>
+    Theory
+  </a>
+
+  <a href="pretest.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    Pretest
+  </a>
+
+  <a href="procedure.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2m-6 9l2 2 4-4"></path>
+    </svg>
+    Procedure
+  </a>
+
+  <a href="simulation.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+    </svg>
+    Simulation
+  </a>
+
+  <a href="posttest.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    Posttest
+  </a>
+
+  <a href="references.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+    </svg>
+    References
+  </a>
+
+  <a href="contributors.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
+    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+    </svg>
+    Contributors
+  </a>
+  <a id="progressReportNav"
+     href="#progressreport"
+     class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group"
+     data-progress-report-link>
+
+    <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+    </svg>
+
+    Progress report
+  </a>
+
+        </nav>
+      </div>
+    </aside>
+
+    <!-- MOBILE OVERLAY -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 lg:ml-64 p-6">
+
+      <!-- Breadcrumb -->
+        <nav class="mb-6 text-m text-gray-600 animate-slideInLeft flex items-center space-x-2">
+        <a href="#" class="hover:text-blue-600 transition-colors">Home</a>
+        <span>></span>
+        <a href="#" class="hover:text-blue-600">Electrical Machines Lab</a>
+        <span>></span>
+        <span class="text-gray-800 font-medium">Procedure</span>
+      </nav>
+
+      <!-- TITLE CARD -->
+      <div class="vl-card mb-4 overflow-hidden animate-fadeInUp rounded-lg">
+        <div class="px-4 py-3 flex items-center justify-start gap-4" style="background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);">
+          <h1 class="text-lg md:text-xl font-bold text-white leading-snug">
+            Speed Control of DC motor by Armature Resistance Control
+          </h1>
+        </div>
+      </div>
+
+      <!-- Procedure Steps -->
+      <section class="section-content vl-card p-6 animate-fadeInUp">
+        
+
+        <div class="space-y-8 text-gray-700 text-lg leading-relaxed">
+
+          <!-- Step 1: Connections -->
+         
+       
+
+   <p>
+  <b>AI Guide:</b> To use this feature, click on the 
+  <b>“AI Guide”</b> button. The AI Guide will assist you 
+  in performing the simulation accurately at each step.
+</p>
+     <p><strong>STEP 1:</strong> Make connections as per the instructions given below:</p>
+      <div class="overflow-auto rounded-lg shadow border border-gray-200">
+          <table class="min-w-[1100px] w-full table-fixed divide-y divide-gray-200">
+            <caption class="sr-only">Connections mapping between 'From' and 'To' terminals</caption>
+            <thead class="bg-gray-50">
+              <tr>
+                <!-- first column (From) -->
+                <th class="sticky top-0 z-10 px-4 py-3 text-left text-sm font-semibold text-gray-700 bg-gray-50">
+                  From
+                </th>
+        
+                <!-- the rest of the header cells (short labels centered) -->
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">R</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">B</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">B</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">B</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">F</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">A</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">G</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">I</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">C</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">A1</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">K</th>
+                <!-- <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">I</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">J</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">H</th>
+                <th class="sticky top-0 z-10 px-3 py-3 text-center text-xs font-medium text-gray-600 uppercase">H</th> -->
+              </tr>
+            </thead>
+        
+            <tbody class="bg-white divide-y divide-gray-100 text-sm">
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3 font-medium text-gray-800 bg-gray-50">To</td>
+                <td class="px-3 py-3 text-center">L</td>
+                <td class="px-3 py-3 text-center">D</td>
+                <td class="px-3 py-3 text-center">A2</td>
+                <td class="px-3 py-3 text-center">F2</td>
+                <td class="px-3 py-3 text-center">E</td>
+                <td class="px-3 py-3 text-center">J</td>
+                <td class="px-3 py-3 text-center">H</td>
+                <td class="px-3 py-3 text-center">F1</td>
+                <td class="px-3 py-3 text-center">A1</td>
+                <td class="px-3 py-3 text-center">K</td>
+                <td class="px-3 py-3 text-center">C</td>
+                <!-- <td class="px-3 py-3 text-center">J</td>
+                <td class="px-3 py-3 text-center">L1</td>
+                <td class="px-3 py-3 text-center">A3</td>
+                <td class="px-3 py-3 text-center">Z3</td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      <!-- keep the image but limit height and center it -->
+      <div class="flex justify-center my-8">
+        <img src="images/Procedure.JPG" alt="Correct Connections Diagram" class="max-w-full h-auto rounded-lg shadow-lg" style="max-height: 500px;">
+      </div>
+      
+          <!-- Remaining Steps -->
+          <div class="space-y-4">
+           <p><b>Note:</b> If the wire is wrongly connected, click on the label number to remove the wire.</p>
+           <p><b>Note:</b> Click on the <b>“Auto Connect”</b> button to make all the connections automatically.</p>
+           <p><strong>STEP 2:</strong> Click on <b>"Check"</b> button to check the connections.</p>
+           <p><strong>STEP 3:</strong>  If connections are correct, turn ON the  DC supply.</p>
+           <p><strong>STEP 4:</strong> Now, move the starter handle from left to right</p>
+           <p><strong>STEP 5:</strong> First, set the field resistance by moving the field rheostat knob.</p>
+           <p><strong>STEP 6:</strong> Now, click on the <b>“Add to Table”</b> button to add readings to the observation table</p>
+           <p><strong>STEP 7:</strong> Now vary the armature resistance by moving the armature rheostat knob to take different readings.</p>
+           <p><strong>STEP 8:</strong> Repeat steps 6 to 7 to add more readings in the observation table.</p>
+           <p><strong>STEP 9:</strong>  Click on the <b>"Graph"</b> button to generate a Graph.</p>
+           <p><strong>STEP 10:</strong> Click on the <b>“Report”</b> button to generate a summarised report of the simulation.</p>
+           <p><strong>STEP 11:</strong> Click on the <b>“Print”</b> button to print the simulation.</p>
+           <p><strong>STEP 12:</strong> Click on the <b>“Reset”</b> button to reset the simulation.</p> <br>
+        </div>
+
+        </div>
+      </section>
+
+      <section id="progressreport"
+               class="section-content vl-card mb-8 p-6 animate-fadeInUp hidden">
+
+        <div class="border-l-4 border-orange-600 pl-4 mb-4 flex items-center justify-between">
+          <div class="flex items-center">
+            <h2 class="text-2xl font-bold text-gray-800">
+              Progress Report
+            </h2>
+          </div>
+          <span class="text-sm text-gray-600">
+            Embedded view (opens within this page)
+          </span>
+        </div>
+
+        <div class="w-full rounded-xl overflow-hidden border border-gray-200 shadow-inner">
+          <iframe
+            src="progressreport.html"
+            title="Progress Report"
+            class="w-full"
+            style="min-height: 900px;"
+            loading="lazy">
+          </iframe>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  
+  <!-- FOOTER -->
+<footer class="vl-footer fixed bottom-0 left-0 right-0 z-50 h-12"> <!-- Key: h-12 = 48px -->
+    <div class="footer-inner flex items-center justify-center h-full px-4">
+      <p class="text-xs md:text-sm text-center text-sky-100 font-medium tracking-wide">
+        &copy; 2026 Virtual Labs IIT Roorkee 
+      </p>
+    </div>
+  </footer>
+
+
+  <script>
+    // Mobile Toggle
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+      overlay.classList.toggle('hidden');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+  </script>
+
+  <div class="chatbot-widget">
+    <div class="chatbot-panel" data-chat-url="https://vlab-exp-2.netlify.app/">
+      <div class="chatbot-panel-header">
+        <div>
+          <p class="chatbot-panel-title">Virtual Lab Assistant</p>
+          <p class="chatbot-panel-caption">Ask anything about this experiment</p>
+        </div>
+        <button type="button" class="chatbot-panel-close" aria-label="Close chatbot">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="chatbot-panel-body">
+        <div class="chatbot-panel-placeholder">Loading area for your chatbot. Update the <strong>data-chat-url</strong> to match your deployment.</div>
+        <iframe title="Chatbot assistant" referrerpolicy="no-referrer" scrolling="no"></iframe>
+      </div>
+    </div>
+      <button type="button" class="chatbot-launcher" aria-expanded="false" aria-label="Open chatbot assistant">
+      <span class="chatbot-hint-bubble">
+        <span class="chatbot-hint-dot">Hi </span>
+          Ask anything about this experiment 
+        </span>
+        <img src="images/chatbot.png" alt="" aria-hidden="true" class="chatbot-launcher-image">
+      </button>
+  </div>
+
+  <audio id="chatbot-notification-audio" preload="auto">
+    <source src="live-chat-353605.mp3" type="audio/mpeg">
+  </audio>
+ <script>
+    (function () {
+      const widget = document.querySelector('.chatbot-widget');
+      if (!widget) {
+        return;
+      }
+
+      const toggleBtn = widget.querySelector('.chatbot-launcher');
+      const panel = widget.querySelector('.chatbot-panel');
+      const closeBtn = widget.querySelector('.chatbot-panel-close');
+      const iframe = panel.querySelector('iframe');
+      const placeholder = panel.querySelector('.chatbot-panel-placeholder');
+      const chatUrl = (panel.dataset.chatUrl || '').trim();
+      const notifyAudio = document.getElementById('chatbot-notification-audio');
+
+      if (!toggleBtn || !panel || !closeBtn || !iframe || !placeholder) {
+        return;
+      }
+
+      let isLoaded = false;
+      let autoCloseTimer = null;
+ 
+      function openPanel() {
+        panel.classList.add('open');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        widget.classList.add('chatbot-open');
+
+        if (chatUrl && chatUrl !== '#') {
+          if (!isLoaded) {
+            placeholder.textContent = 'Loading assistant...';
+            iframe.addEventListener('load', () => {
+              isLoaded = true;
+              iframe.classList.add('chatbot-frame-visible');
+              placeholder.style.display = 'none';
+            }, { once: true });
+            iframe.src = chatUrl;
+          }
+        } else {
+          placeholder.innerHTML = 'Set the <strong>data-chat-url</strong> on the chatbot panel to your chatbot link.';
+        }
+      }
+
+      function closePanel() {
+        panel.classList.remove('open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        widget.classList.remove('chatbot-open');
+        if (autoCloseTimer) {
+          clearTimeout(autoCloseTimer);
+          autoCloseTimer = null;
+        }
+      }
+
+      toggleBtn.addEventListener('click', () => {
+        if (panel.classList.contains('open')) {
+          closePanel();
+        } else {
+          openPanel();
+        }
+      });
+
+      closeBtn.addEventListener('click', closePanel);
+
+      if (document.readyState === 'complete') {
+        setTimeout(scheduleAutoOpen, 1200);
+      } else {
+        window.addEventListener('load', function () {
+          setTimeout(scheduleAutoOpen, 1200);
+        }, { once: true });
+      }
+    })();
+  </script>   
+
+  <script src="./user_input_modal.js"></script>
+  <script src="./progress_tracker.js"></script>
+  <script src="./progress_report_embed.js"></script>
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href').substring(1);
+        if (!targetId) return;
+
+        const targetSection = document.getElementById(targetId);
+        if (!targetSection) return;
+
+        e.preventDefault();
+
+        document.querySelectorAll('.section-content').forEach(sec => {
+          sec.classList.add('hidden');
+        });
+
+        targetSection.classList.remove('hidden');
+
+        document.querySelectorAll('.menu-item').forEach(item => {
+          item.classList.remove('active');
+        });
+
+        const menuItem = this.closest('.menu-item');
+        if (menuItem) menuItem.classList.add('active');
+
+        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>

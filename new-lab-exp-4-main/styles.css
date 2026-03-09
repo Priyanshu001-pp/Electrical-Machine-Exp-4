@@ -2404,9 +2404,14 @@
     pointer-events: none;
     animation: speakGlowPulse 1.35s ease-in-out infinite;
     }
+/* ============================================================
+   PRINT FIX — Replace the entire @media print block in styles.css
+   with this corrected version
+   ============================================================ */
 @media print {
 
-.pill-btn {
+    /* ── BUTTON SIZES ── */
+    .pill-btn {
         width: 100% !important;
         height: 48px !important;
         padding: 0 18px !important;
@@ -2477,7 +2482,6 @@
         break-before: avoid !important;
         page-break-inside: avoid !important;
         break-inside: avoid !important;
-        /* ── KEY FIX: footer ko panel ke saath rakhne ke liye ── */
         margin-top: 0 !important;
     }
 
@@ -2517,61 +2521,67 @@
     }
 
     /* ── RIGHT COLUMN ── */
-  /* ── RIGHT COLUMN ── */
-.right-column {
-    grid-column: 3 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    overflow: visible !important;
-    border-right: none !important;
-    padding: 18px !important;
-    min-width: 0 !important;
-}
+    .right-column {
+        grid-column: 3 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;        /* FIX 1: center everything horizontally */
+        justify-content: flex-start !important;
+        overflow: visible !important;
+        border-right: none !important;
+        padding: 18px !important;
+        min-width: 0 !important;
+    }
 
-/* ── ADD THESE TWO NEW RULES ── */
-.right-column .pill-stack {
-     width: 280px !important;
-    max-height: none !important;
-}
+    .right-column .pill-stack {
+        width: 280px !important;
+        max-height: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;        /* FIX 1: center buttons */
+        gap: 10px !important;
+    }
 
-.data-section {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    width: 280px !important;
-    margin-top: 0 !important;
-}
+    /* FIX 2: Remove the stray border on instructions-wrapper */
+    .instructions-wrapper {
+        display: block !important;
+        border: none !important;              /* FIX 2: no border */
+        outline: none !important;
+        box-shadow: none !important;
+        width: 280px !important;
+    }
+
+    /* Hide the flyout instructions panel — not needed in print */
+    .instructions-panel {
+        display: none !important;
+    }
+
+    .data-section {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;       /* FIX 1: center table too */
+        width: 280px !important;
+        margin-top: 16px !important;
+    }
 
     .pill-stack {
         display: flex !important;
         flex-direction: column !important;
         overflow: visible !important;
-        width: 100% !important;
+        width: 280px !important;
         gap: 10px !important;
     }
 
     .pill-stack > .pill-btn {
-    display: flex !important;  /* ← none → flex */
-}
-
- .instructions-wrapper {
-    display: block !important;
-}
-
-    /* ── OBSERVATION TABLE ── */
-    .data-section {
         display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        width: 100% !important;
-        margin-top: 0 !important;
     }
 
+    /* ── OBSERVATION TABLE ── */
     .obs-title {
         display: block !important;
         visibility: visible !important;
         margin-bottom: 8px !important;
+        text-align: center !important;
     }
 
     .data-table-wrapper {
@@ -2623,40 +2633,56 @@
         break-inside: avoid !important;
         page-break-before: avoid !important;
         break-before: avoid !important;
+        position: relative !important;        /* needed for absolute graph-actions */
     }
 
     .graph-canvas {
         background: linear-gradient(180deg, #f3efe6, #e5dfd3) !important;
         min-height: 200px !important;
-        overflow: hidden !important;
+        height: 250px !important;
+        overflow: visible !important;
     }
 
     #graphPlot {
-  display: block !important;
-  visibility: visible !important;
-  position: absolute !important;
-  inset: 0 !important;
-        }
+        display: block !important;
+        visibility: visible !important;
+        position: absolute !important;
+        inset: 0 !important;
+    }
 
-.graph-canvas {
-  height: 250px !important;
-  overflow: visible !important;
-}
-
-    /* ── HIDE ALL INTERACTIVE/FLOATING UI ── */
- .chatbot-widget,
-.components-overlay,
-.components-launcher,
-.instructions-panel,
-.hover-tooltip,
-#warningModal,
-#resetBtn,
-#printBtn {
-    display: none !important;
-}
-
+    /* FIX 3: SHOW graph-actions buttons in print (was display:none) */
     .graph-actions {
-        position: static !important;
+        position: absolute !important;
+        top: -60px !important;
+        right: 18px !important;
+        display: flex !important;             /* FIX 3: was "none", now "flex" */
+        gap: 12px !important;
+        z-index: 50 !important;
+    }
+
+    /* FIX 4: jsPlumb endpoints — freeze their positions so they
+       match the on-screen simulation exactly */
+    .jtk-endpoint,
+    .jtk-endpoint svg,
+    .jtk-connector,
+    .jtk-connector svg {
+        position: absolute !important;
+        visibility: visible !important;
+    }
+
+    /* Prevent any transform / transition from shifting endpoints */
+    .point,
+    [id^="point"] {
+        transform: none !important;
+        transition: none !important;
+    }
+
+    /* ── HIDE INTERACTIVE / FLOATING UI ── */
+    .chatbot-widget,
+    .components-overlay,
+    .components-launcher,
+    .hover-tooltip,
+    #warningModal {
         display: none !important;
     }
 

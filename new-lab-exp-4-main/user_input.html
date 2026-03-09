@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Virtual Labs | Electrical Machines Lab - User Input</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+  <div class="w-full max-w-xl bg-white rounded-2xl border border-slate-200 shadow p-6">
+    <h1 class="text-2xl font-bold text-slate-900">User Input Form</h1>
+    <p class="text-slate-600 mt-1">Fill details to enable the progress report.</p>
+
+    <div class="mt-5 mb-4 flex items-center gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-[#021a2c] via-[#064073] to-[#0b60a8] px-4 py-3 shadow-lg shadow-slate-900/15 text-white">
+      <div id="nameAvatar"
+           class="h-12 w-12 rounded-full bg-white/10 ring-2 ring-white/50 flex items-center justify-center text-lg font-extrabold uppercase tracking-wide shadow-inner shadow-black/20 select-none transition-all">
+        UI
+      </div>
+      <div class="flex-1 leading-tight">
+ 
+        <div class="flex items-center gap-2">
+          <span id="namePreview" class="text-lg font-semibold">Your first name</span>
+          <span id="designationChip" class="hidden px-2 py-0.5 text-[11px] font-semibold rounded-full bg-white/15 text-white border border-white/25 backdrop-blur-sm"></span>
+        </div>
+ 
+      </div>
+    </div>
+
+    <form id="userForm" class="mt-6 space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Name</label>
+        <input id="name" type="text" required
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Email</label>
+        <input id="email" type="email" required
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
+       
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Designation</label>
+        <select id="designation" required
+          class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="">Select...</option>
+          <option>Student</option>
+          <option>Faculty</option>
+          <option>Researcher</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="flex gap-2 justify-end pt-2">
+        <button id="cancelBtn" type="button"
+          class="px-4 py-2 rounded-xl border border-[#0b60a8] text-[#0b60a8] font-semibold bg-white hover:bg-slate-50 hover:border-[#064073]">
+          Cancel
+        </button>
+        <button type="submit"
+          class="px-4 py-2 rounded-xl font-semibold text-white shadow-md shadow-slate-900/30 bg-gradient-to-r from-[#021a2c] via-[#064073] to-[#0b60a8] hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0b60a8]">
+          Save & Continue
+        </button>
+      </div>
+    </form>
+
+    <p id="errorBox" class="hidden mt-4 text-sm font-semibold text-red-600"></p>
+  </div>
+
+  <script src="./progress_tracker.js"></script>
+  <script>
+    // Edit your allowed domains here:
+    const ALLOWED_DOMAINS = [
+      "university.edu",
+      "iitr.ac.in",
+      "gmail.com"
+      // add more like: "spu.edu"
+    ];
+
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const designationInput = document.getElementById("designation");
+    const nameAvatar = document.getElementById("nameAvatar");
+    const namePreview = document.getElementById("namePreview");
+    const designationChip = document.getElementById("designationChip");
+    const DRAFT_KEY = "vlab_exp2_user_input_draft";
+
+    function loadDraft() {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch {
+        return null;
+      }
+    }
+
+    function saveDraft(value) {
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(value));
+      } catch {}
+    }
+
+    function clearDraft() {
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+      } catch {}
+    }
+
+    function persistDraft() {
+      if (!nameInput && !emailInput && !designationInput) return;
+      const payload = {
+        name: (nameInput?.value || "").trim(),
+        email: (emailInput?.value || "").trim(),
+        designation: (designationInput?.value || "").trim(),
+        modifiedAt: Date.now()
+      };
+      saveDraft(payload);
+    }
+
+    function getReturnUrl() {
+      const u = new URL(window.location.href);
+      return u.searchParams.get("return") || "aim.html";
+    }
+
+    function showError(msg) {
+      const el = document.getElementById("errorBox");
+      el.textContent = msg;
+      el.classList.remove("hidden");
+    }
+
+    function clearError() {
+      const el = document.getElementById("errorBox");
+      el.classList.add("hidden");
+      el.textContent = "";
+    }
+
+    function isAllowedEmail(email) {
+      const e = String(email || "").trim().toLowerCase();
+      const at = e.lastIndexOf("@");
+      if (at <= 0) return false;
+      const domain = e.slice(at + 1);
+      return ALLOWED_DOMAINS.some(d => domain === d || domain.endsWith("." + d));
+    }
+
+    function getFirstName(fullName) {
+      if (!fullName || typeof fullName !== "string") return "";
+      const trimmed = fullName.trim();
+      if (!trimmed) return "";
+      return trimmed.split(/\s+/)[0];
+    }
+
+    function pickAvatarColors(seed) {
+      const palettes = [
+        ["#0b60a8", "#021a2c"],
+        ["#2563eb", "#0b60a8"],
+        ["#0ea5e9", "#0369a1"],
+        ["#22c55e", "#14532d"],
+        ["#f97316", "#c2410c"]
+      ];
+      const key = (seed || "user").toLowerCase();
+      let hash = 0;
+      for (let i = 0; i < key.length; i++) {
+        hash = (hash * 31 + key.charCodeAt(i)) & 0xffffffff;
+      }
+      const idx = Math.abs(hash) % palettes.length;
+      return palettes[idx];
+    }
+
+    function updateProfilePreview(nameValue, designationValue) {
+      const firstName = getFirstName(nameValue);
+      const initials = (firstName ? firstName[0] : "U").toUpperCase();
+      const [c1, c2] = pickAvatarColors(firstName);
+
+      if (nameAvatar) {
+        nameAvatar.textContent = initials;
+        nameAvatar.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+      }
+
+      if (namePreview) {
+        namePreview.textContent = firstName || "Your first name";
+      }
+
+      if (designationChip) {
+        const clean = (designationValue || "").trim();
+        if (clean) {
+          designationChip.textContent = clean;
+          designationChip.classList.remove("hidden");
+        } else {
+          designationChip.textContent = "";
+          designationChip.classList.add("hidden");
+        }
+      }
+    }
+
+    function hydrateFromStoredUser() {
+      const draft = loadDraft();
+      const state = (window.VLProgress && typeof VLProgress.getState === "function") ? VLProgress.getState() : null;
+      const user = state?.user || {};
+
+      const submittedAt = user.submittedAt ? Date.parse(user.submittedAt) : 0;
+      const draftAt = draft?.modifiedAt ? Number(draft.modifiedAt) : 0;
+      const preferDraft = draft && draftAt > submittedAt;
+
+      const resolveValue = (field) => {
+        const saved = (user[field] || "").trim();
+        const drafted = (draft?.[field] || "").trim();
+        if (preferDraft && drafted) return drafted;
+        return saved || drafted || "";
+      };
+
+      const initial = {
+        name: resolveValue("name"),
+        email: resolveValue("email"),
+        designation: resolveValue("designation")
+      };
+
+      if (nameInput) nameInput.value = initial.name;
+      if (emailInput) emailInput.value = initial.email;
+      if (designationInput) designationInput.value = initial.designation;
+
+      updateProfilePreview(initial.name, initial.designation);
+    }
+
+    hydrateFromStoredUser();
+
+    if (nameInput) {
+      nameInput.addEventListener("input", () => {
+        updateProfilePreview(nameInput.value, designationInput?.value || "");
+        persistDraft();
+      });
+    }
+
+    if (emailInput) {
+      emailInput.addEventListener("input", persistDraft);
+    }
+
+    if (designationInput) {
+      const handleDesignationInput = () => {
+        updateProfilePreview(nameInput?.value || "", designationInput.value);
+        persistDraft();
+      };
+      designationInput.addEventListener("input", handleDesignationInput);
+      designationInput.addEventListener("change", handleDesignationInput);
+    }
+
+    const inIframe = (() => {
+      try { return window.self !== window.top; }
+      catch { return true; }
+    })();
+
+    document.getElementById("cancelBtn").addEventListener("click", () => {
+      const returnUrl = getReturnUrl();
+      let handled = false;
+
+      if (inIframe) {
+        try {
+          window.parent.postMessage({ type: "vlab:user_input_cancel" }, "*");
+          handled = true;
+        } catch {}
+      }
+
+      if (!handled) {
+        window.location.href = returnUrl;
+      }
+    });
+
+    document.getElementById("userForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      clearError();
+
+      if (!window.VLProgress) {
+        showError("Progress tracker missing. Check ./progress_tracker.js path.");
+        return;
+      }
+
+      const name = (document.getElementById("name").value || "").trim();
+      const email = (document.getElementById("email").value || "").trim();
+      const designation = (document.getElementById("designation").value || "").trim();
+
+      if (!name || !email || !designation) {
+        showError("Please fill all fields.");
+        return;
+      }
+
+      if (!isAllowedEmail(email)) {
+        showError("Email domain not allowed. Use a permitted institutional email.");
+        return;
+      }
+
+      VLProgress.setUser({ name, email, designation });
+      clearDraft();
+      updateProfilePreview(name, designation);
+
+      // Inform the user they can proceed to generate the progress report.
+      alert("Now you can generate the progress report");
+
+      const returnUrl = getReturnUrl();
+
+      // notify parent if inside iframe modal
+      let handled = false;
+      if (inIframe) {
+        try {
+          window.parent.postMessage({ type: "vlab:user_input_submitted", returnUrl }, "*");
+          handled = true;
+        } catch {}
+      }
+
+      if (!handled) {
+        window.location.href = returnUrl;
+      }
+    });
+  </script>
+</body>
+</html>
