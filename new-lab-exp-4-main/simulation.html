@@ -714,7 +714,7 @@
       <div class="flex items-center justify-between py-1 w-full gap-3">
         <a href="../../main.html" class="logo-container hover:no-underline focus:no-underline"> <!-- Made logo clickable -->
           <img 
-            src="./images/image.png" 
+            src="images/logo.png" 
             alt="Virtual Labs Logo" 
             class="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 rounded-xl object-contain bg-white p-1.5 logo-glow"
             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%230b60a8%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22%3EVL%3C/text%3E%3C/svg%3E'"
@@ -1003,9 +1003,9 @@
     const SIMULATION_DEMO_REMINDER_ALERT_MESSAGE = "I hope you’ve completed the demo.";
     const SIMULATION_DEMO_REQUIRED_ALERT_MESSAGE = "To proceed further, please complete the demo first.";
     const SIMULATION_ALERT_AUDIO_SOURCES = {
-      [SIMULATION_TABS_ALERT_MESSAGE]: "./audio/simulationsection.wav",
-      [SIMULATION_DEMO_REMINDER_ALERT_MESSAGE]: "./audio/experimentopen.wav",
-      [SIMULATION_DEMO_REQUIRED_ALERT_MESSAGE]: "./audio/demotab.wav"
+      [SIMULATION_TABS_ALERT_MESSAGE]: "./pagesaudio/simulationsection.wav",
+      [SIMULATION_DEMO_REMINDER_ALERT_MESSAGE]: "./pagesaudio/experimentopen.wav",
+      [SIMULATION_DEMO_REQUIRED_ALERT_MESSAGE]: "./pagesaudio/demotab.wav"
     };
 
     function playSimulationAlertAudio(soundEl, message) {
@@ -1171,14 +1171,16 @@
         if (trigger) trigger.addEventListener('click', clear, { once: true });
       }
 
-      window.addEventListener(
-        'load',
-        () => {
-          showPopup(SIMULATION_TABS_ALERT_MESSAGE, 'Instruction');
-          highlightDemoTab();
-        },
-        { once: true }
-      );
+      document.addEventListener(
+  'DOMContentLoaded',
+  () => {
+    setTimeout(() => {
+      showPopup(SIMULATION_TABS_ALERT_MESSAGE, 'Instruction');
+      highlightDemoTab();
+    }, 300);
+  },
+  { once: true }
+);
     })();
 
     (function initSimulationLinkReminder() {

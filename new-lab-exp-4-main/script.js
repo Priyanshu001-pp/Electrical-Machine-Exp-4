@@ -1,24 +1,24 @@
 jsPlumb.ready(function () {
- 
- // ✅ GLOBAL showPopup so it works before jsPlumb.ready fires
-window.showPopup = function(message, title = "Alert") {
-  const modal = document.getElementById("warningModal");
-  if (!modal) return;
-  const box = modal.querySelector(".modal-box");
-  const msg = document.getElementById("modalMessage");
-  const ttl = document.getElementById("modalTitle");
-  const sound = document.getElementById("alertSound");
 
-if (ttl) ttl.textContent = title;
-  if (msg) msg.innerHTML = message;
-  if (box) box.classList.add("danger");
-  modal.classList.add("show");
+  // ✅ GLOBAL showPopup so it works before jsPlumb.ready fires
+  window.showPopup = function (message, title = "Alert") {
+    const modal = document.getElementById("warningModal");
+    if (!modal) return;
+    const box = modal.querySelector(".modal-box");
+    const msg = document.getElementById("modalMessage");
+    const ttl = document.getElementById("modalTitle");
+    const sound = document.getElementById("alertSound");
 
-  if (sound) {
-    sound.currentTime = 0;
-    sound.play().catch(() => {});
-  }
-};
+    if (ttl) ttl.textContent = title;
+    if (msg) msg.innerHTML = message;
+    if (box) box.classList.add("danger");
+    modal.classList.add("show");
+
+    if (sound) {
+      sound.currentTime = 0;
+      sound.play().catch(() => { });
+    }
+  };
 
 
   // =====================
@@ -68,7 +68,7 @@ if (ttl) ttl.textContent = title;
     }
     const audio = new Audio(src);
     _activeAudio = audio;
-    audio.play().catch(() => {});
+    audio.play().catch(() => { });
     audio.addEventListener("ended", () => {
       if (_activeAudio === audio) _activeAudio = null;
     });
@@ -90,21 +90,21 @@ if (ttl) ttl.textContent = title;
     }
   }
 
- 
+
   let mcbState = "OFF";
   let mcbReady = false;
   const mcbImg = document.querySelector(".mcb-toggle");
- 
+
   let currentVoltage = 0;
   let currentRPM = 0;
- 
+
   let currentStepIndex = 0;
- 
+
   let checkClickedAfterCompletion = false;
- 
- let guideActive = false;
-let introSpoken = false;
-let fieldRheostatAudioPlayed = false;
+
+  let guideActive = false;
+  let introSpoken = false;
+  let fieldRheostatAudioPlayed = false;
 
   // =====================
   // 🎯 HIGHLIGHT SYSTEM
@@ -150,7 +150,7 @@ let fieldRheostatAudioPlayed = false;
     clearSpeakHighlights();
 
     addSpeakGlow(getPointLabelEl(fromId), activeSpeakLabels);
-    addSpeakGlow(getPointLabelEl(toId),   activeSpeakLabels);
+    addSpeakGlow(getPointLabelEl(toId), activeSpeakLabels);
 
     if (typeof jsPlumb !== "undefined" && typeof jsPlumb.getAllConnections === "function") {
       const key = connectionKey(fromId, toId);
@@ -262,59 +262,59 @@ let fieldRheostatAudioPlayed = false;
     playAudio(`audiosimulation/step_${stepNo}.wav`);
   }
 
- 
+
   const speakBtn = document.querySelector(".speak-btn");
- 
+
   if (speakBtn) {
     speakBtn.addEventListener("click", () => {
- 
+
       if (!guideActive) {
         // ── Guide turned ON ──
         guideActive = true;
         speakBtn.setAttribute("aria-pressed", "true");
         speakBtn.querySelector(".speak-btn__label").textContent = "GUIDING. . .";
- 
+
         currentStepIndex = getFirstMissingStepIndex();
- 
+
         if (currentStepIndex >= requiredPairs.length) {
           speakCurrentStep();
           return;
         }
- 
+
         if (!introSpoken && !completedByAutoConnect) {
           // 🔊 AUDIO LOCATION 1 — "TAP TO LISTEN" button first click
           // Plays: "Let's connect the components"
-         const audio = new Audio("audiosimulation/Connections.wav");
-_activeAudio = audio;
+          const audio = new Audio("audiosimulation/Connections.wav");
+          _activeAudio = audio;
 
-audio.play().catch(() => {});
+          audio.play().catch(() => { });
 
-audio.addEventListener("ended", () => {
-  if (guideActive) speakCurrentStep();
-});
+          audio.addEventListener("ended", () => {
+            if (guideActive) speakCurrentStep();
+          });
 
-introSpoken = true;
+          introSpoken = true;
         } else {
           speakCurrentStep();
         }
- 
+
         return;
       }
- 
+
       // ── Guide turned OFF ──
       guideActive = false;
-      wrongConnectionCount = 0;  
+      wrongConnectionCount = 0;
       stopAudio(); // stop any playing audio
       clearSpeakHighlights();
       speakBtn.setAttribute("aria-pressed", "false");
       speakBtn.querySelector(".speak-btn__label").textContent = "TAP TO LISTEN";
- 
+
     });
- 
+
   }
- 
+
   window.isGuideActive = () => guideActive;
- 
+
   let voiceStage = "idle";
 
   // =====================================================================
@@ -328,7 +328,7 @@ introSpoken = true;
     guidedSpeak("audiosimulation/field_resistance_set.wav");
     voiceStage = "field_set";
   }
- 
+
   function onReadingAdded(total) {
     if (total === 1) {
       showPopup(
@@ -338,111 +338,107 @@ introSpoken = true;
     }
 
     if (total === 1) {
-  guidedSpeak("audiosimulation/1streadingadd.wav");
-  voiceStage = "reading_added";
-} else if (total === 2) {
-  guidedSpeak("audiosimulation/2ndreadingadd.wav");
-  voiceStage = "reading_added";
-} else if (total === 3) {
-  guidedSpeak("audiosimulation/3rdreadingadd.wav");
-  voiceStage = "reading_added";
-} else if (total === 4) {
-  guidedSpeak("audiosimulation/1streadingadd.wav");
-  voiceStage = "reading_added";
-}
+      guidedSpeak("audiosimulation/1streadingadd.wav");
+      voiceStage = "reading_added";
+    } else if (total === 2) {
+      guidedSpeak("audiosimulation/2ndreadingadd.wav");
+      voiceStage = "reading_added";
+    } else if (total === 3) {
+      guidedSpeak("audiosimulation/3rdreadingadd.wav");
+      voiceStage = "reading_added";
+    } else if (total === 4) {
+      guidedSpeak("audiosimulation/1streadingadd.wav");
+      voiceStage = "reading_added";
+    }
 
-if (total === 5) {
-  showPopup(
-    "You have added five readings. Now you can plot the graph.<br> by clicking on the graph button or add more readings to the table.",
-    "Graph Ready"
-  );
-  guidedSpeak("audiosimulation/5readingsGraph.wav");
-  voiceStage = "five_completed";
-}
+    if (total === 5) {
+      showPopup(
+        "You have added five readings. Now you can plot the graph.<br> by clicking on the graph button or add more readings to the table.",
+        "Graph Ready"
+      );
+      guidedSpeak("audiosimulation/5readingsGraph.wav");
+      voiceStage = "five_completed";
+    }
 
-if (total === 7) {
-  showPopup(
-    "You can add a maximum of 7 readings to the table. Now, click the Graph button.",
-    "Maximum Readings Reached"
-  );
-  guidedSpeak("audiosimulation/7readingsdone.wav");
-  voiceStage = "seven_completed";
-}
+    if (total === 7) {
+      guidedSpeak("audiosimulation/7readingsdone.wav");
+      voiceStage = "seven_completed";
+    }
   }
- 
+
   function onGraphPlotted() {
     // 🔊 AUDIO LOCATION 6 — after graph is plotted successfully
     // Plays: "Graph plotted. Now click the Report button."
     guidedSpeak("audiosimulation/graph_plotted.wav");
     voiceStage = "graph_done";
   }
- 
+
   function onReportGenerated() {
     // 🔊 AUDIO LOCATION 7 — after report is generated
     // Plays: "Report generated. You can print it. Now click Reset to repeat."
     guidedSpeak("audiosimulation/report_generated.wav");
     voiceStage = "report_done";
   }
- 
+
   function onExperimentReset() {
     // 🔊 AUDIO LOCATION 8 — after Reset button clicked
     // Plays: "Experiment reset. Start again by making connections."
     guidedSpeak("audiosimulation/Reset.wav");
     voiceStage = "idle";
   }
- 
+
   const graphReadings = [];
   const MIN_GRAPH_POINTS = 5;
- 
+
   function showPopup(message, title = "Alert") {
     const modal = document.getElementById("warningModal");
     const box = modal.querySelector(".modal-box");
     const msg = document.getElementById("modalMessage");
     const ttl = document.getElementById("modalTitle");
     const sound = document.getElementById("alertSound");
- 
+
     ttl.textContent = title;
     msg.innerHTML = message;
- 
+
     box.classList.add("danger");
     modal.classList.add("show");
- 
+
     if (sound) {
       sound.currentTime = 0;
       sound.play();
     }
   }
- 
- function closeModal() {
+
+  function closeModal() {
     const modal = document.getElementById("warningModal");
     const box = modal.querySelector(".modal-box");
     const sound = document.getElementById("alertSound");
- 
+
     box.classList.add("closing");
- 
+
     setTimeout(() => {
       modal.classList.remove("show");
       box.classList.remove("closing");
     }, 500);
- 
+
     if (sound) sound.pause();
 
     // ✅ Stop any guide audio that was playing when popup appeared
     stopAudio();
 
-     // ✅ Also stop the components intro audio if it's still playing
+    // ✅ Also stop the components intro audio if it's still playing
     if (window._activeComponentIntroAudio) {
       window._activeComponentIntroAudio.pause();
       window._activeComponentIntroAudio.currentTime = 0;
       window._activeComponentIntroAudio = null;
     }
   }
- 
+
   function isModalOpen() {
     const modal = document.getElementById("warningModal");
     return modal && modal.classList.contains("show");
   }
- 
+
   function waitForWarningModalAcknowledgement() {
     return new Promise((resolve) => {
       const modal = document.getElementById("warningModal");
@@ -476,7 +472,7 @@ if (total === 7) {
       document.addEventListener("keydown", onEsc, { once: true });
     });
   }
- 
+
   window.closeModal = closeModal;
 
   document.addEventListener("click", function (e) {
@@ -488,7 +484,7 @@ if (total === 7) {
 
   const observationContainer = document.getElementById("observation-container");
   let observationBody;
- 
+
   function createObservationTable() {
     observationContainer.innerHTML = `
     <table class="data-table">
@@ -505,36 +501,39 @@ if (total === 7) {
   `;
     observationBody = document.getElementById("observationBody");
   }
- 
-  function addObservationRow() {
-  if (currentVoltage === 0 || currentRPM === 0) {
-    showPopup("First, set the field rheostat. ", "Step Required");
-    return;
-  }
 
-  if (graphReadings.length >= 7) {
-    showPopup("You can add a maximum of 7 readings to the table.", "Maximum Readings Reached");
-    guidedSpeak("audiosimulation/Formaxreadings.wav");
+  function addObservationRow() {
+    if (currentVoltage === 0 || currentRPM === 0) {
+      showPopup("First, set the field rheostat. ", "Step Required");
+      if (window.isGuideActive()) {
+      playAudio("audiosimulation/BeforeaddingreadingAddToTable.wav");
+    }
     return;
-  }
- 
+    }
+
+    if (graphReadings.length >= 7) {
+      showPopup("You can add a maximum of 7 readings to the table. Now, click the Graph button.", "Maximum Readings Reached");
+      guidedSpeak("audiosimulation/Formaxreadings.wav");
+      return;
+    }
+
     const rows = observationBody.querySelectorAll("tr");
     for (let row of rows) {
       const cells = row.querySelectorAll("td");
       if (cells.length === 3) {
         const v = parseInt(cells[1].textContent);
         const r = parseInt(cells[2].textContent);
-       if (v === currentVoltage && r === currentRPM) {
-  showPopup("This reading is already added to the table.", "Duplicate Entry");
-  guidedSpeak("audiosimulation/duplicatereading.wav");
-  return;
-}
+        if (v === currentVoltage && r === currentRPM) {
+          showPopup("This reading is already added to the table.", "Duplicate Entry");
+          guidedSpeak("audiosimulation/duplicatereading.wav");
+          return;
+        }
       }
     }
- 
+
     const placeholder = observationBody.querySelector(".placeholder-row");
     if (placeholder) placeholder.remove();
- 
+
     const serial = observationBody.querySelectorAll("tr").length + 1;
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -543,12 +542,12 @@ if (total === 7) {
     <td>${currentRPM}</td>
   `;
     observationBody.appendChild(tr);
- 
+
     graphReadings.push({ voltage: currentVoltage, rpm: currentRPM });
     onReadingAdded(graphReadings.length);
     updateGraphButtonState();
   }
- 
+
   function updateGraphButtonState() {
     const plotGraphBtn = document.getElementById("plotGraphBtn");
     if (!plotGraphBtn) return;
@@ -562,25 +561,25 @@ if (total === 7) {
   function drawGraph() {
     if (graphReadings.length < MIN_GRAPH_POINTS) {
       showPopup("⚠️ Please add at least 5 readings to plot the graph.", "Insufficient Data");
-      
+
       return;
     }
-     if (isGuideActive()) playAudio("audiosimulation/Graph.wav");
-     
+    if (isGuideActive()) playAudio("audiosimulation/Graph.wav");
+
     const sorted = [...graphReadings].sort((a, b) => a.voltage - b.voltage);
     const xValues = sorted.map(r => r.voltage);
     const yValues = sorted.map(r => r.rpm);
- 
+
     const graphBars = document.getElementById("graphBars");
     if (graphBars) graphBars.style.display = "none";
- 
+
     const graphCanvas = document.querySelector(".graph-canvas");
     if (graphCanvas) graphCanvas.classList.add("is-plotting");
- 
+
     const graphPlot = document.getElementById("graphPlot");
     if (!graphPlot) return;
     graphPlot.style.display = "block";
- 
+
     function loadPlotly() {
       if (window.Plotly) return Promise.resolve();
       return new Promise((resolve, reject) => {
@@ -591,7 +590,7 @@ if (total === 7) {
         document.head.appendChild(script);
       });
     }
- 
+
     loadPlotly().then(() => {
       const trace = {
         x: xValues,
@@ -624,7 +623,7 @@ if (total === 7) {
         paper_bgcolor: "rgba(0,0,0,0)",
         plot_bgcolor: "rgba(0,0,0,0)"
       };
- 
+
       Plotly.newPlot(graphPlot, [trace], layout, { responsive: true, displaylogo: false }).then(() => {
         Plotly.Plots.resize(graphPlot);
 
@@ -640,9 +639,9 @@ if (total === 7) {
       });
     });
   }
- 
+
   const starterHandle = document.querySelector(".starter-handle");
- 
+
   let fieldLocked = false;
   let fieldDragging = false;
   let fieldStartX = 0;
@@ -650,28 +649,28 @@ if (total === 7) {
   const FIELD_MIN = 15;
   const FIELD_MAX = 85;
   const fieldKnob = document.querySelector(".nob1");
- 
+
   let starterDragging = false;
   let starterEngaged = false;
   let startMouseX = 0;
   const START_X = 0;
   const END_X = 90;
   const CURVE_HEIGHT = 25;
- 
+
   const armatureKnob = document.querySelector(".nob2");
   const voltNeedle = document.querySelector(".meter-needle1");
   const ampNeedle = document.querySelector(".meter-needle3");
   const rotor = document.getElementById("gr");
   const rpmDisplay = document.getElementById("rpmDisplay");
- 
+
   if (voltNeedle) voltNeedle.style.transition = "transform 0.8s ease-in-out";
   if (ampNeedle) ampNeedle.style.transition = "transform 0.6s ease-in-out";
- 
+
   let rotorAngle = 0;
   let rotorRunning = false;
   let lastFrameTime = null;
   let rotorSpeed = 0;
- 
+
   const armatureTable = [
     { voltage: 132, rpm: 1085 },
     { voltage: 139, rpm: 1170 },
@@ -691,33 +690,33 @@ if (total === 7) {
     const needleAngles = [-35, -30, -24.5, -21.5, -17.5, -8, -1];
     const voltAngle = needleAngles[stepIndex];
     voltNeedle.style.transform = `translate(-75%, -82%) rotate(${voltAngle}deg)`;
- 
+
     if (rpmDisplay) rpmDisplay.textContent = currentRPM;
- 
-if (isGuideActive() && fieldLocked && starterEngaged) {
-  if (stepIndex === 0 && !fieldRheostatAudioPlayed) {
-    playAudio("audiosimulation/FieldRheostatSet.wav");
-    fieldRheostatAudioPlayed = true;
-  } else {
-    playAudio(`audiosimulation/Arstep${stepIndex + 1}.wav`);
+
+    if (isGuideActive() && fieldLocked && starterEngaged) {
+      if (stepIndex === 0 && !fieldRheostatAudioPlayed) {
+        playAudio("audiosimulation/FieldRheostatSet.wav");
+        fieldRheostatAudioPlayed = true;
+      } else {
+        playAudio(`audiosimulation/Arstep${stepIndex + 1}.wav`);
+      }
+    }
   }
-}
-  }
- 
+
   const ARMATURE_ROTATION_SPEED = [3, 5, 7, 9, 11, 15, 17];
- 
+
   function runRotor() {
     if (!rotorRunning) return;
     rotorAngle += rotorSpeed;
     rotor.style.transform = `translate(-50%, -50%) rotate(${rotorAngle}deg)`;
     requestAnimationFrame(runRotor);
   }
- 
+
   function setFieldDefaultMeters() {
     const ampAngle = -70 + (7.7 / 10) * 140;
     ampNeedle.style.transform = `translate(-30%, -90%) rotate(${ampAngle}deg)`;
   }
- 
+
   const KNOB_START_X = 28;
   let armatureX = KNOB_START_X;
   let isDragging = false;
@@ -727,12 +726,12 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
   const STEP_WIDTH = (MAX_X - MIN_X) / (TOTAL_STEPS - 1);
   let startX = 0;
   let knobStartX = 0;
- 
+
   if (starterHandle) starterHandle.style.cursor = "not-allowed";
- 
+
   if (armatureKnob) {
     armatureKnob.style.cursor = "not-allowed";
- 
+
     armatureKnob.addEventListener("mousedown", (e) => {
       if (mcbState !== "ON" || !starterEngaged || !fieldLocked) {
         showPopup("First turn ON DC Supply");
@@ -744,7 +743,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
       armatureKnob.style.cursor = "grabbing";
       e.preventDefault();
     });
- 
+
     document.addEventListener("mouseup", () => {
       if (!isDragging) return;
       isDragging = false;
@@ -760,7 +759,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
         requestAnimationFrame(runRotor);
       }
     });
- 
+
     document.addEventListener("mousemove", (e) => {
       if (!isDragging || mcbState !== "ON") return;
       const deltaX = e.clientX - startX;
@@ -895,7 +894,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
       }
     });
   }
- 
+
   if (starterHandle) {
     starterHandle.addEventListener("mousedown", (e) => {
       if (mcbState !== "ON" || starterEngaged) return;
@@ -918,17 +917,29 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
       if (moveX >= END_X - 2) engageStarter();
     });
   }
- 
-  if (fieldKnob) {
-    fieldKnob.addEventListener("mousedown", (e) => {
-      if (mcbState !== "ON" || !starterEngaged || fieldLocked) return;
-      fieldDragging = true;
-      fieldStartX = e.clientX;
-      fieldKnob.style.cursor = "grabbing";
-      e.preventDefault();
-    });
-  }
- 
+
+ if (fieldKnob) {
+  fieldKnob.addEventListener("mousedown", (e) => {
+
+    if (mcbState !== "ON") {
+      showPopup("First turn ON DC Supply");
+      return;
+    }
+
+    if (!starterEngaged) {
+      showPopup("Move the starter handle first.");
+      return;
+    }
+
+    if (fieldLocked) return;
+
+    fieldDragging = true;
+    fieldStartX = e.clientX;
+    fieldKnob.style.cursor = "grabbing";
+    e.preventDefault();
+  });
+}
+
   document.addEventListener("mousemove", (e) => {
     if (!fieldDragging || fieldLocked) return;
     const deltaX = e.clientX - fieldStartX;
@@ -937,7 +948,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     newPercent = Math.max(FIELD_MIN, Math.min(FIELD_MAX, newPercent));
     fieldKnob.style.left = `${newPercent}%`;
   });
- 
+
   document.addEventListener("mouseup", () => {
     if (!fieldDragging || fieldLocked) return;
     fieldDragging = false;
@@ -973,7 +984,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     }
     unlockFieldResistance();
   }
- 
+
   function unlockFieldResistance() {
     const fieldKnob = document.querySelector(".nob1");
     if (!fieldKnob) return;
@@ -981,7 +992,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     fieldKnob.style.cursor = "grab";
     console.log("🔓 Field resistance unlocked");
   }
- 
+
   function lockFieldResistance() {
     const fieldKnob = document.querySelector(".nob1");
     if (!fieldKnob) return;
@@ -994,10 +1005,10 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     }
     console.log("🔒 Field resistance locked at user position");
   }
- 
+
   const WIRE_CURVINESS = 80;
   const WIRE_CURVE_SHAPE = "u";
- 
+
   function getWireAnchorForShape(anchor) {
     if (!anchor || !Array.isArray(anchor)) return anchor;
     if (WIRE_CURVE_SHAPE !== "u") return anchor;
@@ -1006,7 +1017,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     uAnchor[3] = 1;
     return uAnchor;
   }
- 
+
   const ringSvg =
     'data:image/svg+xml;utf8,' +
     encodeURIComponent(`
@@ -1061,7 +1072,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
 
   const endpointsById = new Map();
   const loopbackTargets = new Map();
- 
+
   function mirrorAnchor(anchor) {
     if (!anchor || !Array.isArray(anchor)) return null;
     const mirrored = anchor.slice();
@@ -1069,7 +1080,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     if (mirrored.length > 3) mirrored[3] = -mirrored[3];
     return mirrored;
   }
- 
+
   function getLoopbackEndpoint(id) {
     if (loopbackTargets.has(id)) return loopbackTargets.get(id);
     const el = document.getElementById(id);
@@ -1109,7 +1120,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
   }
 
   Object.keys(anchors).forEach(id => addEndpointIfExists(id, anchors[id]));
- 
+
   function getOrCreateEndpoint(id) {
     let ep = endpointsById.get(id);
     if (!ep && typeof jsPlumb.getEndpoint === "function") {
@@ -1121,11 +1132,11 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     }
     return ep || null;
   }
- 
+
   function connectionKey(a, b) {
     return [a, b].sort().join("-");
   }
- 
+
   const WIRE_CURVE_OVERRIDES = new Map([
     [connectionKey("pointR", "pointL"), -70],
     [connectionKey("pointB", "pointD"), -70],
@@ -1139,14 +1150,14 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     [connectionKey("pointA1", "pointK"), -120],
     [connectionKey("pointK", "pointC"), -140]
   ]);
- 
+
   function getWireCurvinessForConnection(sourceId, targetId) {
     const key = connectionKey(sourceId, targetId);
     const override = WIRE_CURVE_OVERRIDES.get(key);
     if (typeof override === "number") return override;
     return WIRE_CURVINESS;
   }
- 
+
   function getSeenConnectionKeys() {
     const seen = new Set();
     jsPlumb.getAllConnections().forEach(conn => {
@@ -1154,7 +1165,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     });
     return seen;
   }
- 
+
   function isPairConnected(a, b, connections) {
     return connections.some(conn => {
       const src = conn.sourceId;
@@ -1162,7 +1173,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
       return (src === a && tgt === b) || (src === b && tgt === a);
     });
   }
- 
+
   function isConnectionAllowed(src, tgt, uptoIndex) {
     const key = [src, tgt].sort().join("-");
     for (let i = 0; i <= uptoIndex; i++) {
@@ -1171,10 +1182,10 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     }
     return false;
   }
- 
+
   let autoConnectUsed = false;
   let completedByAutoConnect = false;
- 
+
   const requiredPairs = [
     "pointR-pointL",
     "pointB-pointD",
@@ -1188,7 +1199,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     "pointA1-pointK",
     "pointK-pointC",
   ];
- 
+
   function areAllConnectionsCorrect() {
     const connections = jsPlumb.getAllConnections();
     return requiredPairs.every(pair => {
@@ -1196,7 +1207,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
       return isPairConnected(a, b, connections);
     });
   }
- 
+
   function getFirstMissingStepIndex() {
     const connections = jsPlumb.getAllConnections();
     for (let i = 0; i < requiredPairs.length; i++) {
@@ -1205,7 +1216,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     }
     return requiredPairs.length;
   }
- 
+
   function connectRequiredPair(req, seenKeys, index = -1) {
     const [a, b] = req.split("-");
     if (!a || !b) return false;
@@ -1264,8 +1275,8 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     if (conn && seenKeys) seenKeys.add(connectionKey(conn.sourceId, conn.targetId));
     return !!conn;
   }
- 
-// ── wrong connection counter (reset on correct wire or guide OFF) ──
+
+  // ── wrong connection counter (reset on correct wire or guide OFF) ──
   let wrongConnectionCount = 0;
 
   jsPlumb.bind("connection", function (info) {
@@ -1342,19 +1353,19 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
     currentStepIndex = getFirstMissingStepIndex();
     speakCurrentStep();
   });
- 
+
   const requiredConnections = new Set(requiredPairs.map(pair => {
     const [a, b] = pair.split("-");
     return [a, b].sort().join("-");
   }));
- 
+
   document.querySelectorAll('[class^="point-"]').forEach(btn => {
     btn.style.cursor = "pointer";
     btn.addEventListener("click", function () {
       if (isModalOpen()) return;
       const className = this.className;
       if (mcbState === "ON") {
-        showPopup("Turn off the DC Supply before removing the connection");
+        showPopup("Turn off the DC Supply before removing the connections");
         if (guideActive) playAudio("audiosimulation/TurnoffDCSupplybefremoveconn.wav");
         return;
       }
@@ -1382,14 +1393,14 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
       }
     });
   });
- 
+
   let guideStepIndex = 0;
   const checkBtn = document.getElementById("checkBtn");
   if (checkBtn) {
     console.log("Check button found and wired.");
     checkBtn.addEventListener("click", function () {
-      const connections      = jsPlumb.getAllConnections();
-      const totalWiresMade   = connections.length;
+      const connections = jsPlumb.getAllConnections();
+      const totalWiresMade = connections.length;
       const seenKeys = new Set();
       connections.forEach(conn => seenKeys.add(connectionKey(conn.sourceId, conn.targetId)));
       const illegalRaw = [];
@@ -1401,7 +1412,11 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
         const [a, b] = pair.split("-");
         return !seenKeys.has(connectionKey(a, b));
       });
-      function toLabel(id) { return id.replace(/^point/i, "Point"); }
+      function toLabel(id) {
+        return id
+          .replace(/^point/i, "Point ")
+          .replace(/([A-Za-z])(\d+)/g, "$1 $2");
+      }
       function toSpeech(id) {
         return id.replace(/^point/i, "").replace(/([A-Za-z]+)(\d+)/g, "$1 $2").toUpperCase();
       }
@@ -1411,11 +1426,11 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
       if (totalWiresMade === 0) {
         const msg = "Please make all the connections first.";
         showPopup(msg);
-    if (guideActive) {
-  // 🔊 AUDIO LOCATION 16 — Check clicked but connections wrong or missing
-  // Plays: "Wrong connection detected. Please fix the wiring."
-  playAudio("audiosimulation/Beforeconncheck.wav");
-}
+        if (guideActive) {
+          // 🔊 AUDIO LOCATION 16 — Check clicked but connections wrong or missing
+          // Plays: "Wrong connection detected. Please fix the wiring."
+          playAudio("audiosimulation/Beforeconncheck.wav");
+        }
         checkClickedAfterCompletion = false;
         currentStepIndex = 0;
         if (guideActive && requiredPairs.length > 0) {
@@ -1432,7 +1447,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
           const preview = wrongLabels.slice(0, 3).join(", ");
           const extraCount = Math.max(0, wrongLabels.length - 3);
           const extraText = extraCount ? ` and ${extraCount} more` : "";
-          popupMessage += `Wrong connection${illegalRaw.length > 1 ? "s" : ""}: ${preview}${extraText}.\n`;
+          popupMessage += `Wrong connection${illegalRaw.length > 1 ? "s" : ""}: ${preview}${extraText}.<br>`;
         }
         if (missingPairs.length > 0) {
           const missingLabels = missingPairs.map(pair => {
@@ -1473,7 +1488,7 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
       }
     });
   }
- 
+
   const autoConnectBtn = document.getElementById("auto");
   if (autoConnectBtn) {
     autoConnectBtn.addEventListener("click", function () {
@@ -1520,13 +1535,13 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
   } else {
     console.error("Auto Connect button not found!");
   }
- 
+
   const resetBtn = document.getElementById("resetBtn");
   if (resetBtn) {
-   resetBtn.addEventListener('click', function () {
-  const wasGuideActive = guideActive; // ← save karo pehle
-  guideActive = false;
-  clearSpeakHighlights();
+    resetBtn.addEventListener('click', function () {
+      const wasGuideActive = guideActive; // ← save karo pehle
+      guideActive = false;
+      clearSpeakHighlights();
       if (reportBtn) {
         reportBtn.disabled = true;
         reportBtn.style.opacity = "0.5";
@@ -1559,8 +1574,8 @@ if (isGuideActive() && fieldLocked && starterEngaged) {
       fieldRheostatAudioPlayed = false;
       graphReadings.length = 0;
       updateGraphButtonState();
-     const graphContainer = document.getElementById("graphBars");
-if (graphContainer) graphContainer.innerHTML = "";
+      const graphContainer = document.getElementById("graphBars");
+      if (graphContainer) graphContainer.innerHTML = "";
       const graphPlot = document.getElementById("graphPlot");
       if (graphPlot) {
         graphPlot.innerHTML = "";
@@ -1570,11 +1585,11 @@ if (graphContainer) graphContainer.innerHTML = "";
       if (graphBarsReset) graphBarsReset.style.display = "block";
       const graphCanvas = document.querySelector(".graph-canvas");
       graphCanvas?.classList.remove("is-plotting");
-     // Play Reset.wav if guide was active when reset was clicked
-if (wasGuideActive) {
-  playAudio("audiosimulation/Reset.wav");
-}
-voiceStage = "idle";
+      // Play Reset.wav if guide was active when reset was clicked
+      if (wasGuideActive) {
+        playAudio("audiosimulation/Reset.wav");
+      }
+      voiceStage = "idle";
       console.log("Reset: all connections removed");
     });
   } else {
@@ -1632,13 +1647,13 @@ voiceStage = "idle";
   createObservationTable();
   currentStepIndex = 0;
   updateGraphButtonState();
- 
+
   const addTableBtn = document.getElementById("addTableBtn");
   if (addTableBtn) addTableBtn.addEventListener("click", addObservationRow);
- 
+
   const plotGraphBtn = document.getElementById("plotGraphBtn");
   if (plotGraphBtn) plotGraphBtn.addEventListener("click", drawGraph);
- 
+
   const reportBtn = document.getElementById("reportBtn");
   if (reportBtn) {
     reportBtn.disabled = true;
@@ -1679,6 +1694,24 @@ voiceStage = "idle";
       localStorage.setItem("tableData", JSON.stringify(
         graphReadings.map((row, index) => ({ count: index + 1, voltage: row.voltage, rpm: row.rpm }))
       ));
+      
+// After building your reportHtml string, BEFORE window.open():
+const updatedAt = String(Date.now());
+try {
+  localStorage.setItem("vlab_exp2_simulation_report_html", reportHtml);
+  localStorage.setItem("vlab_exp2_simulation_report_updated_at", updatedAt);
+  const activeHash = localStorage.getItem("vlab_exp2_active_user_hash");
+  if (activeHash) {
+    localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_html`, reportHtml);
+    localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_updated_at`, updatedAt);
+  }
+} catch(e) {}
+try {
+  window.parent.postMessage(
+    { type: "vlab:simulation_report_generated", html: reportHtml, updatedAt }, "*"
+  );
+} catch(e) {}
+
       window.open("report.html", "_blank");
       onReportGenerated();
     });
@@ -1693,39 +1726,39 @@ voiceStage = "idle";
     });
   }
 });
- 
+
 // ==============================
 // COMPONENT WINDOW AUTO OPEN
 // ==============================
- 
-const COMPONENTS_SEEN_KEY    = "vl_components_seen";
-const COMPONENTS_ALERT_KEY   = "vl_components_alert_shown";
+
+const COMPONENTS_SEEN_KEY = "vl_components_seen";
+const COMPONENTS_ALERT_KEY = "vl_components_alert_shown";
 
 function hasSeenComponents() {
-  try { return localStorage.getItem(COMPONENTS_SEEN_KEY) === "1"; } catch(e) { return false; }
+  try { return localStorage.getItem(COMPONENTS_SEEN_KEY) === "1"; } catch (e) { return false; }
 }
 function markComponentsSeen() {
-  try { localStorage.setItem(COMPONENTS_SEEN_KEY, "1"); } catch(e) {}
+  try { localStorage.setItem(COMPONENTS_SEEN_KEY, "1"); } catch (e) { }
 }
 function hasShownComponentsAlert() {
-  try { return localStorage.getItem(COMPONENTS_ALERT_KEY) === "1"; } catch(e) { return false; }
+  try { return localStorage.getItem(COMPONENTS_ALERT_KEY) === "1"; } catch (e) { return false; }
 }
 function markComponentsAlertShown() {
-  try { localStorage.setItem(COMPONENTS_ALERT_KEY, "1"); } catch(e) {}
+  try { localStorage.setItem(COMPONENTS_ALERT_KEY, "1"); } catch (e) { }
 }
 let componentWindowWasActuallyOpened = false;
 
 function openComponentsWindow({ force = false, auto = false } = {}) {
   const modal = document.getElementById("componentsModal");
   if (!modal) return;
- if (!force && auto && hasSeenComponents()) return;
+  if (!force && auto && hasSeenComponents()) return;
   componentWindowWasActuallyOpened = true;
   // labSpeech removed — no TTS to disable here
   modal.classList.remove("is-hidden");
   document.body.classList.add("is-modal-open");
   if (auto) markComponentsSeen();
 }
- 
+
 const COMPONENTS_EXIT_MESSAGE =
   "Now that you are familiar with all the components used in this experiment, " +
   "you may now start the simulation.<br><br>An AI guide is available to assist you at every step.";
@@ -1741,15 +1774,15 @@ function showComponentsExitAlert() {
   }
   showPopup(COMPONENTS_EXIT_MESSAGE, "Instruction");
 
-// 🔊 Component window close hone par — sirf pehli baar bajega
-if (componentWindowWasActuallyOpened) {
-  const introAudio = new Audio("audiosimulation/ComponentsWindowIntro.wav");
-  window._activeComponentIntroAudio = introAudio;
-  introAudio.play().catch(() => {});
-  introAudio.addEventListener("ended", () => {
-    window._activeComponentIntroAudio = null;
-  });
-}
+  // 🔊 Component window close hone par — sirf pehli baar bajega
+  if (componentWindowWasActuallyOpened) {
+    const introAudio = new Audio("audiosimulation/ComponentsWindowIntro.wav");
+    window._activeComponentIntroAudio = introAudio;
+    introAudio.play().catch(() => { });
+    introAudio.addEventListener("ended", () => {
+      window._activeComponentIntroAudio = null;
+    });
+  }
 }
 
 function closeComponentsWindow({ showAlert = false } = {}) {
@@ -1765,19 +1798,19 @@ function closeComponentsWindow({ showAlert = false } = {}) {
 
   if (showAlert) showComponentsExitAlert();
 }
- 
+
 document.addEventListener("click", (e) => {
   const launcher = e.target.closest("[data-open-components]");
   if (!launcher) return;
   openComponentsWindow({ force: true });
 });
- 
+
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => openComponentsWindow({ auto: true }));
 } else {
   openComponentsWindow({ auto: true });
 }
- 
+
 document.addEventListener("click", (e) => {
   if (e.target.matches("[data-components-close]")) {
     const iframe = document.querySelector("#componentsModal iframe");
@@ -1790,11 +1823,11 @@ document.addEventListener("click", (e) => {
 // ==============================
 // COMPONENT AUDIO BRIDGE
 // ==============================
- 
+
 const iframe = document.querySelector("#componentsModal iframe");
 const audioBtn = document.getElementById("componentsAudioBtn");
 const skipBtn = document.getElementById("skipComponentsBtn");
- 
+
 if (audioBtn && iframe) {
   audioBtn.addEventListener("click", () => {
     const isPlaying = audioBtn.getAttribute("aria-pressed") === "true";
@@ -1819,17 +1852,17 @@ if (audioBtn && iframe) {
     }
   });
 
-iframe.addEventListener("load", () => {
+  iframe.addEventListener("load", () => {
     iframe.contentWindow?.postMessage({ type: "component-audio-request" }, "*");
     // Auto-play only if component window is actually visible
     if (componentWindowWasActuallyOpened) {
-        setTimeout(() => {
-            iframe.contentWindow?.postMessage({ type: "component-audio-play" }, "*");
-        }, 500);
+      setTimeout(() => {
+        iframe.contentWindow?.postMessage({ type: "component-audio-play" }, "*");
+      }, 500);
     }
-});
+  });
 }
- 
+
 if (skipBtn && iframe) {
   skipBtn.addEventListener("click", () => {
     iframe.contentWindow?.postMessage({ type: "component-audio-stop" }, "*");
@@ -1871,7 +1904,7 @@ if (skipBtn && iframe) {
           if (notifyAudio && !notifiedOnce) {
             notifiedOnce = true;
             notifyAudio.currentTime = 0;
-            notifyAudio.play().catch(() => {});
+            notifyAudio.play().catch(() => { });
           }
         }, { once: true });
         iframe.src = chatUrl;
@@ -1915,16 +1948,16 @@ if (skipBtn && iframe) {
     const tooltipText = tooltip.querySelector(".hover-tooltip__text");
     let activeTarget = null;
     const tooltips = [
-      { id: "mcb", selector: ".mcb-label", text: "MCB: Main supply breaker for the setup; trips on overload/short-circuit to protect the circuit and users." },
-      { id: "starter", selector: ".starter-body", text: "3-Point Starter: Limits the DC motor starting current and provides no-volt/overload protection; drag the handle after turning ON the MCB." },
+      { id: "mcb", selector: ".mcb-label", text: "Purpose: To ensure the safety of equipment and users by tripping during electrical faults." },
+      { id: "starter", selector: ".starter-body", text: "Purpose: Limits the starting current of a DC motor by using external armature resistance, which is cut out as the motor speeds up, and provides overload and no-voltage protection." },
       { id: "lamp-load", selector: ".lampboard-dropdown, #number, .lamp-board, .lamp-grid, .lamp-bulb, .lamp-load-label", text: "Lamp Load: Variable resistive bulb bank used to change load; select the number of bulbs to vary current and observe voltage regulation." },
-      { id: "voltmeter", selector: ".meters > .meter-card:nth-of-type(1)", text: "Voltmeter: Measures the supply/line voltage (connected across the source)." },
-      { id: "ammeter", selector: ".meters > .meter-card:nth-of-type(4)", text: "Ammeter: Measures the generator terminal voltage (connected across generator terminals)." },
-      { id: "rpm-display", selector: ".rpm-image, .rpm-display, #rpmDisplay", text: "RPM Indicator: Displays the rotational speed of the DC motor in revolutions per minute. The speed increases as armature voltage is increased while field current remains constant." },
-      { id: "field-rheostat", selector: ".rheostat-img-1, .nob1", text: "Field Rheostat: Controls the field current of the DC machine. Adjusting it changes the magnetic flux and hence affects the speed of the motor." },
-      { id: "armature-rheostat", selector: ".rheostat-img-2, .nob2", text: "Armature Rheostat: Controls the armature voltage. Increasing armature voltage increases motor speed while field current remains constant." },
-      { id: "motor-box", selector: ".motor-box, .motor-box img", text: "DC Shunt Motor: Converts electrical energy to mechanical energy. Speed varies with armature voltage while field current remains constant." },
-      { id: "generator-box", selector: ".generator-box, .generator-body, .generator-rotor, #gr", text: "Rotor View: Visual representation of motor shaft rotation. Speed increases as armature voltage rises, shown by faster rotation and RPM display." }
+      { id: "voltmeter", selector: ".meters > .meter-card:nth-of-type(1)", text: "Purpose: To measure the armature voltage of the DC shunt motor." },
+      { id: "ammeter", selector: ".meters > .meter-card:nth-of-type(4)", text: "Purpose: To measure the field current drawn by the DC shunt motor." },
+      { id: "rpm-display", selector: ".rpm-image, .rpm-display, #rpmDisplay", text: "Purpose: An RPM indicator measures the rotational speed of the motor shaft in revolutions per minute. It helps in monitoring and analyzing the speed performance of the DC machine under different operating conditions." },
+      { id: "field-rheostat", selector: ".rheostat-img-1, .nob1", text: "Purpose: The field resistance is set once and kept constant so that the flux remains constant, so any change in speed is only due to the change in armature voltage caused by the external added resistance." },
+      { id: "armature-rheostat", selector: ".rheostat-img-2, .nob2", text: "Purpose: By varying the armature resistance causes a voltage drop in the armature circuit, allowing control of the motor speed below its rated speed." },
+      { id: "motor-box", selector: ".motor-box, .motor-box img", text: "Purpose: The DC shunt motor is the machine whose speed is being controlled in this experiment." },
+      { id: "generator-box", selector: ".generator-box, .generator-body, .generator-rotor, #gr", text: "Purpose: In a DC Shunt motor. the rotor is also called the armature. It is the rotating part of the motor where speed variation takes place due to changes in the armature voltage." }
     ];
     tooltips.forEach(t => {
       document.querySelectorAll(t.selector).forEach(el => el.removeAttribute("title"));
@@ -1938,7 +1971,7 @@ if (skipBtn && iframe) {
     }
     function moveTooltip(e) {
       tooltip.style.left = e.clientX + 16 + "px";
-      tooltip.style.top  = e.clientY + 16 + "px";
+      tooltip.style.top = e.clientY + 16 + "px";
     }
     function showTooltip(text, e) {
       tooltipText.textContent = text;

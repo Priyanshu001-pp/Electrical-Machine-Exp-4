@@ -37,8 +37,11 @@
       <div>
         <label class="block text-sm font-semibold text-slate-700 mb-1">Email</label>
         <input id="email" type="email" required
+          placeholder="name@example.com"
           class="w-full rounded-xl border border-slate-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
-       
+        <p id="emailError" class="hidden mt-1 text-sm font-semibold text-red-600">
+          Please enter a valid email (examples: name@example.com, name@gmail.com, name@yahoo.com).
+        </p>
       </div>
 
       <div>
@@ -70,16 +73,9 @@
 
   <script src="./progress_tracker.js"></script>
   <script>
-    // Edit your allowed domains here:
-    const ALLOWED_DOMAINS = [
-      "university.edu",
-      "iitr.ac.in",
-      "gmail.com"
-      // add more like: "spu.edu"
-    ];
-
     const nameInput = document.getElementById("name");
     const emailInput = document.getElementById("email");
+    const emailError = document.getElementById("emailError");
     const designationInput = document.getElementById("designation");
     const nameAvatar = document.getElementById("nameAvatar");
     const namePreview = document.getElementById("namePreview");
@@ -136,12 +132,25 @@
       el.textContent = "";
     }
 
-    function isAllowedEmail(email) {
-      const e = String(email || "").trim().toLowerCase();
-      const at = e.lastIndexOf("@");
-      if (at <= 0) return false;
-      const domain = e.slice(at + 1);
-      return ALLOWED_DOMAINS.some(d => domain === d || domain.endsWith("." + d));
+    function isValidEmailFormat(email) {
+      const e = String(email || "").trim();
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+    }
+
+    function showEmailError() {
+      if (emailError) emailError.classList.remove("hidden");
+      if (emailInput) {
+        emailInput.setAttribute("aria-invalid", "true");
+        emailInput.classList.add("border-red-500");
+      }
+    }
+
+    function clearEmailError() {
+      if (emailError) emailError.classList.add("hidden");
+      if (emailInput) {
+        emailInput.removeAttribute("aria-invalid");
+        emailInput.classList.remove("border-red-500");
+      }
     }
 
     function getFirstName(fullName) {
@@ -233,7 +242,15 @@
     }
 
     if (emailInput) {
-      emailInput.addEventListener("input", persistDraft);
+      emailInput.addEventListener("input", () => {
+        persistDraft();
+        const value = (emailInput.value || "").trim();
+        if (!value || isValidEmailFormat(value)) {
+          clearEmailError();
+        } else {
+          showEmailError();
+        }
+      });
     }
 
     if (designationInput) {
@@ -269,6 +286,7 @@
     document.getElementById("userForm").addEventListener("submit", (e) => {
       e.preventDefault();
       clearError();
+      clearEmailError();
 
       if (!window.VLProgress) {
         showError("Progress tracker missing. Check ./progress_tracker.js path.");
@@ -284,8 +302,9 @@
         return;
       }
 
-      if (!isAllowedEmail(email)) {
-        showError("Email domain not allowed. Use a permitted institutional email.");
+      if (!isValidEmailFormat(email)) {
+        showError("Please enter a valid email (example: name@example.com).");
+        showEmailError();
         return;
       }
 

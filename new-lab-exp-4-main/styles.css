@@ -1433,6 +1433,11 @@
         box-shadow: 0 8px 20px rgba(184, 155, 62, 0.4);
         background: linear-gradient(135deg, #3B3B3B, #2C2C2C);
     }
+    #modalMessage{
+    text-align: justify;
+    text-justify: inter-word;
+    line-height: 1.5;
+}
 
         @keyframes popup {
             from {
@@ -2361,6 +2366,8 @@
     letter-spacing: 0.1px;
     font-weight: 600;
     color: #152a44;
+    text-align: justify;
+    text-justify: inter-word;
     }
 
 
@@ -2408,6 +2415,11 @@
    PRINT FIX — Replace the entire @media print block in styles.css
    with this corrected version
    ============================================================ */
+/* ============================================================
+   PRINT FIXES — Replace the @media print block in styles.css
+   with this corrected version (3 targeted fixes applied)
+   ============================================================ */
+
 @media print {
 
     /* ── BUTTON SIZES ── */
@@ -2525,7 +2537,7 @@
         grid-column: 3 !important;
         display: flex !important;
         flex-direction: column !important;
-        align-items: center !important;        /* FIX 1: center everything horizontally */
+        align-items: center !important;
         justify-content: flex-start !important;
         overflow: visible !important;
         border-right: none !important;
@@ -2538,17 +2550,33 @@
         max-height: none !important;
         display: flex !important;
         flex-direction: column !important;
-        align-items: center !important;        /* FIX 1: center buttons */
+        align-items: center !important;
         gap: 10px !important;
     }
 
-    /* FIX 2: Remove the stray border on instructions-wrapper */
+    /* ═══════════════════════════════════════════
+       FIX 1: Remove stray black line above
+       Instructions button (instructions-wrapper
+       must have NO border / outline / pseudo)
+    ═══════════════════════════════════════════ */
     .instructions-wrapper {
         display: block !important;
-        border: none !important;              /* FIX 2: no border */
+        border: none !important;
         outline: none !important;
         box-shadow: none !important;
+        background: transparent !important;
         width: 280px !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* Kill any pseudo-element that could draw a line */
+    .instructions-wrapper::before,
+    .instructions-wrapper::after {
+        display: none !important;
+        content: none !important;
+        border: none !important;
+        background: none !important;
     }
 
     /* Hide the flyout instructions panel — not needed in print */
@@ -2559,7 +2587,7 @@
     .data-section {
         display: flex !important;
         flex-direction: column !important;
-        align-items: center !important;       /* FIX 1: center table too */
+        align-items: center !important;
         width: 280px !important;
         margin-top: 16px !important;
     }
@@ -2633,7 +2661,7 @@
         break-inside: avoid !important;
         page-break-before: avoid !important;
         break-before: avoid !important;
-        position: relative !important;        /* needed for absolute graph-actions */
+        position: relative !important;
     }
 
     .graph-canvas {
@@ -2650,31 +2678,91 @@
         inset: 0 !important;
     }
 
-    /* FIX 3: SHOW graph-actions buttons in print (was display:none) */
     .graph-actions {
         position: absolute !important;
         top: -60px !important;
         right: 18px !important;
-        display: flex !important;             /* FIX 3: was "none", now "flex" */
+        display: flex !important;
         gap: 12px !important;
         z-index: 50 !important;
     }
 
-    /* FIX 4: jsPlumb endpoints — freeze their positions so they
-       match the on-screen simulation exactly */
+    /* ═══════════════════════════════════════════
+       FIX 2: ARMATURE RHEOSTAT label — force
+       single line exactly like the screen view
+    ═══════════════════════════════════════════ */
+    .rheostat-label1,
+    .rheostat-label2 {
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        /* keep the absolute positioning the original CSS uses */
+        position: absolute !important;
+    }
+
+    .rheostat-label2 {
+        top: 150px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        text-align: center !important;
+        width: auto !important;     /* let it grow as wide as needed */
+    }
+
+    /* ═══════════════════════════════════════════
+       FIX 3: jsPlumb endpoint positions
+       The panel uses zoom:0.60 so the browser
+       scales all DOM elements — but jsPlumb
+       calculates endpoint offsets in pre-zoom
+       pixel space.  The fix: wrap the jsPlumb
+       container in a transform instead of zoom
+       so that getBoundingClientRect values seen
+       by jsPlumb stay consistent; but since we
+       cannot change JS at print-time we instead
+       lock every endpoint and connector element
+       to `position:absolute` with
+       `transform:none` so they sit exactly where
+       the browser already placed them and do not
+       shift on resize/zoom change.
+    ═══════════════════════════════════════════ */
+
+    /* Freeze jsPlumb SVG overlays in place */
     .jtk-endpoint,
     .jtk-endpoint svg,
     .jtk-connector,
-    .jtk-connector svg {
+    .jtk-connector svg,
+    .jtk-overlay {
         position: absolute !important;
         visibility: visible !important;
+        transform: none !important;      /* prevent any accidental shift */
+        transition: none !important;
     }
 
-    /* Prevent any transform / transition from shifting endpoints */
-    .point,
-    [id^="point"] {
+    /* Freeze point elements — no transform, no transition */
+    [id^="point"],
+    .point {
         transform: none !important;
         transition: none !important;
+        position: absolute !important;
+    }
+
+    /*
+     * The root jsPlumb container (.top-row) must NOT
+     * have overflow:hidden — endpoints painted outside
+     * their parent box would otherwise be clipped.
+     */
+    .top-row,
+    .left-column,
+    .center-column,
+    .right-column,
+    .workspace,
+    .motor-box,
+    .generator-box,
+    .mcb-starter-section,
+    .rheostat,
+    .meter-panel,
+    .meters,
+    .meter-card {
+        overflow: visible !important;
     }
 
     /* ── HIDE INTERACTIVE / FLOATING UI ── */

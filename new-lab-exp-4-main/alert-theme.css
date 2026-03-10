@@ -1,0 +1,119 @@
+body.is-modal-open {
+  overflow: hidden;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 12, 40, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+  /* Keep above page overlays/modals (user input modal uses 100000). */
+  z-index: 200000;
+}
+
+.modal.show {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.modal-box {
+  background: #ffffff;
+  border-radius: 22px;
+  border: 2px solid rgba(11, 96, 168, 0.35);
+  padding: 2.25rem 2.5rem 2.75rem;
+  max-width: 520px;
+  width: min(520px, 92vw);
+  text-align: center;
+  color: #0f172a;
+  box-shadow: 0 30px 65px rgba(2, 12, 40, 0.25);
+  position: relative;
+}
+
+.modal-box.danger {
+  border-color: rgba(248, 113, 113, 0.85);
+}
+
+.modal-box.closing {
+  animation: modalCloseAnim 0.35s ease forwards;
+}
+
+.modal-box h2 {
+  margin-bottom: 0.65rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #0f172a;
+}
+
+.modal-box p {
+  margin: 0;
+  color: #1f2937;
+  line-height: 1.7;
+  text-align: justify;
+}
+
+.modal-actions {
+  margin-top: 1.6rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.modal-close-btn,
+.modal-secondary-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+  min-width: 120px;
+  margin: 0 auto;
+}
+
+.modal-close-btn {
+  background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
+  color: #fff;
+  box-shadow: 0 16px 35px rgba(11, 96, 168, 0.4);
+}
+
+.modal-box > .modal-close-btn[data-modal-close] {
+  margin-top: 1.6rem;
+}
+
+.modal-close-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 45px rgba(11, 96, 168, 0.55);
+}
+
+.modal-secondary-btn {
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.8);
+  color: #0f172a;
+}
+
+.modal-secondary-btn:hover {
+  background: rgba(14, 165, 233, 0.08);
+}
+
+@keyframes modalCloseAnim {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+}

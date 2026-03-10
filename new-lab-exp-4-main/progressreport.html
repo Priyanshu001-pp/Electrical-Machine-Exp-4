@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Virtual Labs | Electrical Machines Lab - Progress Report</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+    integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+    integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <link rel="stylesheet" href="./alert-theme.css">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #111827;
+    }
+
+    .vl-header {
+      min-height: 70px;
+      background: #ffffff;
+      border-bottom: 1px solid #d1d5db;
+      box-shadow: none;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+    }
+    .top-nav { gap: 1.5rem; align-items: center; }
+    .nav-link {
+      position: relative;
+      color: #1f2937;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      transition: background-color 150ms ease;
+      border-radius: 0.375rem;
+      text-decoration: none;
+    }
+    .nav-link:hover,.nav-link:focus {
+      color: #111827;
+      background: #f3f4f6;
+    }
+    .nav-link::after { display: none; }
+
+    .logo-container { display:flex; align-items:center; gap:.75rem; }
+    .logo-glow { transition: none; }
+    .logo-glow:hover { transform: none; box-shadow: none; }
+    .logo-text { display:flex; flex-direction:column; justify-content:center; }
+    .logo-title { color:#111827; font-size:1.25rem; font-weight:700; line-height:1.2; margin:0; }
+    .logo-subtitle { color:#4b5563; font-size:.875rem; font-weight:500; margin:0; }
+
+    .vl-footer {
+      background: #ffffff;
+      color: #4b5563;
+      padding: 0.75rem 0;
+      box-shadow: none;
+      border-top: 1px solid #d1d5db;
+      z-index: 1;
+      position: static;
+      height: auto;
+    }
+    .footer-inner { max-width:1200px; margin:0 auto; text-align:center; padding:0 1.5rem; }
+
+    /* Embedded (inside iframe) -> hide header/footer */
+    .embedded .vl-header, .embedded .vl-footer { display:none !important; }
+    .embedded #report-container { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+
+    #report-container {
+      max-width: 960px !important;
+      padding-top: 2rem !important;
+      padding-bottom: 2rem !important;
+    }
+    #content {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem !important;
+    }
+
+ 
+    #downloadBtn,
+    #resetBtn {
+      border-radius: 4px !important;
+      font-weight: 600 !important;
+      box-shadow: none !important;
+      font-size: 14px !important;
+      line-height: 1.2 !important;
+      padding: 0.5rem 0.9rem !important;
+    }
+ 
+    #downloadBtn {
+      background: #1f2937 !important;
+      color: #ffffff !important;
+      border: 1px solid #1f2937 !important;
+    }
+    
+    #downloadBtn:hover { background: #111827 !important; }
+    #resetBtn {
+      background: #ffffff !important;
+      color: #1f2937 !important;
+      border: 1px solid #9ca3af !important;
+    }
+    #resetBtn:hover { background: #f9fafb !important; }
+
+    .report-section {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      padding: 16px;
+    }
+    .report-section-title {
+      font-size: 18px;
+      line-height: 1.3;
+      font-weight: 600;
+      margin: 0 0 10px;
+      color: #111827;
+    }
+    .report-grid-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .report-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 16px;
+      font-size: 14px;
+      color: #1f2937;
+    }
+    .report-label {
+      font-weight: 600;
+      color: #111827;
+      margin-right: 4px;
+    }
+    .report-duration {
+      font-size: 28px;
+      line-height: 1.2;
+      font-weight: 700;
+      color: #111827;
+      margin: 8px 0 0;
+    }
+    .report-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .report-note {
+      font-size: 12px;
+      color: #4b5563;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-weight: 500;
+    }
+    .report-table-wrap {
+      overflow: auto;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+    }
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .report-table thead { background: #f9fafb; }
+    .report-table th,
+    .report-table td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 8px 10px;
+      text-align: left;
+      color: #1f2937;
+      vertical-align: top;
+    }
+    .report-table th {
+      font-weight: 600;
+      color: #111827;
+      white-space: nowrap;
+    }
+    .report-cell-strong {
+      font-weight: 600;
+      color: #111827;
+    }
+    .report-cell-muted {
+      font-size: 13px;
+      color: #4b5563;
+    }
+    .report-muted {
+      font-size: 13px;
+      color: #4b5563;
+      margin: 0 0 8px;
+    }
+    .report-frame-wrap {
+      margin-top: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .simulation-print-snapshot {
+      display: none;
+      width: 100%;
+      background: #ffffff;
+    }
+    .simulation-print-snapshot img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .report-locked-card {
+      background: #ffffff !important;
+      border: 1px solid #d1d5db !important;
+      border-radius: 4px !important;
+      box-shadow: none !important;
+    }
+    #reportLockedCTA {
+      border-radius: 4px !important;
+      background: #1f2937 !important;
+      color: #ffffff !important;
+      border: 1px solid #1f2937 !important;
+      box-shadow: none !important;
+    }
+
+    @media (max-width: 768px) {
+      .report-grid-two,
+      .report-details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Minimal fallback modal styling (if alert-theme.css missing) */
+    .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:99999; padding:16px; }
+    .modal.show { display:flex; align-items:center; justify-content:center; }
+    .modal-box {
+      width: 100%;
+      max-width: 520px;
+      background:#fff;
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      padding: 18px;
+      box-shadow: 0 25px 60px rgba(0,0,0,.25);
+    }
+    .modal-box.danger { border-color:#fecaca; }
+    .modal-box h2 { font-size: 18px; font-weight: 800; margin:0 0 8px; color:#0f172a; }
+    .modal-box p { margin:0 0 14px; color:#334155; text-align: justify; }
+    .modal-actions { display:flex; gap:10px; justify-content:flex-end; }
+    .modal-close-btn {
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      border: 1px solid #e2e8f0;
+      background: #0f172a;
+      color: #fff;
+    }
+    .modal-secondary-btn { background:#fff; color:#0f172a; }
+    .is-modal-open { overflow:hidden; }
+
+    @media print {
+      header, footer, #downloadBtn, #resetBtn { display:none !important; }
+      body { background:#fff !important; }
+      #report-container { padding-top: 0 !important; padding-bottom: 0 !important; max-width: none !important; }
+      .report-section { page-break-inside: avoid; break-inside: avoid-page; }
+      body.print-with-snapshot #reportSimulationSection #simulationReportFrame { display: none !important; }
+      body.print-with-snapshot #reportSimulationSection .simulation-print-snapshot { display: block !important; }
+    }
+  </style>
+
+  <script>
+    (function () {
+      try { if (window.top !== window.self) document.documentElement.classList.add('embedded'); } catch {}
+    })();
+  </script>
+</head>
+
+<body class="min-h-screen bg-white">
+  <header class="vl-header relative z-20">
+    <div class="header-inner px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-1 w-full gap-3">
+        <a href="../../main.html" class="logo-container hover:no-underline focus:no-underline">
+          <div class="flex items-center gap-2">
+            
+            <img
+              src="./images/logo.png"
+              alt="Virtual Labs Logo"
+              class="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 rounded-xl object-contain bg-white p-1.5 logo-glow"
+              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%233b82f6%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22%3EVL%3C/text%3E%3C/svg%3E'">
+          </div>
+          <div class="logo-text">
+            <h1 class="logo-title text-base sm:text-lg lg:text-xl">Virtual Labs</h1>
+            <p class="logo-subtitle text-[10px] sm:text-xs lg:text-sm">IIT Roorkee</p>
+          </div>
+        </a>
+
+        <button id="mobile-menu-toggle" class="lg:hidden text-slate-700 p-2 menu-button" aria-label="Toggle menu">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+
+        <nav class="top-nav hidden lg:flex items-center gap-2 lg:gap-3">
+          <a href="../../main.html" class="nav-link">Home</a>
+          <a href="user_input.html?return=progressreport.html" class="nav-link nav-user-link" data-user-input-link data-redirect-return="progressreport.html">
+            <span class="nav-user-pill">
+              
+              <span class="nav-user-text" data-user-text>User Input</span>
+            </span>
+          </a>
+          <a href="progressreport.html" class="nav-link">Progress Report</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div id="reportLockedNotice" class="max-w-4xl mx-auto px-4 py-12 hidden">
+    <div class="report-locked-card p-6 text-center space-y-4">
+      <p class="text-lg font-semibold text-slate-900">Progress report locked</p>
+      <p class="text-sm text-slate-600">Complete the user input form before viewing your saved report.</p>
+      <button id="reportLockedCTA" type="button"
+        class="inline-flex items-center justify-center gap-2 px-5 py-2 text-sm font-semibold border focus:outline-none">
+        Open user form
+      </button>
+    </div>
+  </div>
+
+  <div id="report-container" class="max-w-5xl mx-auto px-4 py-12">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <div>
+      
+        <h1 class="text-3xl font-bold text-slate-900">Progress Report</h1>
+ 
+      </div>
+      <div class="flex flex-wrap gap-2">
+        
+        <button id="downloadBtn" class="px-4 py-2 font-semibold">Download</button>
+        <button id="resetBtn" class="px-4 py-2 font-semibold">Reset Data</button>
+      </div>
+    </div>
+
+    <div id="content" class="space-y-6"></div>
+  </div>
+
+  <footer class="vl-footer" role="contentinfo">
+    <div class="footer-inner flex items-center justify-center h-full px-4">
+      <p class="text-xs md:text-sm text-center text-slate-600 font-medium tracking-wide">
+        &copy; 2026 Virtual Labs IIT Roorkee
+      </p>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div id="reportAlertModal" class="modal" role="alertdialog" aria-modal="true" aria-labelledby="reportAlertTitle" aria-describedby="reportAlertMessage">
+    <div class="modal-box danger" role="document">
+      <h2 id="reportAlertTitle">Alert</h2>
+      <p id="reportAlertMessage"></p>
+
+      <div class="modal-actions" data-report-alert-actions hidden>
+        <button type="button" class="modal-close-btn" data-report-alert-yes>Yes</button>
+        <button type="button" class="modal-close-btn modal-secondary-btn" data-report-alert-no>No</button>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="modal-close-btn" data-report-alert-close>OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MUST load tracker BEFORE inline script -->
+  <script src="./progress_tracker.js"></script>
+  <script src="./user_input_modal.js"></script>
+  <script src="./progress_report_embed.js"></script> <!-- 3rd -->
+
+  <script>
+  (() => {
+    const reportAlertModal = document.getElementById("reportAlertModal");
+    const reportAlertTitle = document.getElementById("reportAlertTitle");
+    const reportAlertMessage = document.getElementById("reportAlertMessage");
+    const reportAlertClose = reportAlertModal?.querySelector("[data-report-alert-close]");
+    const reportAlertActions = reportAlertModal?.querySelector("[data-report-alert-actions]");
+    const reportAlertYes = reportAlertModal?.querySelector("[data-report-alert-yes]");
+    const reportAlertNo = reportAlertModal?.querySelector("[data-report-alert-no]");
+
+    let reportAlertOnClose = null;
+    let reportAlertOnYes = null;
+    let reportAlertOnNo = null;
+    let reportAlertMode = "alert";
+
+    const reportContainer = document.getElementById("report-container");
+    const reportLockedNotice = document.getElementById("reportLockedNotice");
+    const reportLockedCTA = document.getElementById("reportLockedCTA");
+    const contentEl = document.getElementById("content");
+    let currentSimulationReport = null;
+    let simulationPrintSnapshotEl = null;
+    let printFrameOriginalHeight = null;
+    let printFrameOriginalMinHeight = null;
+    let printInProgress = false;
+
+    function setReportContainerVisible(visible) {
+      if (!reportContainer) return;
+      reportContainer.style.display = visible ? "" : "none";
+    }
+
+    function setReportLockedVisible(visible) {
+      if (!reportLockedNotice) return;
+      reportLockedNotice.classList.toggle("hidden", !visible);
+      if (visible) {
+        reportLockedNotice.scrollIntoView({ behavior: "smooth" });
+        if (reportContainer) reportContainer.style.display = "none";
+      }
+    }
+
+    function showReportAlert(message, title = "Alert", options = {}) {
+      const opts = typeof options === "function" ? { onClose: options } : (options || {});
+      if (!reportAlertModal) {
+        alert(message);
+        if (typeof opts.onClose === "function") opts.onClose();
+        return;
+      }
+      reportAlertTitle.textContent = title;
+      reportAlertMessage.textContent = message;
+
+      reportAlertOnClose = typeof opts.onClose === "function" ? opts.onClose : null;
+      reportAlertOnYes = typeof opts.onYes === "function" ? opts.onYes : null;
+      reportAlertOnNo = typeof opts.onNo === "function" ? opts.onNo : null;
+      reportAlertMode = opts.mode === "confirm" ? "confirm" : "alert";
+
+      if (reportAlertActions) reportAlertActions.hidden = reportAlertMode !== "confirm";
+      if (reportAlertClose) reportAlertClose.classList.toggle("hidden", reportAlertMode === "confirm");
+
+      reportAlertModal.classList.add("show");
+      document.body.classList.add("is-modal-open");
+
+      setTimeout(() => {
+        if (reportAlertMode === "confirm") reportAlertYes?.focus?.();
+        else reportAlertClose?.focus?.();
+      }, 0);
+    }
+
+    function closeReportAlert(action = "close") {
+      if (!reportAlertModal) return;
+      reportAlertModal.classList.remove("show");
+      document.body.classList.remove("is-modal-open");
+
+      const mode = reportAlertMode;
+      const onClose = reportAlertOnClose;
+      const onYes = reportAlertOnYes;
+      const onNo = reportAlertOnNo;
+
+      reportAlertOnClose = null;
+      reportAlertOnYes = null;
+      reportAlertOnNo = null;
+      reportAlertMode = "alert";
+
+      if (mode === "confirm") {
+        if (action === "yes" && onYes) onYes();
+        if (action === "no" && onNo) onNo();
+      } else {
+        if (onClose) onClose();
+      }
+    }
+
+    reportAlertClose?.addEventListener("click", () => closeReportAlert());
+    reportAlertYes?.addEventListener("click", () => closeReportAlert("yes"));
+    reportAlertNo?.addEventListener("click", () => closeReportAlert("no"));
+
+    reportAlertModal?.addEventListener("click", (event) => {
+      if (event.target === reportAlertModal) closeReportAlert();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && reportAlertModal?.classList.contains("show")) closeReportAlert();
+    });
+
+    function redirectToUserInputForm(returnUrl = "aim.html") {
+      const modalOpen = window.VLUserInputModal?.open;
+      if (typeof modalOpen === "function") {
+        modalOpen(returnUrl);
+        return;
+      }
+      const params = new URLSearchParams({ return: returnUrl }).toString();
+      const target = `user_input.html?${params}`;
+      try {
+        if (window.top && window.top !== window) { window.top.location.href = target; return; }
+      } catch {}
+      window.location.href = target;
+    }
+
+    function navigateToAim() {
+      try {
+        if (window.top && window.top !== window) { window.top.location.href = "aim.html"; return; }
+      } catch {}
+      window.location.href = "aim.html";
+    }
+
+    // ---- Guard: tracker must exist
+    if (!window.VLProgress) {
+      setReportContainerVisible(false);
+      setReportLockedVisible(true);
+      showReportAlert("Progress tracker not loaded. Check ./progress_tracker.js path.", "Error");
+      return;
+    }
+
+    // ---- Init page + view stamp
+    VLProgress.initPage();
+    VLProgress.markReportViewed();
+
+    // ---- Lock if no user details
+    if (!VLProgress.hasUser()) {
+      setReportContainerVisible(false);
+      setReportLockedVisible(true);
+      showReportAlert(
+        "You have to first fill the user details then you can generate the report.",
+        "Notice"
+      );
+      return;
+    }
+
+    const simulationReport = getSimulationReportData();
+    currentSimulationReport = simulationReport;
+    if (!simulationReport || !simulationReport.html) {
+      setReportContainerVisible(false);
+      setReportLockedVisible(true);
+      showReportAlert(
+        "Complete the simulation and generate the report to view the Progress Report.",
+        "Notice"
+      );
+      return;
+    }
+
+    setReportContainerVisible(true);
+    setReportLockedVisible(false);
+    renderReport(simulationReport);
+
+    function renderReport(simReport) {
+      if (!contentEl) return;
+
+      const state = VLProgress.getState();
+      const user = state.user || {};
+
+      const ts = state.timestamps || {};
+      const start = ts.sessionStart || null;
+      const end = ts.reportViewedAt || new Date().toISOString();
+      const totalMs = start ? (new Date(end).getTime() - new Date(start).getTime()) : 0;
+
+      const pretestData = getAssessmentData("pretest");
+      const posttestData = getAssessmentData("posttest");
+
+      const base = `
+        <section class="report-section">
+          <h2 class="report-section-title">User Details</h2>
+          <div class="report-details-grid">
+            <div><span class="report-label">Name:</span>${escapeHTML(user.name)}</div>
+            <div><span class="report-label">Email:</span>${escapeHTML(user.email)}</div>
+            <div><span class="report-label">Designation:</span>${escapeHTML(user.designation)}</div>
+          </div>
+        </section>
+
+        <div class="report-grid-two">
+          <section class="report-section">
+            <h2 class="report-section-title">Experiment Timeline</h2>
+            <div class="space-y-2 text-sm text-slate-800">
+              <div><span class="report-label">Session Start:</span> ${escapeHTML(formatTimelineDateTime(start) || start || "-")}</div>
+              <div><span class="report-label">Session End:</span> ${escapeHTML(formatTimelineDateTime(end) || end || "-")}</div>
+            </div>
+          </section>
+          <section class="report-section">
+            <h2 class="report-section-title">Total Duration</h2>
+            <p class="report-duration">${VLProgress.formatMs(totalMs)}</p>
+          </section>
+        </div>
+
+        <section class="report-section">
+          <div class="report-section-head">
+            <h2 class="report-section-title" style="margin:0;">Assessment Scores</h2>
+            
+          </div>
+          <div class="report-table-wrap">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Assessment</th>
+                  <th>Score</th>
+                  <th>Last Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${generateAssessmentRow("Pre-test", pretestData)}
+                ${generateAssessmentRow("Post-test", posttestData)}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="reportSimulationSection" class="report-section">
+          <h2 class="report-section-title">Simulation Report</h2>
+          <p id="simulationReportStatus" class="report-muted">---</p>
+          <div class="report-frame-wrap">
+            <iframe id="simulationReportFrame" class="w-full hidden" loading="lazy" style="min-height:540px; border:none;"></iframe>
+          </div>
+        </section>
+      `;
+
+      contentEl.innerHTML = base;
+      renderSimulationReport(simReport);
+    }
+
+    function formatTimestamp(value) {
+      if (!value) return null;
+      const n = Number(value);
+      const d = Number.isFinite(n) ? new Date(n) : new Date(value);
+      if (Number.isNaN(d.getTime())) return null;
+      return d.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function formatTimelineDateTime(value) {
+      if (!value) return null;
+      const n = Number(value);
+      const d = Number.isFinite(n) ? new Date(n) : new Date(value);
+      if (Number.isNaN(d.getTime())) return null;
+      const datePart = d.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      });
+      const timePart = d.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      });
+      return `${datePart}, ${timePart}`;
+    }
+
+    function getSimulationReportData() {
+      try {
+        const activeHash = localStorage.getItem("vlab_exp2_active_user_hash");
+        const keys = [];
+        if (activeHash) keys.push(`vlab_exp2_user_${activeHash}_simulation_report_html`);
+        keys.push("vlab_exp2_simulation_report_html");
+
+        for (const key of keys) {
+          const html = localStorage.getItem(key);
+          if (html && html.trim()) {
+            const updatedAt = localStorage.getItem(key.replace("_html", "_updated_at"));
+            return { html, updatedAt };
+          }
+        }
+      } catch {}
+
+      try {
+        const PREFIX = "VLAB_EXP2::";
+        if (typeof window.name === "string" && window.name.startsWith(PREFIX)) {
+          const data = JSON.parse(window.name.slice(PREFIX.length)) || {};
+          const html = (data["vlab_exp2_simulation_report_html"] || "").toString();
+          if (html && html.trim()) {
+            return { html, updatedAt: data["vlab_exp2_simulation_report_updated_at"] || null };
+          }
+        }
+      } catch {}
+
+      return null;
+    }
+
+    function getAssessmentData(type) {
+      try {
+        const activeHash = localStorage.getItem("vlab_exp2_active_user_hash");
+        const candidates = [];
+
+        if (activeHash) {
+          candidates.push({
+            score: `vlab_exp2_user_${activeHash}_${type}_score`,
+            total: `vlab_exp2_user_${activeHash}_${type}_total`,
+            updated: `vlab_exp2_user_${activeHash}_${type}_updated_at`
+          });
+        }
+        candidates.push({
+          score: `vlab_exp2_${type}_score`,
+          total: `vlab_exp2_${type}_total`,
+          updated: `vlab_exp2_${type}_updated_at`
+        });
+
+        for (const c of candidates) {
+          const score = (localStorage.getItem(c.score) || "").trim() || null;
+          const total = (localStorage.getItem(c.total) || "").trim() || null;
+          const updatedAt = (localStorage.getItem(c.updated) || "").trim() || null;
+          if (score || total || updatedAt) return { score, total, updatedAt };
+        }
+      } catch {}
+      return null;
+    }
+
+    function renderSimulationReport(report) {
+      const iframe = document.getElementById("simulationReportFrame");
+      const status = document.getElementById("simulationReportStatus");
+      if (!iframe || !status) return;
+      currentSimulationReport = report;
+
+      if (!report || !report.html) {
+        iframe.classList.add("hidden");
+        status.textContent = "No simulation report found. Run simulation and click Report.";
+        return;
+      }
+
+      const upd = report.updatedAt ? (formatTimestamp(report.updatedAt) || report.updatedAt) : null;
+      status.textContent = upd ? `Simulation report attached (updated: ${upd}).` : "Simulation report attached.";
+
+      try {
+        iframe.srcdoc = report.html;
+        iframe.classList.remove("hidden");
+      } catch {
+        iframe.classList.add("hidden");
+        status.textContent = "Report saved, but preview couldn't render. Please open it in a new tab.";
+      }
+    }
+
+    function sleep(ms = 0) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function waitForIframeReady(frameEl, timeoutMs = 4500) {
+      return new Promise((resolve) => {
+        if (!frameEl) return resolve();
+        let done = false;
+        const finish = () => {
+          if (done) return;
+          done = true;
+          resolve();
+        };
+
+        try {
+          const doc = frameEl.contentDocument;
+          if (doc && doc.readyState === "complete") {
+            finish();
+            return;
+          }
+        } catch {}
+
+        const timer = setTimeout(finish, timeoutMs);
+        frameEl.addEventListener(
+          "load",
+          () => {
+            clearTimeout(timer);
+            finish();
+          },
+          { once: true }
+        );
+      });
+    }
+
+    async function captureSimulationFrameSnapshot(frameEl) {
+      if (!frameEl) return null;
+      if (typeof html2canvas !== "function") return null;
+
+      await waitForIframeReady(frameEl);
+      await sleep(150);
+
+      const doc = frameEl.contentDocument;
+      const body = doc?.body;
+      if (!body) return null;
+
+      const docEl = doc.documentElement;
+
+      const canvas = await html2canvas(body, {
+        scale: Math.min(2, window.devicePixelRatio || 1.5),
+        useCORS: true,
+        allowTaint: true,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: docEl?.scrollWidth || undefined,
+        windowHeight: docEl?.scrollHeight || undefined,
+        backgroundColor: "#ffffff"
+      });
+
+      const img = new Image();
+      img.src = canvas.toDataURL("image/png");
+      img.alt = "Simulation report snapshot";
+      img.style.display = "block";
+      img.style.width = "100%";
+      img.loading = "lazy";
+      return img;
+    }
+
+    function expandSimulationFrameForPrint() {
+      const frameEl = document.getElementById("simulationReportFrame");
+      if (!frameEl || frameEl.classList.contains("hidden")) return;
+
+      if (printFrameOriginalHeight === null) printFrameOriginalHeight = frameEl.style.height || "";
+      if (printFrameOriginalMinHeight === null) printFrameOriginalMinHeight = frameEl.style.minHeight || "";
+
+      try {
+        const doc = frameEl.contentDocument;
+        const body = doc?.body;
+        const docEl = doc?.documentElement;
+        const fullHeight = Math.max(
+          body?.scrollHeight || 0,
+          body?.offsetHeight || 0,
+          docEl?.scrollHeight || 0,
+          docEl?.offsetHeight || 0,
+          540
+        );
+        frameEl.style.height = `${fullHeight + 24}px`;
+        frameEl.style.minHeight = `${fullHeight + 24}px`;
+      } catch {}
+    }
+
+    function restoreSimulationFrameAfterPrint() {
+      const frameEl = document.getElementById("simulationReportFrame");
+      if (frameEl) {
+        frameEl.style.height = printFrameOriginalHeight ?? "";
+        frameEl.style.minHeight = printFrameOriginalMinHeight ?? "";
+      }
+      printFrameOriginalHeight = null;
+      printFrameOriginalMinHeight = null;
+    }
+
+    function clearSimulationPrintSnapshot() {
+      if (simulationPrintSnapshotEl) {
+        simulationPrintSnapshotEl.remove();
+        simulationPrintSnapshotEl = null;
+      }
+      document.body.classList.remove("print-with-snapshot");
+    }
+
+    async function prepareSimulationPrintSnapshot() {
+      const frameEl = document.getElementById("simulationReportFrame");
+      const sectionEl = document.getElementById("reportSimulationSection");
+      const frameWrap = sectionEl?.querySelector(".report-frame-wrap");
+      if (!frameEl || !frameWrap || frameEl.classList.contains("hidden")) return false;
+      if (typeof html2canvas !== "function") return false;
+
+      clearSimulationPrintSnapshot();
+      const snapshot = await captureSimulationFrameSnapshot(frameEl);
+      if (!snapshot) return false;
+
+      const holder = document.createElement("div");
+      holder.className = "simulation-print-snapshot";
+      holder.setAttribute("data-print-snapshot", "true");
+      holder.appendChild(snapshot);
+      frameWrap.appendChild(holder);
+
+      simulationPrintSnapshotEl = holder;
+      document.body.classList.add("print-with-snapshot");
+      return true;
+    }
+
+    async function handlePrintClick() {
+      if (printInProgress) return;
+      printInProgress = true;
+      try {
+        expandSimulationFrameForPrint();
+        try {
+          await prepareSimulationPrintSnapshot();
+        } catch (error) {
+          console.error("Print snapshot preparation failed", error);
+          clearSimulationPrintSnapshot();
+        }
+        window.print();
+      } finally {
+        printInProgress = false;
+      }
+    }
+
+    function createDetachedExportWrapper(widthPx) {
+      const wrapper = document.createElement("div");
+      wrapper.style.position = "absolute";
+      wrapper.style.left = "-99999px";
+      wrapper.style.top = "0";
+      wrapper.style.width = `${widthPx}px`;
+      wrapper.style.background = "#ffffff";
+      wrapper.style.padding = "0";
+      wrapper.style.margin = "0";
+      wrapper.style.display = "block";
+      return wrapper;
+    }
+
+    function addCanvasFittedSinglePage(pdf, canvas, margin = 24) {
+      if (!pdf || !canvas || !canvas.width || !canvas.height) return;
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const usableWidth = pageWidth - margin * 2;
+      const usableHeight = pageHeight - margin * 2;
+      const scale = Math.min(usableWidth / canvas.width, usableHeight / canvas.height);
+      const renderWidth = canvas.width * scale;
+      const renderHeight = canvas.height * scale;
+      const x = margin + (usableWidth - renderWidth) / 2;
+      const y = margin;
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", x, y, renderWidth, renderHeight, undefined, "FAST");
+    }
+
+    function appendCanvasPaged(pdf, canvas, { margin = 24, startNewPage = true } = {}) {
+      if (!pdf || !canvas || !canvas.width || !canvas.height) return;
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const usableWidth = pageWidth - margin * 2;
+      const usableHeight = pageHeight - margin * 2;
+      const sliceSourceHeight = Math.max(1, Math.floor((usableHeight * canvas.width) / usableWidth));
+
+      let sourceY = 0;
+      let pageIndex = 0;
+      let newPage = startNewPage;
+
+      while (sourceY < canvas.height) {
+        if (newPage || pageIndex > 0) pdf.addPage();
+
+        const thisSliceHeight = Math.min(sliceSourceHeight, canvas.height - sourceY);
+        const sliceCanvas = document.createElement("canvas");
+        sliceCanvas.width = canvas.width;
+        sliceCanvas.height = thisSliceHeight;
+
+        const ctx = sliceCanvas.getContext("2d");
+        if (!ctx) throw new Error("Unable to prepare PDF page slice.");
+        ctx.drawImage(
+          canvas,
+          0, sourceY, canvas.width, thisSliceHeight,
+          0, 0, canvas.width, thisSliceHeight
+        );
+
+        const renderHeight = (thisSliceHeight * usableWidth) / canvas.width;
+        pdf.addImage(
+          sliceCanvas.toDataURL("image/png"),
+          "PNG",
+          margin,
+          margin,
+          usableWidth,
+          renderHeight,
+          undefined,
+          "FAST"
+        );
+
+        sourceY += thisSliceHeight;
+        pageIndex += 1;
+        newPage = false;
+      }
+    }
+
+    async function prepareExportNodes() {
+      const sourceNode = reportContainer || contentEl;
+      if (!sourceNode) return null;
+
+      const width = sourceNode.offsetWidth || sourceNode.clientWidth || 900;
+      const wrappers = [];
+      const appendWrapper = (wrapper) => {
+        document.body.appendChild(wrapper);
+        wrappers.push(wrapper);
+      };
+
+      const firstPageWrapper = createDetachedExportWrapper(width);
+      const firstPageClone = sourceNode.cloneNode(true);
+      firstPageClone.style.width = "100%";
+      firstPageClone.style.maxWidth = "none";
+      const firstPageActions = firstPageClone.querySelector("#downloadBtn")?.parentElement;
+      if (firstPageActions) firstPageActions.remove();
+      firstPageClone.querySelector("#reportSimulationSection")?.remove();
+      firstPageWrapper.appendChild(firstPageClone);
+      appendWrapper(firstPageWrapper);
+
+      const simulationWrapper = createDetachedExportWrapper(width);
+      const liveSimulationSection = document.getElementById("reportSimulationSection");
+      let simulationClone = null;
+
+      if (liveSimulationSection) {
+        simulationClone = liveSimulationSection.cloneNode(true);
+      } else {
+        simulationClone = document.createElement("section");
+        simulationClone.className = "report-section";
+        simulationClone.innerHTML =
+          '<h2 class="report-section-title">Simulation Report</h2><p class="report-muted">Simulation report not found.</p>';
+      }
+
+      const frameClone = simulationClone.querySelector("#simulationReportFrame");
+      if (frameClone) {
+        const liveFrame = document.getElementById("simulationReportFrame");
+        let replacement = null;
+
+        try {
+          replacement = await captureSimulationFrameSnapshot(liveFrame);
+        } catch (err) {
+          console.error("Simulation frame snapshot failed", err);
+        }
+
+        if (!replacement) {
+          const fallback = document.createElement("div");
+          fallback.className = "p-4 text-sm text-slate-700 bg-slate-50 border-t border-slate-200";
+          fallback.textContent = currentSimulationReport?.html
+            ? "Simulation report is available on the page. Snapshot could not be captured for PDF."
+            : "Simulation report not found.";
+          replacement = fallback;
+        }
+
+        frameClone.replaceWith(replacement);
+      }
+
+      simulationWrapper.appendChild(simulationClone);
+      appendWrapper(simulationWrapper);
+
+      await sleep(60);
+
+      return {
+        firstNode: firstPageWrapper,
+        simulationNode: simulationWrapper,
+        cleanup: () => wrappers.forEach((wrapper) => wrapper.remove())
+      };
+    }
+
+    function generateAssessmentRow(title, data) {
+      const hasAny = !!(data && (data.score || data.total || data.updatedAt));
+      const scoreDisplay = hasAny ? `${data.score || "0"} / ${data.total || "0"}` : "Not recorded";
+      const updatedDisplay = data?.updatedAt ? (formatTimestamp(data.updatedAt) || data.updatedAt) : "Not available";
+
+      return `
+        <tr>
+          <td class="report-cell-strong">${escapeHTML(title)}</td>
+          <td>${escapeHTML(scoreDisplay)}</td>
+          <td class="report-cell-muted">${escapeHTML(updatedDisplay)}</td>
+        </tr>
+      `;
+    }
+
+    function escapeHTML(s) {
+      return String(s || "").replace(/[&<>"']/g, (c) => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[c]));
+    }
+
+    // Buttons
+    
+    const downloadBtn = document.getElementById("downloadBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    
+    downloadBtn?.addEventListener("click", downloadReportCanvas);
+    resetBtn?.addEventListener("click", () => {
+      showReportAlert("Reset all saved user data, assessments, timings, and simulation report?", "Confirm Reset", {
+        mode: "confirm",
+        onYes: () => {
+          VLProgress.resetAll();
+          showReportAlert("Reset done. Redirecting to Aim page.", "Reset Complete", { onClose: navigateToAim });
+        }
+      });
+    });
+
+    window.addEventListener("beforeprint", () => {
+      expandSimulationFrameForPrint();
+    });
+    window.addEventListener("afterprint", () => {
+      clearSimulationPrintSnapshot();
+      restoreSimulationFrameAfterPrint();
+    });
+
+    // Legacy export (kept for reference)
+    async function downloadReport() {
+      if (!contentEl) {
+        showReportAlert("Report is not ready yet. Please reload and try again.", "Download Failed");
+        return;
+      }
+
+      const jsPDF = window.jspdf?.jsPDF;
+      if (typeof jsPDF !== "function") {
+        showReportAlert("PDF library missing or blocked. Use the Print button instead.", "Download Failed");
+        return;
+      }
+
+      const btn = downloadBtn;
+      const originalLabel = btn?.textContent;
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Preparing PDF...";
+      }
+
+      try {
+        const pdf = new jsPDF({ unit: "pt", format: "a4", orientation: "portrait" });
+        await pdf.html(contentEl, {
+          x: 18,
+          y: 18,
+          html2canvas: {
+            scale: Math.min(2, window.devicePixelRatio || 1.5),
+            useCORS: true,
+            allowTaint: true
+          },
+          callback(doc) {
+            doc.save("progress-report.pdf");
+          }
+        });
+      } catch (error) {
+        console.error("Progress report PDF export failed", error);
+        showReportAlert("Unable to create the PDF. Please try again or use Print.", "Download Failed");
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = originalLabel;
+        }
+      }
+    }
+
+    // More reliable export using html2canvas snapshot (multi-page)
+    async function downloadReportCanvas() {
+      if (!reportContainer || !contentEl) {
+        showReportAlert("Report is not ready yet. Please reload and try again.", "Download Failed");
+        return;
+      }
+
+      const jsPDF = window.jspdf?.jsPDF;
+      if (typeof jsPDF !== "function") {
+        showReportAlert("PDF library missing or blocked. Use the Print button instead.", "Download Failed");
+        return;
+      }
+
+      if (typeof html2canvas !== "function") {
+        showReportAlert("Snapshot library missing. Reload the page and try again.", "Download Failed");
+        return;
+      }
+
+      if (document.fonts && typeof document.fonts.ready?.then === "function") {
+        try { await document.fonts.ready; } catch {}
+      }
+
+      const btn = downloadBtn;
+      const originalLabel = btn?.textContent;
+
+      let exportCleanup = null;
+
+      try {
+        const latestSimReport = getSimulationReportData();
+        if (latestSimReport) currentSimulationReport = latestSimReport;
+
+        const captureScale = Math.min(2, window.devicePixelRatio || 1.5);
+        const captureOptions = {
+          scale: captureScale,
+          useCORS: true,
+          allowTaint: true,
+          scrollX: 0,
+          scrollY: 0,
+          backgroundColor: "#ffffff"
+        };
+
+        const exportContext = await prepareExportNodes();
+        if (!exportContext?.firstNode || !exportContext?.simulationNode) {
+          throw new Error("Report export context is unavailable.");
+        }
+        exportCleanup = exportContext.cleanup;
+
+        const firstCanvas = await html2canvas(exportContext.firstNode, captureOptions);
+        const simulationCanvas = await html2canvas(exportContext.simulationNode, captureOptions);
+
+        const pdf = new jsPDF({ unit: "pt", format: "a4", orientation: "portrait" });
+        addCanvasFittedSinglePage(pdf, firstCanvas, 24);
+        appendCanvasPaged(pdf, simulationCanvas, { margin: 24, startNewPage: true });
+
+        pdf.save("progress-report.pdf");
+      } catch (error) {
+        console.error("Progress report PDF export failed", error);
+        showReportAlert("Unable to create the PDF. Please try again or use Print.", "Download Failed");
+      } finally {
+        if (exportCleanup) exportCleanup();
+        if (btn) {
+          if (typeof originalLabel === "string") btn.textContent = originalLabel;
+        }
+      }
+    }
+
+    reportLockedCTA?.addEventListener("click", () => redirectToUserInputForm("progressreport.html"));
+  })();
+  </script>
+
+  <script>
+    (function initHeaderNav() {
+      const toggle = document.getElementById("mobile-menu-toggle");
+      const nav = document.querySelector(".top-nav");
+      if (!toggle || !nav) return;
+      toggle.addEventListener("click", () => nav.classList.toggle("hidden"));
+    })();
+  </script>
+</body>
+</html>
+
