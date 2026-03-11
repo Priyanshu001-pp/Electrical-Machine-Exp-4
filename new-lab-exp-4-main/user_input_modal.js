@@ -561,8 +561,8 @@
         return;
       }
 
-      if (data.type === "vlab:simulation_report_generated") {
-        const html = typeof data.html === "string" ? data.html : "";
+    if (data.type === "vlab:simulation_report_generated") {
+        const html = typeof data.html === "string" ? data.html : "1";
         const updatedAt = (data.updatedAt || String(Date.now())).toString();
         if (!html.trim()) return;
 
@@ -598,6 +598,6 @@
   window.VLUserInputModal.close = closeUserInputModal;
   window.VLUserInputModal.refresh = refreshUserInputNavLinks;
 
-init();
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  init();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
 })();

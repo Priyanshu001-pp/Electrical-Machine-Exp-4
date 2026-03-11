@@ -1678,7 +1678,7 @@ jsPlumb.ready(function () {
       // Plays: "Report generated successfully. Click OK to view."
       playAudio("audiosimulation/Report.wav");
     }
-    waitForWarningModalAcknowledgement().then(() => {
+   waitForWarningModalAcknowledgement().then(() => {
       const endTime = Date.now();
       localStorage.setItem("experimentEndTime", endTime);
       const startTime = parseInt(localStorage.getItem("experimentStartTime"));
@@ -1694,26 +1694,30 @@ jsPlumb.ready(function () {
       localStorage.setItem("tableData", JSON.stringify(
         graphReadings.map((row, index) => ({ count: index + 1, voltage: row.voltage, rpm: row.rpm }))
       ));
-      
-// After building your reportHtml string, BEFORE window.open():
-const updatedAt = String(Date.now());
-try {
-  localStorage.setItem("vlab_exp2_simulation_report_html", reportHtml);
-  localStorage.setItem("vlab_exp2_simulation_report_updated_at", updatedAt);
-  const activeHash = localStorage.getItem("vlab_exp2_active_user_hash");
-  if (activeHash) {
-    localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_html`, reportHtml);
-    localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_updated_at`, updatedAt);
-  }
-} catch(e) {}
-try {
-  window.parent.postMessage(
-    { type: "vlab:simulation_report_generated", html: reportHtml, updatedAt }, "*"
-  );
-} catch(e) {}
+
+      // ✅ Sirf flag save karo — progress report unlock ke liye
+      const updatedAt = String(Date.now());
+      try {
+        localStorage.setItem("vlab_exp2_simulation_report_html", "1");
+        localStorage.setItem("vlab_exp2_simulation_report_updated_at", updatedAt);
+        const activeHash = localStorage.getItem("vlab_exp2_active_user_hash");
+        if (activeHash) {
+          localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_html`, "1");
+          localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_updated_at`, updatedAt);
+        }
+      } catch(e) {}
+
+      // ✅ Parent window notify
+     // ✅ Parent window notify
+      try {
+        window.parent.postMessage(
+          { type: "vlab:simulation_report_generated", updatedAt, html: "1" }, "*"
+        );
+      } catch(e) {}
 
       window.open("report.html", "_blank");
       onReportGenerated();
+  
     });
   });
 

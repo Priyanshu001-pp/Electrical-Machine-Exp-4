@@ -724,8 +724,7 @@
 
     window.addEventListener('message', (event) => {
       const allowedOrigin = window.location.origin;
-      // ✅ FIX:
-if (allowedOrigin !== "null" && event.origin !== allowedOrigin) return;
+      if (allowedOrigin !== "null" && event.origin !== allowedOrigin) return;
       const data = event.data;
       if (!data || !data.type) return;
 

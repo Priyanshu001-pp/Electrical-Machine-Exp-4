@@ -262,6 +262,8 @@
     .modal-box h2 { font-size: 18px; font-weight: 800; margin:0 0 8px; color:#0f172a; }
     .modal-box p { margin:0 0 14px; color:#334155; text-align: justify; }
     .modal-actions { display:flex; gap:10px; justify-content:flex-end; }
+    .modal-actions[hidden] { display:none !important; }
+.modal-actions:not([hidden]) { display:flex !important; }
     .modal-close-btn {
       padding: 10px 14px;
       border-radius: 12px;
@@ -298,7 +300,7 @@
           <div class="flex items-center gap-2">
             
             <img
-              src="./images/logo.png"
+              src="./images/image.png"
               alt="Virtual Labs Logo"
               class="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 rounded-xl object-contain bg-white p-1.5 logo-glow"
               onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%233b82f6%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22%3EVL%3C/text%3E%3C/svg%3E'">
@@ -385,7 +387,6 @@
   <!-- MUST load tracker BEFORE inline script -->
   <script src="./progress_tracker.js"></script>
   <script src="./user_input_modal.js"></script>
-  <script src="./progress_report_embed.js"></script> <!-- 3rd -->
 
   <script>
   (() => {
@@ -501,12 +502,18 @@
       window.location.href = target;
     }
 
-    function navigateToAim() {
-      try {
-        if (window.top && window.top !== window) { window.top.location.href = "aim.html"; return; }
-      } catch {}
+   function navigateToAim() {
+  try {
+    const target = window.location.href.replace(/[^/]*$/, "aim.html");
+    if (window.top && window.top !== window) {
+      window.top.location.href = target;
+    } else {
       window.location.href = "aim.html";
     }
+  } catch {
+    window.location.href = "aim.html";
+  }
+}
 
     // ---- Guard: tracker must exist
     if (!window.VLProgress) {
@@ -709,30 +716,31 @@
       return null;
     }
 
-    function renderSimulationReport(report) {
-      const iframe = document.getElementById("simulationReportFrame");
-      const status = document.getElementById("simulationReportStatus");
-      if (!iframe || !status) return;
-      currentSimulationReport = report;
+  function renderSimulationReport(report) {
+  const iframe = document.getElementById("simulationReportFrame");
+  const status = document.getElementById("simulationReportStatus");
+  if (!iframe || !status) return;
+  currentSimulationReport = report;
 
-      if (!report || !report.html) {
-        iframe.classList.add("hidden");
-        status.textContent = "No simulation report found. Run simulation and click Report.";
-        return;
-      }
+  // Check karo sirf flag hai ya nahi ("1" = report exists)
+  if (!report || !report.html) {
+    iframe.classList.add("hidden");
+    status.textContent = "No simulation report found. Run simulation and click Report.";
+    return;
+  }
 
-      const upd = report.updatedAt ? (formatTimestamp(report.updatedAt) || report.updatedAt) : null;
-      status.textContent = upd ? `Simulation report attached (updated: ${upd}).` : "Simulation report attached.";
+  const upd = report.updatedAt ? (formatTimestamp(report.updatedAt) || report.updatedAt) : null;
+  status.textContent = upd ? `Simulation report attached (updated: ${upd}).` : "Simulation report attached.";
 
-      try {
-        iframe.srcdoc = report.html;
-        iframe.classList.remove("hidden");
-      } catch {
-        iframe.classList.add("hidden");
-        status.textContent = "Report saved, but preview couldn't render. Please open it in a new tab.";
-      }
-    }
-
+  // ✅ Direct report.html load karo — localStorage data wahan se read hoga
+  try {
+    iframe.src = "report.html";
+    iframe.classList.remove("hidden");
+  } catch {
+    iframe.classList.add("hidden");
+    status.textContent = "Report saved, but preview couldn't render.";
+  }
+}
     function sleep(ms = 0) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
@@ -1044,21 +1052,31 @@
 
     // Buttons
     
-    const downloadBtn = document.getElementById("downloadBtn");
-    const resetBtn = document.getElementById("resetBtn");
+ const downloadBtn = document.getElementById("downloadBtn");
+const resetBtn = document.getElementById("resetBtn");
 
-    
-    downloadBtn?.addEventListener("click", downloadReportCanvas);
-    resetBtn?.addEventListener("click", () => {
-      showReportAlert("Reset all saved user data, assessments, timings, and simulation report?", "Confirm Reset", {
-        mode: "confirm",
-        onYes: () => {
-          VLProgress.resetAll();
-          showReportAlert("Reset done. Redirecting to Aim page.", "Reset Complete", { onClose: navigateToAim });
-        }
-      });
-    });
-
+downloadBtn?.addEventListener("click", downloadReportCanvas);
+resetBtn?.addEventListener("click", () => {
+  showReportAlert("Reset all saved user data, assessments, timings, and simulation report?", "Confirm Reset", {
+    mode: "confirm",
+    onYes: () => {
+      VLProgress.resetAll();
+      // Clear simulation report keys manually
+      try {
+        localStorage.removeItem("vlab_exp2_simulation_report_html");
+        localStorage.removeItem("vlab_exp2_simulation_report_updated_at");
+        localStorage.removeItem("tableData");
+        localStorage.removeItem("experimentReport");
+        localStorage.removeItem("reportStartTime");
+        localStorage.removeItem("reportEndTime");
+        localStorage.removeItem("reportDuration");
+        localStorage.removeItem("experimentStartTime");
+        localStorage.removeItem("experimentEndTime");
+      } catch(e) {}
+      showReportAlert("Reset done. Redirecting to Aim page.", "Reset Complete", { onClose: navigateToAim });
+    }
+  });
+});
     window.addEventListener("beforeprint", () => {
       expandSimulationFrameForPrint();
     });
@@ -1182,7 +1200,7 @@
   })();
   </script>
 
-  <script>
+  <script>  
     (function initHeaderNav() {
       const toggle = document.getElementById("mobile-menu-toggle");
       const nav = document.querySelector(".top-nav");
