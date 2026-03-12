@@ -554,6 +554,19 @@
     setReportLockedVisible(false);
     renderReport(simulationReport);
 
+ function formatDurationHMS(ms) {
+  if (!ms || ms < 0) return "0s";
+  const totalSec = Math.floor(ms / 1000);
+  const hours    = Math.floor(totalSec / 3600);
+  const minutes  = Math.floor((totalSec % 3600) / 60);
+  const seconds  = totalSec % 60;
+
+  if (hours > 0)   return `${hours}h ${minutes}m ${seconds}s`;
+  if (minutes > 0) return `${minutes}m ${seconds}s`;
+  return `${seconds}s`;
+}
+
+
     function renderReport(simReport) {
       if (!contentEl) return;
 
@@ -588,7 +601,7 @@
           </section>
           <section class="report-section">
             <h2 class="report-section-title">Total Duration</h2>
-            <p class="report-duration">${VLProgress.formatMs(totalMs)}</p>
+          <p class="report-duration">${formatDurationHMS(totalMs)}</p>
           </section>
         </div>
 
