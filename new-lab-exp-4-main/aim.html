@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -25,7 +26,10 @@
       --intro-video-bg: linear-gradient(150deg, #0b1224 0%, #2b1a10 100%);
     }
 
-    body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    body {
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
 
     /* Page blur when intro popup is open */
     body.body-blurred #page-wrapper {
@@ -34,125 +38,308 @@
       user-select: none;
     }
 
-    body.body-blurred { overflow: hidden; }
+    body.body-blurred {
+      overflow: hidden;
+    }
 
     /* Custom Animations */
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    .animate-fadeInUp { animation: fadeInUp 0.6s ease-out forwards; }
+
+    .animate-fadeInUp {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
 
     @keyframes slideInLeft {
-      from { opacity: 0; transform: translateX(-20px); }
-      to { opacity: 1; transform: translateX(0); }
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
-    .animate-slideInLeft { animation: slideInLeft 0.5s ease-out forwards; }
+
+    .animate-slideInLeft {
+      animation: slideInLeft 0.5s ease-out forwards;
+    }
 
     @keyframes chatbot-float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-4px);
+      }
     }
 
     @keyframes chatbot-hint-pulse {
-      0%, 65% { opacity: 0; transform: translate(8px, -50%) scale(0.94); }
-      10%, 40% { opacity: 1; transform: translate(0, -50%) scale(1); }
-      100% { opacity: 0; transform: translate(8px, -50%) scale(0.94); }
+
+      0%,
+      65% {
+        opacity: 0;
+        transform: translate(8px, -50%) scale(0.94);
+      }
+
+      10%,
+      40% {
+        opacity: 1;
+        transform: translate(0, -50%) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(8px, -50%) scale(0.94);
+      }
     }
 
     @keyframes intro-float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-4px);
+      }
     }
 
     @keyframes intro-ring-spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     @keyframes intro-glow {
-      0%, 100% { opacity: 0.5; transform: scale(0.92); }
-      50% { opacity: 1; transform: scale(1.08); }
+
+      0%,
+      100% {
+        opacity: 0.5;
+        transform: scale(0.92);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.08);
+      }
     }
 
     @keyframes intro-ping {
-      0% { transform: scale(0.65); opacity: 0; }
-      25% { opacity: 0.7; }
-      100% { transform: scale(1.2); opacity: 0; }
+      0% {
+        transform: scale(0.65);
+        opacity: 0;
+      }
+
+      25% {
+        opacity: 0.7;
+      }
+
+      100% {
+        transform: scale(1.2);
+        opacity: 0;
+      }
     }
 
     @keyframes intro-overlay-in {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     @keyframes intro-panel-3d {
-      from { opacity: 0; transform: translateY(28px) scale(0.96) rotateX(8deg) rotateY(-6deg); }
-      to { opacity: 1; transform: translateY(0) scale(1) rotateX(0) rotateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(28px) scale(0.96) rotateX(8deg) rotateY(-6deg);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0) rotateY(0);
+      }
     }
 
     @keyframes intro-panel-rise {
-      from { opacity: 0; transform: translateY(16px) translateZ(10px); }
-      to { opacity: 1; transform: translateY(0) translateZ(10px); }
+      from {
+        opacity: 0;
+        transform: translateY(16px) translateZ(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) translateZ(10px);
+      }
     }
 
     @keyframes intro-item-in {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes intro-line-in {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes intro-video-pop {
-      from { opacity: 0; transform: translateY(10px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     @keyframes intro-badge-pulse {
-      0%, 100% { box-shadow: 0 10px 18px rgba(11, 96, 168, 0.35); transform: translateY(0); }
-      50% { box-shadow: 0 12px 22px rgba(11, 96, 168, 0.45); transform: translateY(-1px); }
+
+      0%,
+      100% {
+        box-shadow: 0 10px 18px rgba(11, 96, 168, 0.35);
+        transform: translateY(0);
+      }
+
+      50% {
+        box-shadow: 0 12px 22px rgba(11, 96, 168, 0.45);
+        transform: translateY(-1px);
+      }
     }
 
     /* 3D intro motion */
     @keyframes intro-pop {
-      0% { opacity: 0; transform: translateY(18px) scale(0.97) rotateX(5deg); }
-      65% { opacity: 1; transform: translateY(0) scale(1.02) rotateX(0deg); }
-      100% { opacity: 1; transform: translateY(0) scale(1) rotateX(0); }
+      0% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97) rotateX(5deg);
+      }
+
+      65% {
+        opacity: 1;
+        transform: translateY(0) scale(1.02) rotateX(0deg);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0);
+      }
     }
 
     @keyframes intro-grid-shimmer {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
+      0% {
+        background-position: 0% 50%;
+      }
+
+      100% {
+        background-position: 200% 50%;
+      }
     }
 
     @keyframes intro-pane-tilt {
-      0% { transform: perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(0); }
-      50% { transform: perspective(1400px) rotateX(1.2deg) rotateY(-1deg) translateY(-6px); }
-      100% { transform: perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(0); }
+      0% {
+        transform: perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(0);
+      }
+
+      50% {
+        transform: perspective(1400px) rotateX(1.2deg) rotateY(-1deg) translateY(-6px);
+      }
+
+      100% {
+        transform: perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(0);
+      }
     }
 
     @keyframes intro-video-glow {
-      0% { box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16), 0 0 0 0 rgba(11, 96, 168, 0.2); }
-      50% { box-shadow: 0 20px 46px rgba(15, 23, 42, 0.2), 0 0 0 12px rgba(11, 96, 168, 0.08); }
-      100% { box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16), 0 0 0 0 rgba(11, 96, 168, 0.2); }
+      0% {
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16), 0 0 0 0 rgba(11, 96, 168, 0.2);
+      }
+
+      50% {
+        box-shadow: 0 20px 46px rgba(15, 23, 42, 0.2), 0 0 0 12px rgba(11, 96, 168, 0.08);
+      }
+
+      100% {
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16), 0 0 0 0 rgba(11, 96, 168, 0.2);
+      }
     }
 
     /* Stagger animation for menu items */
-    .menu-item:nth-child(1) { animation-delay: 0.1s; }
-    .menu-item:nth-child(2) { animation-delay: 0.2s; }
-    .menu-item:nth-child(3) { animation-delay: 0.3s; }
-    .menu-item:nth-child(4) { animation-delay: 0.4s; }
-    .menu-item:nth-child(5) { animation-delay: 0.5s; }
-    .menu-item:nth-child(6) { animation-delay: 0.6s; }
-    .menu-item:nth-child(7) { animation-delay: 0.7s; }
-    .menu-item:nth-child(8) { animation-delay: 0.8s; }
+    .menu-item:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .menu-item:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .menu-item:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .menu-item:nth-child(4) {
+      animation-delay: 0.4s;
+    }
+
+    .menu-item:nth-child(5) {
+      animation-delay: 0.5s;
+    }
+
+    .menu-item:nth-child(6) {
+      animation-delay: 0.6s;
+    }
+
+    .menu-item:nth-child(7) {
+      animation-delay: 0.7s;
+    }
+
+    .menu-item:nth-child(8) {
+      animation-delay: 0.8s;
+    }
 
     /* Section stagger */
-    .section-content:nth-child(even) { animation-delay: 0.2s; }
-    .section-content:nth-child(odd) { animation-delay: 0.1s; }
+    .section-content:nth-child(even) {
+      animation-delay: 0.2s;
+    }
+
+    .section-content:nth-child(odd) {
+      animation-delay: 0.1s;
+    }
 
     /* Virtual Labs specific styling */
     .vl-header {
@@ -167,11 +354,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.75rem 1rem; /* Increased padding for better breathing room */
+      padding: 0.75rem 1rem;
+      /* Increased padding for better breathing room */
     }
 
     .top-nav {
-      gap: 1.5rem; /* Increased gap for better spacing */
+      gap: 1.5rem;
+      /* Increased gap for better spacing */
       align-items: center;
     }
 
@@ -179,9 +368,12 @@
       position: relative;
       color: #e2e8f0;
       font-weight: 600;
-      padding: 0.5rem 1rem; /* Slightly increased padding */
-      transition: color 150ms ease, transform 150ms ease; /* Added subtle transform */
-      border-radius: 0.375rem; /* Subtle rounding */
+      padding: 0.5rem 1rem;
+      /* Slightly increased padding */
+      transition: color 150ms ease, transform 150ms ease;
+      /* Added subtle transform */
+      border-radius: 0.375rem;
+      /* Subtle rounding */
       text-decoration: none;
     }
 
@@ -202,8 +394,10 @@
     .nav-link:hover,
     .nav-link:focus {
       color: #fff;
-      transform: translateY(-1px); /* Subtle lift on hover */
-      background: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
+      transform: translateY(-1px);
+      /* Subtle lift on hover */
+      background: rgba(255, 255, 255, 0.1);
+      /* Subtle background on hover */
     }
 
     .nav-link:hover::after,
@@ -215,7 +409,8 @@
     .logo-container {
       display: flex;
       align-items: center;
-      gap: 0.75rem; /* Consistent gap */
+      gap: 0.75rem;
+      /* Consistent gap */
     }
 
     .logo-glow {
@@ -248,7 +443,9 @@
       margin: 0;
     }
 
-    .flex-1.pt-16 { flex: 1; }
+    .flex-1.pt-16 {
+      flex: 1;
+    }
 
     .vl-footer {
       background: linear-gradient(120deg, #021a2c, #064073, #0b60a8);
@@ -271,7 +468,10 @@
       padding: 0 1.5rem;
     }
 
-    .vl-sidebar { background: #f8fafc; border-right: 1px solid #e2e8f0; }
+    .vl-sidebar {
+      background: #f8fafc;
+      border-right: 1px solid #e2e8f0;
+    }
 
     .vl-card {
       border: 1px solid #e2e8f0;
@@ -325,9 +525,13 @@
     }
 
     .text-blue-600,
-    .hover\:text-blue-600:hover { color: #0b60a8; }
+    .hover\:text-blue-600:hover {
+      color: #0b60a8;
+    }
 
-    .border-blue-600 { border-color: #0b60a8; }
+    .border-blue-600 {
+      border-color: #0b60a8;
+    }
 
     #intro-text .intro-line {
       margin: 0 0 0.85rem;
@@ -343,7 +547,9 @@
       text-align: left;
     }
 
-    #intro-text .intro-line:last-child { margin-bottom: 0; }
+    #intro-text .intro-line:last-child {
+      margin-bottom: 0;
+    }
 
     #intro-text .intro-line.active {
       opacity: 1;
@@ -352,7 +558,9 @@
       transform: translateX(2px);
     }
 
-    #intro-text { text-align: center; }
+    #intro-text {
+      text-align: center;
+    }
 
     #intro-outline {
       list-style: none;
@@ -385,14 +593,37 @@
       animation: intro-item-in 0.45s ease both;
     }
 
-    .outline-item:nth-child(1) { animation-delay: 0.05s; }
-    .outline-item:nth-child(2) { animation-delay: 0.1s; }
-    .outline-item:nth-child(3) { animation-delay: 0.15s; }
-    .outline-item:nth-child(4) { animation-delay: 0.2s; }
-    .outline-item:nth-child(5) { animation-delay: 0.25s; }
-    .outline-item:nth-child(6) { animation-delay: 0.3s; }
-    .outline-item:nth-child(7) { animation-delay: 0.35s; }
-    .outline-item:nth-child(8) { animation-delay: 0.4s; }
+    .outline-item:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    .outline-item:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .outline-item:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .outline-item:nth-child(4) {
+      animation-delay: 0.2s;
+    }
+
+    .outline-item:nth-child(5) {
+      animation-delay: 0.25s;
+    }
+
+    .outline-item:nth-child(6) {
+      animation-delay: 0.3s;
+    }
+
+    .outline-item:nth-child(7) {
+      animation-delay: 0.35s;
+    }
+
+    .outline-item:nth-child(8) {
+      animation-delay: 0.4s;
+    }
 
     .outline-item::before {
       content: '';
@@ -458,8 +689,15 @@
       pointer-events: none;
     }
 
-    #intro-video-wrapper:not(.hidden) { opacity: 1; transform: scale(1); }
-    #intro-video-wrapper.hidden { opacity: 0; transform: scale(0.95); }
+    #intro-video-wrapper:not(.hidden) {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #intro-video-wrapper.hidden {
+      opacity: 0;
+      transform: scale(0.95);
+    }
 
     #intro-video {
       width: 100%;
@@ -480,9 +718,17 @@
     }
 
     /* Hide native video controls */
-    #intro-video::-webkit-media-controls { display: none !important; }
-    #intro-video::-moz-media-controls { display: none !important; }
-    #intro-video::-ms-media-controls { display: none !important; }
+    #intro-video::-webkit-media-controls {
+      display: none !important;
+    }
+
+    #intro-video::-moz-media-controls {
+      display: none !important;
+    }
+
+    #intro-video::-ms-media-controls {
+      display: none !important;
+    }
 
     .final-message {
       display: flex;
@@ -493,9 +739,21 @@
       font-size: 1.05rem;
     }
 
-    #intro-grid.final-state { grid-template-columns: 1fr; align-items: center; justify-items: center; }
-    #intro-grid.final-state #intro-left { display: none; }
-    #intro-grid.final-state #intro-right { width: 100%; max-width: 760px; margin: 0 auto; }
+    #intro-grid.final-state {
+      grid-template-columns: 1fr;
+      align-items: center;
+      justify-items: center;
+    }
+
+    #intro-grid.final-state #intro-left {
+      display: none;
+    }
+
+    #intro-grid.final-state #intro-right {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
 
     .chatbot-launcher {
       width: 74px;
@@ -522,22 +780,26 @@
       inset: -4px;
       border-radius: inherit;
       background: conic-gradient(from 160deg,
-        rgba(59, 130, 246, 0.25),
-        rgba(14, 165, 233, 0.65),
-        rgba(59, 130, 246, 0.95),
-        rgba(14, 165, 233, 0.65),
-        rgba(59, 130, 246, 0.25)
-      );
+          rgba(59, 130, 246, 0.25),
+          rgba(14, 165, 233, 0.65),
+          rgba(59, 130, 246, 0.95),
+          rgba(14, 165, 233, 0.65),
+          rgba(59, 130, 246, 0.25));
       opacity: 0;
       transform: scale(0.9);
       transition: opacity 180ms ease, transform 180ms ease;
       z-index: -1;
     }
 
-    .chatbot-launcher::after { filter: blur(12px); }
+    .chatbot-launcher::after {
+      filter: blur(12px);
+    }
 
     .chatbot-launcher:hover::before,
-    .chatbot-launcher:hover::after { opacity: 1; transform: scale(1.05); }
+    .chatbot-launcher:hover::after {
+      opacity: 1;
+      transform: scale(1.05);
+    }
 
     .chatbot-launcher:hover {
       transform: translateY(-2px) scale(1.02);
@@ -636,7 +898,9 @@
       transition: transform 160ms ease;
     }
 
-    .intro-launcher:hover .intro-icon-image { transform: scale(1.08); }
+    .intro-launcher:hover .intro-icon-image {
+      transform: scale(1.08);
+    }
 
     .chatbot-hint-bubble {
       position: absolute;
@@ -675,29 +939,70 @@
       color: #0f172a;
     }
 
-    .chatbot-widget { z-index: 90; }
-    .chatbot-panel { z-index: 90; }
+    .chatbot-widget {
+      z-index: 90;
+    }
 
-    #intro-modal { z-index: 9999 !important; }
-    #intro-modal button { position: relative; z-index: 10000 !important; }
+    .chatbot-panel {
+      z-index: 90;
+    }
+
+    #intro-modal {
+      z-index: 9999 !important;
+    }
+
+    #intro-modal button {
+      position: relative;
+      z-index: 10000 !important;
+    }
 
     @media (prefers-reduced-motion: no-preference) {
-      #intro-right { animation: intro-pane-tilt 12s ease-in-out infinite; }
-      #intro-video-wrapper:not(.hidden) { animation: intro-video-glow 9s ease-in-out infinite; }
+      #intro-right {
+        animation: intro-pane-tilt 12s ease-in-out infinite;
+      }
+
+      #intro-video-wrapper:not(.hidden) {
+        animation: intro-video-glow 9s ease-in-out infinite;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
+
       #intro-right,
-      #intro-video-wrapper { animation: none !important; }
+      #intro-video-wrapper {
+        animation: none !important;
+      }
     }
 
     @media (max-width: 640px) {
-      .chatbot-launcher { width: 64px; height: 64px; }
-      .chatbot-launcher-image { width: 50px; height: 50px; }
-      .intro-launcher { width: 64px; height: 64px; }
-      .intro-icon { width: 50px; height: 50px; }
-      .intro-icon-image { width: 50px; height: 50px; }
-      .chatbot-hint-bubble { display: none; }
+      .chatbot-launcher {
+        width: 64px;
+        height: 64px;
+      }
+
+      .chatbot-launcher-image {
+        width: 50px;
+        height: 50px;
+      }
+
+      .intro-launcher {
+        width: 64px;
+        height: 64px;
+      }
+
+      .intro-icon {
+        width: 50px;
+        height: 50px;
+      }
+
+      .intro-icon-image {
+        width: 50px;
+        height: 50px;
+      }
+
+      .chatbot-hint-bubble {
+        display: none;
+      }
     }
 
     .chatbot-widget {
@@ -751,8 +1056,17 @@
       gap: 1rem;
     }
 
-    .chatbot-panel-title { font-size: 1.05rem; font-weight: 700; margin: 0; }
-    .chatbot-panel-caption { font-size: 0.78rem; opacity: 0.9; margin: 0; }
+    .chatbot-panel-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .chatbot-panel-caption {
+      font-size: 0.78rem;
+      opacity: 0.9;
+      margin: 0;
+    }
 
     .chatbot-panel-close {
       border: none;
@@ -767,7 +1081,10 @@
       cursor: pointer;
       transition: background 120ms ease;
     }
-    .chatbot-panel-close:hover { background: rgba(255, 255, 255, 0.3); }
+
+    .chatbot-panel-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
 
     .chatbot-panel-body {
       flex: 1;
@@ -800,8 +1117,13 @@
       scrollbar-width: none;
     }
 
-    .chatbot-panel iframe::-webkit-scrollbar { display: none; }
-    .chatbot-panel iframe.chatbot-frame-visible { display: block; }
+    .chatbot-panel iframe::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chatbot-panel iframe.chatbot-frame-visible {
+      display: block;
+    }
 
     .section-text {
       text-align: left;
@@ -1030,9 +1352,17 @@
       gap: 0.65rem;
     }
 
-    #intro-left .intro-heading p { margin: 0; letter-spacing: 0.1px; color: #0f172a; }
+    #intro-left .intro-heading p {
+      margin: 0;
+      letter-spacing: 0.1px;
+      color: #0f172a;
+    }
 
-    #intro-left .intro-note { margin: 0; color: #64748b; font-size: 0.85rem; }
+    #intro-left .intro-note {
+      margin: 0;
+      color: #64748b;
+      font-size: 0.85rem;
+    }
 
     #intro-outline {
       flex: 1;
@@ -1135,7 +1465,10 @@
     }
 
     @media (max-width: 640px) {
-      #intro-modal { padding: 0.75rem; }
+      #intro-modal {
+        padding: 0.75rem;
+      }
+
       #intro-modal .modal-container {
         width: calc(100vw - 1rem);
         max-height: calc(100vh - 1.5rem);
@@ -1144,14 +1477,30 @@
         box-sizing: border-box;
       }
 
-      #intro-grid { padding-inline: 0.35rem; max-width: 100%; }
-      #intro-right { grid-template-rows: auto auto; }
-      #intro-video-wrapper { min-height: 180px; max-height: 260px; }
-      #intro-text { font-size: 1rem; min-height: 160px; }
+      #intro-grid {
+        padding-inline: 0.35rem;
+        max-width: 100%;
+      }
+
+      #intro-right {
+        grid-template-rows: auto auto;
+      }
+
+      #intro-video-wrapper {
+        min-height: 180px;
+        max-height: 260px;
+      }
+
+      #intro-text {
+        font-size: 1rem;
+        min-height: 160px;
+      }
     }
 
     @media (max-width: 480px) {
-      .chatbot-panel { height: min(88vh, 620px); }
+      .chatbot-panel {
+        height: min(88vh, 620px);
+      }
     }
   </style>
 </head>
@@ -1166,23 +1515,16 @@
       <div class="header-inner px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between py-1 w-full gap-3">
           <a href="../../main.html" class="logo-container hover:no-underline focus:no-underline">
-            <img
-              src="images/logo.png"
-              alt="Virtual Labs Logo"
+            <img src="images/logo.png" alt="Virtual Labs Logo"
               class="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 rounded-xl object-contain bg-white p-1.5 logo-glow"
-              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%233b82f6%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22%3EVL%3C/text%3E%3C/svg%3E'"
-            >
+              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%233b82f6%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22%3EVL%3C/text%3E%3C/svg%3E'">
             <div class="logo-text">
               <h1 class="logo-title text-base sm:text-lg lg:text-xl">Virtual Labs</h1>
               <p class="logo-subtitle text-[10px] sm:text-xs lg:text-sm">IIT Roorkee</p>
             </div>
           </a>
 
-          <button
-            id="mobile-menu-toggle"
-            class="lg:hidden text-white p-2 menu-button"
-            aria-label="Toggle menu"
-          >
+          <button id="mobile-menu-toggle" class="lg:hidden text-white p-2 menu-button" aria-label="Toggle menu">
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
@@ -1190,9 +1532,10 @@
 
           <nav class="top-nav hidden lg:flex items-center gap-2 lg:gap-3">
             <a href="../../main.html" class="nav-link">Home</a>
-            <a href="user_input.html?return=aim.html" class="nav-link nav-user-link" data-user-input-link data-redirect-return="aim.html">
+            <a href="user_input.html?return=aim.html" class="nav-link nav-user-link" data-user-input-link
+              data-redirect-return="aim.html">
               <span class="nav-user-pill">
-        
+
                 <span class="nav-user-text" data-user-text>User Input</span>
               </span>
             </a>
@@ -1203,79 +1546,95 @@
 
     <div class="flex pt-16 min-h-screen">
       <!-- Sidebar -->
-      <aside id="sidebar" class="vl-sidebar w-64 fixed inset-y-0 left-0 z-40 overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out pt-20 lg:pt-6 pb-6">
+      <aside id="sidebar"
+        class="vl-sidebar w-64 fixed inset-y-0 left-0 z-40 overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out pt-20 lg:pt-6 pb-6">
         <div class="px-4">
           <h2 class="text-lg font-semibold text-gray-800 mb-6 border-b border-gray-200 pb-4">Experiment Navigation</h2>
           <nav class="space-y-1">
             <a href="aim.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
-              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
               Aim
             </a>
 
             <a href="theory.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
-              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                </path>
               </svg>
               Theory
             </a>
 
             <a href="pretest.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
-              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
               Pretest
             </a>
 
             <a href="procedure.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
-              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2m-6 9l2 2 4-4"></path>
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2m-6 9l2 2 4-4">
+                </path>
               </svg>
               Procedure
             </a>
 
             <a href="simulation.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
-              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                </path>
               </svg>
               Simulation
             </a>
 
             <a href="posttest.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
-              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
               Posttest
             </a>
 
             <a href="references.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
-              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+                </path>
               </svg>
               References
             </a>
 
             <a href="contributors.html" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group">
-              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
               </svg>
               Contributors
             </a>
 
-           <a id="progressReportNav" href="#progressreport" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group" data-progress-report-link>
+            <a id="progressReportNav" href="#progressreport"
+              class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg group" data-progress-report-link>
 
-              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-3 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                </path>
               </svg>
               Progress report
             </a>
@@ -1311,7 +1670,7 @@
               <h2 class="text-2xl font-bold text-gray-800 flex items-center">
                 <svg class="w-7 h-7 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 Aim
               </h2>
@@ -1319,7 +1678,8 @@
 
             <div class="section-text text-gray-700 leading-relaxed text-lg">
               <p>
-                To study the speed control of a DC shunt motor by armature resistance control method, and plot the graph between the speed and armature voltage by varying the armature resistance.
+                To study the speed control of a DC shunt motor by armature resistance control method, and plot the graph
+                between the speed and armature voltage by varying the armature resistance.
               </p>
             </div>
           </div>
@@ -1338,7 +1698,7 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
               <svg class="w-7 h-7 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
               Pretest
             </h2>
@@ -1351,7 +1711,8 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
               <svg class="w-7 h-7 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                </path>
               </svg>
               Simulation
             </h2>
@@ -1364,7 +1725,7 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
               <svg class="w-7 h-7 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
               Posttest
             </h2>
@@ -1377,7 +1738,8 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
               <svg class="w-7 h-7 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z">
+                </path>
               </svg>
               References
             </h2>
@@ -1390,7 +1752,7 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
               <svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
               </svg>
               Contributor
             </h2>
@@ -1408,13 +1770,8 @@
             <span class="text-sm text-gray-600">Embedded view (opens within this page)</span>
           </div>
           <div class="w-full rounded-xl overflow-hidden border border-gray-200 shadow-inner">
-            <iframe
-              src="progressreport.html"
-              title="Progress Report"
-              class="w-full"
-              style="min-height: 900px;"
-              loading="lazy"
-            ></iframe>
+            <iframe src="progressreport.html" title="Progress Report" class="w-full" style="min-height: 900px;"
+              loading="lazy"></iframe>
           </div>
         </section>
       </main>
@@ -1438,14 +1795,16 @@
             <p class="chatbot-panel-caption">Ask anything about this experiment</p>
           </div>
           <button type="button" class="chatbot-panel-close" aria-label="Close chatbot">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
         </div>
         <div class="chatbot-panel-body">
-          <div class="chatbot-panel-placeholder">Loading area for your chatbot. Update the <strong>data-chat-url</strong> to match your deployment.</div>
+          <div class="chatbot-panel-placeholder">Loading area for your chatbot. Update the
+            <strong>data-chat-url</strong> to match your deployment.</div>
           <iframe title="Chatbot assistant" referrerpolicy="no-referrer" scrolling="no"></iframe>
         </div>
       </div>
@@ -1475,26 +1834,24 @@
 
 
   <!-- INTRO POPUP MODAL (BLUR BACKGROUND) -->
-  <div
-    id="intro-modal"
-    class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
-    data-intro-autoshow="once"
-    style="display: none;"
-  >
+  <div id="intro-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+    data-intro-autoshow="once" style="display: none;">
     <div class="modal-container bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden">
 
       <h3 class="px-4 pt-4">Introduction of DC Shunt Generator Load Characteristics</h3>
 
-      <div id="intro-grid" class="flex-1 w-full grid grid-cols-1 lg:grid-cols-[0.42fr_1.58fr] gap-3 mt-2 min-h-0 px-3 pb-3">
+      <div id="intro-grid"
+        class="flex-1 w-full grid grid-cols-1 lg:grid-cols-[0.42fr_1.58fr] gap-3 mt-2 min-h-0 px-3 pb-3">
         <!-- LEFT PANEL -->
         <div id="intro-left" class="h-full min-h-0">
           <div class="intro-left-card h-full rounded-xl border border-gray-200 bg-white shadow p-3 flex flex-col gap-3">
 
             <div class="flex items-center gap-2 intro-heading">
-              <span class="intro-badge inline-flex items-center justify-center w-8 h-8 rounded-full text-white font-semibold">i</span>
+              <span
+                class="intro-badge inline-flex items-center justify-center w-8 h-8 rounded-full text-white font-semibold">i</span>
               <p class="text-lg font-semibold text-gray-800 mb-0">Experiment Sections</p>
             </div>
-             
+
 
             <ul id="intro-outline">
               <li class="outline-item" data-start="0">Overview</li>
@@ -1512,20 +1869,13 @@
 
         <!-- RIGHT PANEL -->
         <div id="intro-right" class="h-full flex flex-col gap-3 min-h-0">
-          <div
-            id="intro-text"
-            class="space-y-3 text-black text-base leading-relaxed flex-1 overflow-y-auto border rounded-lg p-4 bg-gray-50 shadow-inner min-h-[200px] max-h-full"
-          ></div>
+          <div id="intro-text"
+            class="space-y-3 text-black text-base leading-relaxed flex-1 overflow-y-auto border rounded-lg p-4 bg-gray-50 shadow-inner min-h-[200px] max-h-full">
+          </div>
 
           <div id="intro-video-wrapper">
-            <video
-              id="intro-video"
-              class="w-full object-contain"
-              src="./videos/intro.mp4"
-              preload="auto"
-              muted
-              playsinline
-            >
+            <video id="intro-video" class="w-full object-contain" src="./videos/intro.mp4" preload="auto" muted
+              playsinline>
               Your browser does not support the video tag.
             </video>
           </div>
@@ -1535,11 +1885,9 @@
       <!-- Controls -->
       <div class="controls mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div class="flex items-center gap-2">
-          <button
-            id="intro-play"
+          <button id="intro-play"
             class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50"
-            type="button"
-          >
+            type="button">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
@@ -1548,11 +1896,9 @@
             <span>Play</span>
           </button>
 
-          <button
-            id="intro-pause"
+          <button id="intro-pause"
             class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-gray-400 text-gray-700 hover:bg-gray-100"
-            type="button"
-          >
+            type="button">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd"
                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
@@ -1562,11 +1908,8 @@
           </button>
         </div>
 
-        <button
-          id="intro-skip"
-          type="button"
-          class="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
+        <button id="intro-skip" type="button"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
           <span>Skip & Go to Aim</span>
           <span aria-hidden="true">→</span>
         </button>
@@ -1664,17 +2007,17 @@
   <script>
     const DEFAULT_CUE_LEAD = 0.65; // seconds before narration to reveal text
     const introCues = [
-      { start: 0, end: 18, text: "Welcome to the experiment “To study the speed control of a DC motor by the armature resistance control method.” In this experiment, you will learn how to control the speed of a DC shunt motor using the armature resistance control method and plot a graph between the speed and armature voltage by varying the armature resistance." },
-      { start: 19, end: 42, text: "To guide you throughout the learning process, this experiment is organized into several key sections. We begin with the Aim, which clearly states what you will learn and why the experiment is important. This is followed by the Theory section, where you will find all the essential concepts and foundational knowledge required to understand the working and behavior of a DC shunt generator." },
-      { start: 43, end: 62, text: "Before you proceed to the simulation, the Pretest section helps you evaluate your basic understanding of the topic. Here, you will receive five questions at a time. Each time you click on the Refresh button, a new set of questions will be generated. All your attempted questions will be recorded and reflected in your Progress Report." },
-      { start: 63, end: 87, text: "Next, you can move on to the Procedure section, which outlines the step-by-step instructions required to perform the experiment correctly. The most important part of the experiment is the Simulation section, where you will first see a Demo tab to understand the basic procedure, followed by the actual Simulation tab, where you can use the virtual setup to perform the experiment yourself." },
-      { start: 88, end: 107, text: "After completing the simulation, the Posttest section helps you evaluate your understanding of the experiment. Similar to the Pretest, you will receive five questions at a time, and each time you click on the Refresh button, a new set of questions will be generated. All your attempted questions will be recorded again in your Progress Report." },
-      { start: 108, end: 117, text: "Finally, the References and Contributors sections provide the supporting resources and acknowledge the team involved in the development of this experiment." },
-      { start: 118, end: 134, text: "A Progress Report is also available for you, where you can track your real-time progress throughout the experiment. To access this feature, please enter your details such as name, email ID, and designation in the User Input tab. All your activities across the experiments will be recorded in one place." },
-      { start: 135, end: 154, text: "This report allows you to monitor your learning journey in detail, including your pre-test and post-test performance, such as the number of questions attempted and marks obtained. It also records the total time taken to complete the experiment and provides a detailed simulation summary of your activity." },
-      { start: 155, end: 167, text: "In addition, the Progress Report displays your basic information along with the report date, completing the Progress Report as a comprehensive and personalized record of your experiment." },
-      { start: 168, end: 174, text: "Together, these sections ensure a smooth, structured, and engaging learning experience from start to finish." },
- 
+      { start: 0, end: 18, text: "Welcome to the experiment “To Study the Speed Control of a DC Motor by the Armature Resistance Control Method.” In this experiment, you will learn how to control the speed of a DC motor by varying the armature resistance, and understand how this method affects motor performance and efficiency." },
+      { start: 19, end: 34, text: "To guide you throughout the learning process, this experiment is organized into several key sections. We begin with the Aim, which clearly states the objective of studying the speed control of a DC motor using the armature resistance control method." },
+      { start: 35, end: 50, text: "This is followed by the Theory section, where you will learn the fundamental concepts required to understand DC motor operation, speed control techniques, and the effect of armature resistance on speed, torque, and overall performance." },
+      { start: 51, end: 75, text: "Before proceeding to the simulation, the Pretest section allows you to evaluate your basic understanding of DC motors and speed control methods. In this section, you will receive five questions at a time. Each time you click the Refresh button, a new set of questions will be generated. All attempted questions will be recorded and reflected in your Progress Report." },
+      { start: 76, end: 106, text: "Next, you can move to the Procedure section, which provides step-by-step instructions for conducting the experiment correctly in a virtual environment. The most important part of the experiment is the Simulation section. Here, you will first explore the Demo tab to understand the experimental setup and procedure. After that, you can proceed to the Simulation tab, where you will vary the armature resistance, observe the corresponding change in motor speed, and analyze the performance characteristics." },
+      { start: 107, end: 125, taext: "Once the simulation is completed, the Posttest section helps you assess your understanding of the experiment. Similar to the Pretest, five questions will be provided at a time, and clicking the Refresh button will generate a new set. Your performance will again be recorded in the Progress Report." },
+      { start: 126, end: 134, text: "Finally, the References and Contributors sections provide supporting learning resources and acknowledge the team involved in the development of this experiment." },
+      { start: 135, end: 154, text: "A dedicated Progress Report feature is also available, allowing you to track your real-time performance. To access it, you must enter your details such as name, email ID, and designation in the User Input tab. The system records your activities across all sections of the experiment in one consolidated report." },
+      { start: 155, end: 177, text: "This report provides a detailed overview of your learning journey, including pretest and posttest performance (number of questions attempted and marks obtained), total time spent on the experiment, and a complete simulation activity summary. It also includes your basic information along with the report generation date, making it a comprehensive and personalized academic record." },
+      { start: 178, end: 190, text: "Together, these sections ensure a smooth, structured, and engaging learning experience, helping you clearly understand how the speed of a DC motor can be controlled using the armature resistance method." },
+
     ];
 
     const INTRO_STORAGE_KEY = 'dcShuntIntroShown:aim';
@@ -1719,7 +2062,7 @@
       aimReadyNoticeAudioEl.currentTime = 0;
       const playPromise = aimReadyNoticeAudioEl.play();
       if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => {});
+        playPromise.catch(() => { });
       }
     }
 
@@ -1741,7 +2084,7 @@
 
     function markIntroAsShown() {
       if (!INTRO_STORAGE) return;
-      try { INTRO_STORAGE.setItem(INTRO_STORAGE_KEY, INTRO_STORAGE_VERSION); } catch (error) {}
+      try { INTRO_STORAGE.setItem(INTRO_STORAGE_KEY, INTRO_STORAGE_VERSION); } catch (error) { }
     }
 
     function queueAudioAutoplay() {
@@ -1752,7 +2095,7 @@
         audioAutoplayQueued = false;
         const retry = audioEl.play();
         if (retry && typeof retry.catch === 'function') {
-          retry.catch(() => {});
+          retry.catch(() => { });
         }
       };
 
@@ -1960,7 +2303,7 @@
       if (!videoWrapper || !videoEl) return;
       videoWrapper.classList.remove('hidden');
       videoEl.currentTime = audioEl.currentTime || 0;
-      videoEl.play().catch(() => {});
+      videoEl.play().catch(() => { });
       videoShown = true;
     }
 
@@ -1974,7 +2317,7 @@
         videoEl.currentTime = audioTime;
       }
 
-      if (!audioEl.paused && videoEl.paused) videoEl.play().catch(() => {});
+      if (!audioEl.paused && videoEl.paused) videoEl.play().catch(() => { });
       else if (audioEl.paused && !videoEl.paused) videoEl.pause();
     }
 
@@ -2045,7 +2388,7 @@
       videoEl.addEventListener('play', () => {
         if (audioEl.paused) {
           audioEl.currentTime = videoEl.currentTime;
-          audioEl.play().catch(() => {});
+          audioEl.play().catch(() => { });
         }
         maybeShowVideo(videoEl.currentTime);
       });
@@ -2063,7 +2406,7 @@
       });
     }
 
-    if (playBtn) playBtn.addEventListener('click', () => { audioEl.play().catch(() => {}); });
+    if (playBtn) playBtn.addEventListener('click', () => { audioEl.play().catch(() => { }); });
     if (pauseBtn) pauseBtn.addEventListener('click', () => { audioEl.pause(); });
     if (skipBtn) skipBtn.addEventListener('click', closeIntroModal);
 
@@ -2133,9 +2476,9 @@
         try {
           const maybePromise = notifyAudio.play();
           if (maybePromise && typeof maybePromise.catch === 'function') {
-            maybePromise.catch(function () {});
+            maybePromise.catch(function () { });
           }
-        } catch (e) {}
+        } catch (e) { }
       }
 
       function scheduleAutoOpen() {
@@ -2195,876 +2538,880 @@
       }
     })();
   </script>
-<!-- File: progress_tracker.js -->
-<script>
-(function () {
-  const KEY = "vlab_exp2_progress_v1";
-  const VERSION = 1;
-  const GENERAL_PROGRESS_KEYS = [
-    "vlab_exp2_pretest_score",
-    "vlab_exp2_pretest_total",
-    "vlab_exp2_pretest_updated_at",
-    "vlab_exp2_posttest_score",
-    "vlab_exp2_posttest_total",
-    "vlab_exp2_posttest_updated_at",
-    "vlab_exp2_simulation_report_html",
-    "vlab_exp2_simulation_report_updated_at"
-  ];
+  <!-- File: progress_tracker.js -->
+  <script>
+    (function () {
+      const KEY = "vlab_exp2_progress_v1";
+      const VERSION = 1;
+      const GENERAL_PROGRESS_KEYS = [
+        "vlab_exp2_pretest_score",
+        "vlab_exp2_pretest_total",
+        "vlab_exp2_pretest_updated_at",
+        "vlab_exp2_posttest_score",
+        "vlab_exp2_posttest_total",
+        "vlab_exp2_posttest_updated_at",
+        "vlab_exp2_simulation_report_html",
+        "vlab_exp2_simulation_report_updated_at"
+      ];
 
-  function nowISO() { return new Date().toISOString(); }
-  function normalizeEmail(email) {
-    if (!email || typeof email !== "string") return "";
-    return email.trim().toLowerCase();
-  }
-
-  function computeUserHash(email) {
-    const normalized = normalizeEmail(email);
-    if (!normalized) return "";
-
-    let hash = 0;
-    for (let i = 0; i < normalized.length; i += 1) {
-      hash = ((hash << 5) - hash) + normalized.charCodeAt(i);
-      hash |= 0;
-    }
-    return `u${(hash >>> 0).toString(16).padStart(8, "0")}`;
-  }
-
-  function clearGeneralProgressKeys() {
-    if (typeof localStorage === "undefined") return;
-    try {
-      for (const key of GENERAL_PROGRESS_KEYS) {
-        localStorage.removeItem(key);
+      function nowISO() { return new Date().toISOString(); }
+      function normalizeEmail(email) {
+        if (!email || typeof email !== "string") return "";
+        return email.trim().toLowerCase();
       }
-    } catch {
-      // ignore storage failures
-    }
-  }
 
-  function migrateGeneralProgressKeysToUser(userHash) {
-    if (!userHash || typeof localStorage === "undefined") return;
-    try {
-      let movedAny = false;
-      const prefix = `vlab_exp2_user_${userHash}_`;
-      for (const key of GENERAL_PROGRESS_KEYS) {
-        const value = localStorage.getItem(key);
-        if (!value || !String(value).trim()) continue;
+      function computeUserHash(email) {
+        const normalized = normalizeEmail(email);
+        if (!normalized) return "";
 
-        const suffix = key.replace(/^vlab_exp2_/, "");
-        const destKey = prefix + suffix;
-        const existing = localStorage.getItem(destKey);
-        if (!existing || !String(existing).trim()) {
-          localStorage.setItem(destKey, value);
+        let hash = 0;
+        for (let i = 0; i < normalized.length; i += 1) {
+          hash = ((hash << 5) - hash) + normalized.charCodeAt(i);
+          hash |= 0;
         }
-        movedAny = true;
+        return `u${(hash >>> 0).toString(16).padStart(8, "0")}`;
       }
 
-      if (movedAny) {
-        clearGeneralProgressKeys();
+      function clearGeneralProgressKeys() {
+        if (typeof localStorage === "undefined") return;
+        try {
+          for (const key of GENERAL_PROGRESS_KEYS) {
+            localStorage.removeItem(key);
+          }
+        } catch {
+          // ignore storage failures
+        }
       }
-    } catch {
-      // ignore storage failures
-    }
-  }
 
-  function ensureHistory(state) {
-    if (!Array.isArray(state.userHistory)) state.userHistory = [];
-  }
+      function migrateGeneralProgressKeysToUser(userHash) {
+        if (!userHash || typeof localStorage === "undefined") return;
+        try {
+          let movedAny = false;
+          const prefix = `vlab_exp2_user_${userHash}_`;
+          for (const key of GENERAL_PROGRESS_KEYS) {
+            const value = localStorage.getItem(key);
+            if (!value || !String(value).trim()) continue;
 
-  function findHistoryEntry(state, normalizedEmail) {
-    if (!normalizedEmail) return null;
-    ensureHistory(state);
-    return state.userHistory.find(entry => entry.email === normalizedEmail) || null;
-  }
+            const suffix = key.replace(/^vlab_exp2_/, "");
+            const destKey = prefix + suffix;
+            const existing = localStorage.getItem(destKey);
+            if (!existing || !String(existing).trim()) {
+              localStorage.setItem(destKey, value);
+            }
+            movedAny = true;
+          }
 
-  function safeJSONParse(s, fallback) { try { return JSON.parse(s); } catch { return fallback; } }
+          if (movedAny) {
+            clearGeneralProgressKeys();
+          }
+        } catch {
+          // ignore storage failures
+        }
+      }
 
-  function loadState() {
-    const raw = localStorage.getItem(KEY);
-    const base = {
-      version: VERSION,
-      user: null,
-      flags: { reportDeclined: false },
-      timestamps: {
-        sessionStart: null,
-        aimAfterIntro: null,
-        simulationStart: null,
-        contributorsVisited: null,
-        reportViewedAt: null
-      },
-      pages: {},           // { "aim.html": { firstEnter, lastExit, timeMs, visits } }
-      steps: [],           // [{ name, ts, meta }]
-      userHistory: []
-    };
-    if (!raw) return base;
+      function ensureHistory(state) {
+        if (!Array.isArray(state.userHistory)) state.userHistory = [];
+      }
 
-    const parsed = safeJSONParse(raw, base);
-    if (!parsed || typeof parsed !== "object") return base;
-    if (!parsed.flags) parsed.flags = { reportDeclined: false };
-    if (!parsed.timestamps) parsed.timestamps = base.timestamps;
-    if (!parsed.pages) parsed.pages = {};
-    if (!parsed.steps) parsed.steps = [];
-    if (!Array.isArray(parsed.userHistory)) parsed.userHistory = [];
-    return { ...base, ...parsed };
-  }
+      function findHistoryEntry(state, normalizedEmail) {
+        if (!normalizedEmail) return null;
+        ensureHistory(state);
+        return state.userHistory.find(entry => entry.email === normalizedEmail) || null;
+      }
 
-  function recordUserHistory(state, user) {
-    const normalizedEmail = normalizeEmail(user && user.email);
-    if (!normalizedEmail) return false;
-    ensureHistory(state);
+      function safeJSONParse(s, fallback) { try { return JSON.parse(s); } catch { return fallback; } }
 
-    const now = nowISO();
-    const existing = findHistoryEntry(state, normalizedEmail);
-    if (existing) {
-      existing.name = (user && user.name) ? user.name.trim() : "";
-      existing.designation = (user && user.designation) ? user.designation.trim() : "";
-      existing.lastSeen = now;
-      return false;
-    }
+      function loadState() {
+        const raw = localStorage.getItem(KEY);
+        const base = {
+          version: VERSION,
+          user: null,
+          flags: { reportDeclined: false },
+          timestamps: {
+            sessionStart: null,
+            aimAfterIntro: null,
+            simulationStart: null,
+            contributorsVisited: null,
+            reportViewedAt: null
+          },
+          pages: {},           // { "aim.html": { firstEnter, lastExit, timeMs, visits } }
+          steps: [],           // [{ name, ts, meta }]
+          userHistory: []
+        };
+        if (!raw) return base;
 
-    state.userHistory.push({
-      email: normalizedEmail,
-      name: (user && user.name) ? user.name.trim() : "",
-      designation: (user && user.designation) ? user.designation.trim() : "",
-      firstSeen: now,
-      lastSeen: now
-    });
-    return true;
-  }
+        const parsed = safeJSONParse(raw, base);
+        if (!parsed || typeof parsed !== "object") return base;
+        if (!parsed.flags) parsed.flags = { reportDeclined: false };
+        if (!parsed.timestamps) parsed.timestamps = base.timestamps;
+        if (!parsed.pages) parsed.pages = {};
+        if (!parsed.steps) parsed.steps = [];
+        if (!Array.isArray(parsed.userHistory)) parsed.userHistory = [];
+        return { ...base, ...parsed };
+      }
 
-  function findUserByEmail(email) {
-    const state = loadState();
-    const normalizedEmail = normalizeEmail(email);
-    const entry = findHistoryEntry(state, normalizedEmail);
-    return entry ? Object.assign({}, entry) : null;
-  }
+      function recordUserHistory(state, user) {
+        const normalizedEmail = normalizeEmail(user && user.email);
+        if (!normalizedEmail) return false;
+        ensureHistory(state);
 
-  function isUserEmailNew(email) {
-    return !findUserByEmail(email);
-  }
+        const now = nowISO();
+        const existing = findHistoryEntry(state, normalizedEmail);
+        if (existing) {
+          existing.name = (user && user.name) ? user.name.trim() : "";
+          existing.designation = (user && user.designation) ? user.designation.trim() : "";
+          existing.lastSeen = now;
+          return false;
+        }
 
-  function saveState(state) {
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
-  }
+        state.userHistory.push({
+          email: normalizedEmail,
+          name: (user && user.name) ? user.name.trim() : "",
+          designation: (user && user.designation) ? user.designation.trim() : "",
+          firstSeen: now,
+          lastSeen: now
+        });
+        return true;
+      }
 
-  function pageNameFromURL() {
-    const p = window.location.pathname.split("/").pop();
-    return p || "index.html";
-  }
+      function findUserByEmail(email) {
+        const state = loadState();
+        const normalizedEmail = normalizeEmail(email);
+        const entry = findHistoryEntry(state, normalizedEmail);
+        return entry ? Object.assign({}, entry) : null;
+      }
 
-  function ensureSessionStart(state) {
-    if (!state.timestamps.sessionStart) state.timestamps.sessionStart = nowISO();
-  }
+      function isUserEmailNew(email) {
+        return !findUserByEmail(email);
+      }
 
-  function formatMs(ms) {
-    const s = Math.max(0, Math.floor(ms / 1000));
-    const hh = String(Math.floor(s / 3600)).padStart(2, "0");
-    const mm = String(Math.floor((s % 3600) / 60)).padStart(2, "0");
-    const ss = String(s % 60).padStart(2, "0");
-    return `${hh}:${mm}:${ss}`;
-  }
+      function saveState(state) {
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { }
+      }
 
-  function initPage() {
-    const state = loadState();
-    ensureSessionStart(state);
+      function pageNameFromURL() {
+        const p = window.location.pathname.split("/").pop();
+        return p || "index.html";
+      }
 
-    const page = pageNameFromURL();
-    const pageRec = state.pages[page] || { firstEnter: null, lastExit: null, timeMs: 0, visits: 0 };
+      function ensureSessionStart(state) {
+        if (!state.timestamps.sessionStart) state.timestamps.sessionStart = nowISO();
+      }
 
-    if (!pageRec.firstEnter) pageRec.firstEnter = nowISO();
-    pageRec.visits += 1;
+      function formatMs(ms) {
+        const s = Math.max(0, Math.floor(ms / 1000));
+        const hh = String(Math.floor(s / 3600)).padStart(2, "0");
+        const mm = String(Math.floor((s % 3600) / 60)).padStart(2, "0");
+        const ss = String(s % 60).padStart(2, "0");
+        return `${hh}:${mm}:${ss}`;
+      }
 
-    state.pages[page] = pageRec;
-    saveState(state);
+      function initPage() {
+        const state = loadState();
+        ensureSessionStart(state);
 
-    // store enter time in sessionStorage to compute time-on-page
-    try {
-      sessionStorage.setItem("vlab_exp2_current_page", page);
-      sessionStorage.setItem("vlab_exp2_page_enter_ms", String(Date.now()));
-    } catch {}
+        const page = pageNameFromURL();
+        const pageRec = state.pages[page] || { firstEnter: null, lastExit: null, timeMs: 0, visits: 0 };
 
-    // helpful special timestamps
-    if (page === "aim.html" && !state.timestamps.aimAfterIntro) {
-      // aimAfterIntro is set when intro closes (we set it from aim.html),
-      // but if intro doesn't show, at least we have sessionStart + page time tracking.
-    }
-    if (page === "contributors.html" && !state.timestamps.contributorsVisited) {
-      state.timestamps.contributorsVisited = nowISO();
-      saveState(state);
-    }
-    if (page === "index.html" && window.location.pathname.includes("/simulation/")) {
-      if (!state.timestamps.simulationStart) {
-        state.timestamps.simulationStart = nowISO();
+        if (!pageRec.firstEnter) pageRec.firstEnter = nowISO();
+        pageRec.visits += 1;
+
+        state.pages[page] = pageRec;
+        saveState(state);
+
+        // store enter time in sessionStorage to compute time-on-page
+        try {
+          sessionStorage.setItem("vlab_exp2_current_page", page);
+          sessionStorage.setItem("vlab_exp2_page_enter_ms", String(Date.now()));
+        } catch { }
+
+        // helpful special timestamps
+        if (page === "aim.html" && !state.timestamps.aimAfterIntro) {
+          // aimAfterIntro is set when intro closes (we set it from aim.html),
+          // but if intro doesn't show, at least we have sessionStart + page time tracking.
+        }
+        if (page === "contributors.html" && !state.timestamps.contributorsVisited) {
+          state.timestamps.contributorsVisited = nowISO();
+          saveState(state);
+        }
+        if (page === "index.html" && window.location.pathname.includes("/simulation/")) {
+          if (!state.timestamps.simulationStart) {
+            state.timestamps.simulationStart = nowISO();
+            saveState(state);
+          }
+        }
+      }
+
+      function recordPageExit() {
+        const state = loadState();
+        const page = (() => {
+          try { return sessionStorage.getItem("vlab_exp2_current_page") || pageNameFromURL(); }
+          catch { return pageNameFromURL(); }
+        })();
+
+        let enterMs = null;
+        try {
+          const s = sessionStorage.getItem("vlab_exp2_page_enter_ms");
+          enterMs = s ? Number(s) : null;
+        } catch { }
+
+        const nowMs = Date.now();
+        const delta = (enterMs && Number.isFinite(enterMs)) ? (nowMs - enterMs) : 0;
+
+        const pageRec = state.pages[page] || { firstEnter: null, lastExit: null, timeMs: 0, visits: 0 };
+        pageRec.timeMs = (pageRec.timeMs || 0) + Math.max(0, delta);
+        pageRec.lastExit = nowISO();
+
+        state.pages[page] = pageRec;
         saveState(state);
       }
-    }
-  }
 
-  function recordPageExit() {
-    const state = loadState();
-    const page = (() => {
-      try { return sessionStorage.getItem("vlab_exp2_current_page") || pageNameFromURL(); }
-      catch { return pageNameFromURL(); }
+      function logStep(name, meta = {}) {
+        const state = loadState();
+        ensureSessionStart(state);
+        state.steps.push({ name, ts: nowISO(), meta });
+        saveState(state);
+      }
+
+      function setUser(user) {
+        const trimmedUser = {
+          name: (user.name || "").trim(),
+          email: (user.email || "").trim(),
+          designation: (user.designation || "").trim()
+        };
+        const normalizedEmail = normalizeEmail(trimmedUser.email);
+        const newHash = normalizedEmail ? computeUserHash(normalizedEmail) : "";
+        let prevHash = "";
+        try { prevHash = localStorage.getItem("vlab_exp2_active_user_hash") || ""; } catch { }
+
+        const state = loadState();
+        const isNewUserByEmail = recordUserHistory(state, trimmedUser);
+
+        state.user = {
+          name: trimmedUser.name,
+          email: trimmedUser.email,
+          designation: trimmedUser.designation,
+          submittedAt: nowISO()
+        };
+        // once user fills form, allow report again
+        state.flags.reportDeclined = false;
+
+        try {
+          if (newHash) {
+            localStorage.setItem("vlab_exp2_active_user_hash", newHash);
+          } else {
+            localStorage.removeItem("vlab_exp2_active_user_hash");
+          }
+        } catch {
+          // ignore storage errors
+        }
+
+        // If user details are filled after completing parts of the experiment,
+        // migrate the general keys into the user-scoped keys so the Progress Report
+        // still shows the recorded results.
+        if (isNewUserByEmail && newHash) {
+          if (!prevHash) {
+            migrateGeneralProgressKeysToUser(newHash);
+          } else if (prevHash && prevHash !== newHash) {
+            clearGeneralProgressKeys();
+          }
+        } else if (newHash) {
+          migrateGeneralProgressKeysToUser(newHash);
+        }
+
+        saveState(state);
+      }
+
+      function hasUser() {
+        const state = loadState();
+        return !!(state.user && state.user.name && state.user.email && state.user.designation);
+      }
+
+      function declineReport() {
+        const state = loadState();
+        state.flags.reportDeclined = true;
+        saveState(state);
+      }
+
+      function clearDecline() {
+        const state = loadState();
+        state.flags.reportDeclined = false;
+        saveState(state);
+      }
+
+      function mark(key) {
+        const state = loadState();
+        state.timestamps[key] = nowISO();
+        saveState(state);
+      }
+
+      function markReportViewed() {
+        const state = loadState();
+        if (!state.timestamps.reportViewedAt) state.timestamps.reportViewedAt = nowISO();
+        saveState(state);
+      }
+
+      function resetAll() {
+        try { localStorage.removeItem(KEY); } catch { }
+        try {
+          sessionStorage.removeItem("vlab_exp2_current_page");
+          sessionStorage.removeItem("vlab_exp2_page_enter_ms");
+        } catch { }
+      }
+
+      // attach exit handlers
+      window.addEventListener("pagehide", recordPageExit);
+      window.addEventListener("beforeunload", recordPageExit);
+
+      // expose API
+      window.VLProgress = {
+        initPage,
+        recordPageExit,
+        logStep,
+        setUser,
+        hasUser,
+        declineReport,
+        clearDecline,
+        mark,
+        markReportViewed,
+        getState: loadState,
+        saveState,
+        formatMs,
+        findUserByEmail,
+        isUserEmailNew,
+        resetAll
+      };
     })();
-
-    let enterMs = null;
-    try {
-      const s = sessionStorage.getItem("vlab_exp2_page_enter_ms");
-      enterMs = s ? Number(s) : null;
-    } catch {}
-
-    const nowMs = Date.now();
-    const delta = (enterMs && Number.isFinite(enterMs)) ? (nowMs - enterMs) : 0;
-
-    const pageRec = state.pages[page] || { firstEnter: null, lastExit: null, timeMs: 0, visits: 0 };
-    pageRec.timeMs = (pageRec.timeMs || 0) + Math.max(0, delta);
-    pageRec.lastExit = nowISO();
-
-    state.pages[page] = pageRec;
-    saveState(state);
-  }
-
-  function logStep(name, meta = {}) {
-    const state = loadState();
-    ensureSessionStart(state);
-    state.steps.push({ name, ts: nowISO(), meta });
-    saveState(state);
-  }
-
-  function setUser(user) {
-    const trimmedUser = {
-      name: (user.name || "").trim(),
-      email: (user.email || "").trim(),
-      designation: (user.designation || "").trim()
-    };
-    const normalizedEmail = normalizeEmail(trimmedUser.email);
-    const newHash = normalizedEmail ? computeUserHash(normalizedEmail) : "";
-    let prevHash = "";
-    try { prevHash = localStorage.getItem("vlab_exp2_active_user_hash") || ""; } catch {}
-
-    const state = loadState();
-    const isNewUserByEmail = recordUserHistory(state, trimmedUser);
-
-    state.user = {
-      name: trimmedUser.name,
-      email: trimmedUser.email,
-      designation: trimmedUser.designation,
-      submittedAt: nowISO()
-    };
-    // once user fills form, allow report again
-    state.flags.reportDeclined = false;
-
-    try {
-      if (newHash) {
-        localStorage.setItem("vlab_exp2_active_user_hash", newHash);
-      } else {
-        localStorage.removeItem("vlab_exp2_active_user_hash");
-      }
-    } catch {
-      // ignore storage errors
-    }
-
-    // If user details are filled after completing parts of the experiment,
-    // migrate the general keys into the user-scoped keys so the Progress Report
-    // still shows the recorded results.
-    if (isNewUserByEmail && newHash) {
-      if (!prevHash) {
-        migrateGeneralProgressKeysToUser(newHash);
-      } else if (prevHash && prevHash !== newHash) {
-        clearGeneralProgressKeys();
-      }
-    } else if (newHash) {
-      migrateGeneralProgressKeysToUser(newHash);
-    }
-
-    saveState(state);
-  }
-
-  function hasUser() {
-    const state = loadState();
-    return !!(state.user && state.user.name && state.user.email && state.user.designation);
-  }
-
-  function declineReport() {
-    const state = loadState();
-    state.flags.reportDeclined = true;
-    saveState(state);
-  }
-
-  function clearDecline() {
-    const state = loadState();
-    state.flags.reportDeclined = false;
-    saveState(state);
-  }
-
-  function mark(key) {
-    const state = loadState();
-    state.timestamps[key] = nowISO();
-    saveState(state);
-  }
-
-  function markReportViewed() {
-    const state = loadState();
-    if (!state.timestamps.reportViewedAt) state.timestamps.reportViewedAt = nowISO();
-    saveState(state);
-  }
-
-  function resetAll() {
-    try { localStorage.removeItem(KEY); } catch {}
-    try {
-      sessionStorage.removeItem("vlab_exp2_current_page");
-      sessionStorage.removeItem("vlab_exp2_page_enter_ms");
-    } catch {}
-  }
-
-  // attach exit handlers
-  window.addEventListener("pagehide", recordPageExit);
-  window.addEventListener("beforeunload", recordPageExit);
-
-  // expose API
-  window.VLProgress = {
-    initPage,
-    recordPageExit,
-    logStep,
-    setUser,
-    hasUser,
-    declineReport,
-    clearDecline,
-    mark,
-    markReportViewed,
-    getState: loadState,
-    saveState,
-    formatMs,
-    findUserByEmail,
-    isUserEmailNew,
-    resetAll
-  };
-})();
-</script>
-<!-- USER FORM PROMPT MODAL -->
-<div id="userFormPrompt"
-     class="fixed inset-0 hidden items-center justify-center z-[99999] bg-black/60 p-4">
-  <div class="w-full max-w-lg rounded-2xl bg-white shadow-xl border border-gray-200 p-6">
-    <h3 class="text-xl font-bold text-gray-900">Important Note</h3>
-    <p class="text-gray-700 mt-2">
-      If you want to generate a progress report, first you have to fill your details in the user form.
-    </p>
-    <div class="mt-5 flex justify-end gap-3">
-      <button id="promptNo"
-              class="px-4 py-2 rounded-lg border border-gray-300 font-semibold text-gray-700 hover:bg-gray-100">
-        NO
-      </button>
-      <button id="promptYes"
-              class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700">
-        YES
-      </button>
+  </script>
+  <!-- USER FORM PROMPT MODAL -->
+  <div id="userFormPrompt" class="fixed inset-0 hidden items-center justify-center z-[99999] bg-black/60 p-4">
+    <div class="w-full max-w-lg rounded-2xl bg-white shadow-xl border border-gray-200 p-6">
+      <h3 class="text-xl font-bold text-gray-900">Important Note</h3>
+      <p class="text-gray-700 mt-2">
+        If you want to generate a progress report, first you have to fill your details in the user form.
+      </p>
+      <div class="mt-5 flex justify-end gap-3">
+        <button id="promptNo"
+          class="px-4 py-2 rounded-lg border border-gray-300 font-semibold text-gray-700 hover:bg-gray-100">
+          NO
+        </button>
+        <button id="promptYes" class="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700">
+          YES
+        </button>
+      </div>
     </div>
   </div>
-</div>
-<div id="userInputModal" class="hidden fixed inset-0 z-[100000] bg-black/60 px-4 py-8 items-center justify-center">
-  <div class="relative w-full max-w-4xl h-[85vh] bg-white shadow-2xl rounded-3xl overflow-hidden border border-slate-200">
-    <div class="flex items-center justify-between px-5 py-3 border-b border-slate-200 bg-gradient-to-r from-[#f8fbff] to-[#eef5ff]">
-      <div class="flex items-center gap-3">
-        <div id="userInputModalAvatar"
-             class="h-11 w-11 rounded-full bg-gradient-to-br from-[#021a2c] to-[#0b60a8] text-white font-extrabold flex items-center justify-center shadow-md ring-2 ring-white/80"
-             aria-hidden="true">
-          U
-        </div>
-        <div class="leading-tight">
-          
-          <div class="flex items-center gap-2">
-            <span id="userInputModalName" class="text-base font-bold text-slate-900">User Input Form</span>
-            <span id="userInputModalDesignation" class="hidden text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-900/5 text-slate-700 border border-slate-200"></span>
+  <div id="userInputModal" class="hidden fixed inset-0 z-[100000] bg-black/60 px-4 py-8 items-center justify-center">
+    <div
+      class="relative w-full max-w-4xl h-[85vh] bg-white shadow-2xl rounded-3xl overflow-hidden border border-slate-200">
+      <div
+        class="flex items-center justify-between px-5 py-3 border-b border-slate-200 bg-gradient-to-r from-[#f8fbff] to-[#eef5ff]">
+        <div class="flex items-center gap-3">
+          <div id="userInputModalAvatar"
+            class="h-11 w-11 rounded-full bg-gradient-to-br from-[#021a2c] to-[#0b60a8] text-white font-extrabold flex items-center justify-center shadow-md ring-2 ring-white/80"
+            aria-hidden="true">
+            U
+          </div>
+          <div class="leading-tight">
+
+            <div class="flex items-center gap-2">
+              <span id="userInputModalName" class="text-base font-bold text-slate-900">User Input Form</span>
+              <span id="userInputModalDesignation"
+                class="hidden text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-900/5 text-slate-700 border border-slate-200"></span>
+            </div>
           </div>
         </div>
+        <button id="userInputModalClose" type="button"
+          class="text-slate-600 hover:text-slate-900 rounded-full focus:outline-none">
+          <span aria-hidden="true" class="text-2xl leading-none">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
       </div>
-      <button id="userInputModalClose" type="button" class="text-slate-600 hover:text-slate-900 rounded-full focus:outline-none">
-        <span aria-hidden="true" class="text-2xl leading-none">&times;</span>
-        <span class="sr-only">Close</span>
-      </button>
+      <iframe id="userInputIframe" class="w-full h-full border-0" src="" title="User Input Form"></iframe>
     </div>
-    <iframe id="userInputIframe" class="w-full h-full border-0" src="" title="User Input Form"></iframe>
   </div>
-</div>
-<div id="aimAlertModal" class="modal" role="alertdialog" aria-modal="true" aria-labelledby="aimAlertTitle" aria-describedby="aimAlertMessage">
-  <div class="modal-box" role="document">
-    <h2 id="aimAlertTitle">Alert</h2>
-    <p id="aimAlertMessage"></p>
-    <button type="button" class="modal-close-btn" data-aim-alert-close>OK</button>
+  <div id="aimAlertModal" class="modal" role="alertdialog" aria-modal="true" aria-labelledby="aimAlertTitle"
+    aria-describedby="aimAlertMessage">
+    <div class="modal-box" role="document">
+      <h2 id="aimAlertTitle">Alert</h2>
+      <p id="aimAlertMessage"></p>
+      <button type="button" class="modal-close-btn" data-aim-alert-close>OK</button>
+    </div>
   </div>
-</div>
-<script src="./progress_tracker.js"></script>
+  <script src="./progress_tracker.js"></script>
 
-<script>
-(function () {
-  if (!window.VLProgress) return;
+  <script>
+    (function () {
+      if (!window.VLProgress) return;
 
-  // track this page time
-  VLProgress.initPage();
+      // track this page time
+      VLProgress.initPage();
 
-  // expose for intro script to call after intro closes
-  window.maybePromptUserForm = function maybePromptUserForm() {
-    const st = VLProgress.getState();
-    if (VLProgress.hasUser()) return;                  // already filled
-    if (st.flags && st.flags.reportDeclined) return;    // user said NO
+      // expose for intro script to call after intro closes
+      window.maybePromptUserForm = function maybePromptUserForm() {
+        const st = VLProgress.getState();
+        if (VLProgress.hasUser()) return;                  // already filled
+        if (st.flags && st.flags.reportDeclined) return;    // user said NO
 
-    // show prompt once per session load
-    const sessionKey = "vlab_exp2_prompted_once";
-    try {
-      if (sessionStorage.getItem(sessionKey) === "1") return;
-      sessionStorage.setItem(sessionKey, "1");
-    } catch {}
-
-    openPrompt();
-  };
-
-  const modal = document.getElementById("userFormPrompt");
-  const yesBtn = document.getElementById("promptYes");
-  const noBtn  = document.getElementById("promptNo");
-  const AIM_USER_FORM_PROMPT_AUDIO_SRC = "./audio/userinput.wav";
-  const AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE =
-    "To access the progress report, first fill out the user form and generate the simulation report by performing the experiment.";
-  const AIM_PROGRESS_REPORT_ACCESS_ALERT_USER_ONLY_MESSAGE =
-    "Please fill out the user form to access the progress report.";
-  const AIM_PROGRESS_REPORT_ACCESS_ALERT_SIM_ONLY_MESSAGE =
-    "Please generate the simulation report by performing the experiment.";
-  const AIM_PROGRESS_REPORT_ACCESS_ALERT_AUDIO_SRC = "./audio/progressreportalert.wav";
-  let aimUserFormPromptAudioEl = null;
-  let aimProgressReportAccessAlertAudioEl = null;
-
-  function playAimUserFormPromptAudio() {
-    if (!AIM_USER_FORM_PROMPT_AUDIO_SRC) return;
-    if (!aimUserFormPromptAudioEl) {
-      aimUserFormPromptAudioEl = new Audio(AIM_USER_FORM_PROMPT_AUDIO_SRC);
-      aimUserFormPromptAudioEl.preload = "auto";
-    }
-    aimUserFormPromptAudioEl.currentTime = 0;
-    const playPromise = aimUserFormPromptAudioEl.play();
-    if (playPromise && typeof playPromise.catch === "function") {
-      playPromise.catch(() => {});
-    }
-  }
-
-  function stopAimUserFormPromptAudio() {
-    if (!aimUserFormPromptAudioEl) return;
-    aimUserFormPromptAudioEl.pause();
-    aimUserFormPromptAudioEl.currentTime = 0;
-  }
-
-  function getAimProgressReportAccessAlertMessage(needUser, needSim) {
-    if (window.VLProgress && typeof window.VLProgress.getProgressReportBlockMessage === "function") {
-      const mapped = window.VLProgress.getProgressReportBlockMessage(needUser, needSim);
-      if (String(mapped || "").trim()) return String(mapped).trim();
-    }
-    if (needUser && needSim) return AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE;
-    if (needUser) return AIM_PROGRESS_REPORT_ACCESS_ALERT_USER_ONLY_MESSAGE;
-    if (needSim) return AIM_PROGRESS_REPORT_ACCESS_ALERT_SIM_ONLY_MESSAGE;
-    return AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE;
-  }
-
-  function playAimProgressReportAccessAlertAudio(message) {
-    const normalizedMessage = String(message || "").trim();
-    if (normalizedMessage !== AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE) return;
-    if (!AIM_PROGRESS_REPORT_ACCESS_ALERT_AUDIO_SRC) return;
-    if (!aimProgressReportAccessAlertAudioEl) {
-      aimProgressReportAccessAlertAudioEl = new Audio(AIM_PROGRESS_REPORT_ACCESS_ALERT_AUDIO_SRC);
-      aimProgressReportAccessAlertAudioEl.preload = "auto";
-    }
-    aimProgressReportAccessAlertAudioEl.currentTime = 0;
-    const playPromise = aimProgressReportAccessAlertAudioEl.play();
-    if (playPromise && typeof playPromise.catch === "function") {
-      playPromise.catch(() => {});
-    }
-  }
-
-  function stopAimProgressReportAccessAlertAudio() {
-    if (!aimProgressReportAccessAlertAudioEl) return;
-    aimProgressReportAccessAlertAudioEl.pause();
-    aimProgressReportAccessAlertAudioEl.currentTime = 0;
-  }
-
-  function openPrompt() {
-    if (!modal) return;
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    playAimUserFormPromptAudio();
-  }
-
-  function closePrompt() {
-    stopAimUserFormPromptAudio();
-    if (!modal) return;
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-  }
-
-  const userInputModal = document.getElementById("userInputModal");
-  const userInputIframe = document.getElementById("userInputIframe");
-  const userInputModalClose = document.getElementById("userInputModalClose");
-  const userInputNavLink = document.querySelector("[data-user-input-link]");
-  const userInputNavAvatar = userInputNavLink?.querySelector("[data-user-avatar]");
-  const userInputNavText = userInputNavLink?.querySelector("[data-user-text]");
-  const userInputModalAvatar = document.getElementById("userInputModalAvatar");
-  const userInputModalName = document.getElementById("userInputModalName");
-  const userInputModalDesignation = document.getElementById("userInputModalDesignation");
-  const aimAlertModal = document.getElementById("aimAlertModal");
-  const aimAlertTitle = document.getElementById("aimAlertTitle");
-  const aimAlertMessage = document.getElementById("aimAlertMessage");
-  const aimAlertClose = aimAlertModal?.querySelector("[data-aim-alert-close]");
-  let aimAlertOnClose = null;
-
-  const defaultUserInputNavLabel = "User Input";
-
-  function getFirstName(fullName) {
-    if (!fullName || typeof fullName !== "string") return "";
-    const trimmed = fullName.trim();
-    if (!trimmed) return "";
-    return trimmed.split(/\s+/)[0];
-  }
-
-  function pickUserColors(seed) {
-    const palettes = [
-      ["#0b60a8", "#021a2c"],
-      ["#2563eb", "#0b60a8"],
-      ["#0ea5e9", "#0369a1"],
-      ["#22c55e", "#14532d"],
-      ["#f97316", "#c2410c"]
-    ];
-    const key = (seed || "user").toLowerCase();
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash = (hash * 31 + key.charCodeAt(i)) & 0xffffffff;
-    }
-    const idx = Math.abs(hash) % palettes.length;
-    return palettes[idx];
-  }
-
-  function paintAvatar(el, seed, fallbackInitial = "U") {
-    if (!el) return;
-    const [c1, c2] = pickUserColors(seed);
-    const initial = (seed && seed[0] ? seed[0] : fallbackInitial).toUpperCase();
-    el.textContent = initial;
-    el.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
-  }
-
-  function refreshUserInputModalBadge(firstName, designation) {
-    if (userInputModalName) {
-      userInputModalName.textContent = firstName || "User Input Form";
-    }
-    if (userInputModalAvatar) {
-      paintAvatar(userInputModalAvatar, firstName || "User");
-    }
-    if (userInputModalDesignation) {
-      if (designation) {
-        userInputModalDesignation.textContent = designation;
-        userInputModalDesignation.classList.remove("hidden");
-      } else {
-        userInputModalDesignation.textContent = "";
-        userInputModalDesignation.classList.add("hidden");
-      }
-    }
-  }
-
-  function refreshUserInputNavLabel() {
-    const state = VLProgress.getState();
-    const firstName = getFirstName(state.user?.name);
-    const designation = (state.user?.designation || "").trim();
-
-    if (userInputNavText) {
-      userInputNavText.textContent = firstName || defaultUserInputNavLabel;
-    } else if (userInputNavLink) {
-      userInputNavLink.textContent = firstName || defaultUserInputNavLabel;
-    }
-
-    if (userInputNavAvatar) {
-      if (firstName) {
-        paintAvatar(userInputNavAvatar, firstName, "U");
-      } else {
-        userInputNavAvatar.textContent = "UI";
-        userInputNavAvatar.style.background = "linear-gradient(135deg, #94a3b8, #475569)";
-      }
-    }
-
-    if (userInputNavLink) {
-      if (firstName) {
-        userInputNavLink.setAttribute("title", state.user?.name || firstName);
-        userInputNavLink.classList.add("nav-user-link-active");
-      } else {
-        userInputNavLink.removeAttribute("title");
-        userInputNavLink.classList.remove("nav-user-link-active");
-      }
-    }
-
-    refreshUserInputModalBadge(firstName, designation);
-  }
-
-  function openUserInputModal(returnUrl = "aim.html") {
-    if (!userInputModal || !userInputIframe) return;
-    refreshUserInputNavLabel();
-    const params = new URLSearchParams();
-    if (returnUrl) params.set("return", returnUrl);
-    userInputIframe.src = `user_input.html${params.toString() ? `?${params}` : ""}`;
-    userInputModal.classList.remove("hidden");
-    userInputModal.classList.add("flex");
-    document.body.classList.add("overflow-hidden");
-  }
-
-  function closeUserInputModal() {
-    if (!userInputModal) return;
-    userInputModal.classList.add("hidden");
-    userInputModal.classList.remove("flex");
-    document.body.classList.remove("overflow-hidden");
-    if (userInputIframe) {
-      userInputIframe.src = "about:blank";
-    }
-  }
-
-  function showAimAlert(message, title = "Notice", onClose = null) {
-    if (!aimAlertModal) {
-      alert(message);
-      if (typeof onClose === "function") onClose();
-      return;
-    }
-    if (aimAlertTitle) aimAlertTitle.textContent = title;
-    if (aimAlertMessage) aimAlertMessage.textContent = message;
-    aimAlertOnClose = typeof onClose === "function" ? onClose : null;
-    aimAlertModal.classList.add("show");
-    document.body.classList.add("is-modal-open");
-    aimAlertClose?.focus?.();
-    playAimProgressReportAccessAlertAudio(message);
-  }
-
-  window.showAimAlert = showAimAlert;
-
-  function closeAimAlert() {
-    stopAimProgressReportAccessAlertAudio();
-    if (typeof window.stopAimReadyNoticeAudio === "function") {
-      window.stopAimReadyNoticeAudio();
-    }
-    if (!aimAlertModal) return;
-    aimAlertModal.classList.remove("show");
-    document.body.classList.remove("is-modal-open");
-    if (aimAlertOnClose) {
-      const callback = aimAlertOnClose;
-      aimAlertOnClose = null;
-      callback();
-    }
-  }
-
-  if (aimAlertClose) {
-    aimAlertClose.addEventListener("click", closeAimAlert);
-  }
-
-  aimAlertModal?.addEventListener("click", (event) => {
-    if (event.target === aimAlertModal) closeAimAlert();
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && aimAlertModal?.classList.contains("show")) {
-      closeAimAlert();
-    }
-  });
-
-  if (userInputModalClose) {
-    userInputModalClose.addEventListener("click", closeUserInputModal);
-  }
-
-  if (userInputModal) {
-    userInputModal.addEventListener("click", (event) => {
-      if (event.target === userInputModal) {
-        closeUserInputModal();
-      }
-    });
-  }
-
-  if (userInputNavLink) {
-    userInputNavLink.addEventListener("click", (event) => {
-      if (VLProgress.hasUser()) return; // already filled; let it behave as normal link (no modal)
-      event.preventDefault();
-      openUserInputModal(userInputNavLink.dataset.redirectReturn || "aim.html");
-    });
-  }
-
-  refreshUserInputNavLabel();
-
-  window.addEventListener("message", (event) => {
-    const allowedOrigin = window.location.origin;
-    const fromNullOrigin = event.origin === "null";
-    if (allowedOrigin !== "null" && event.origin !== allowedOrigin && !fromNullOrigin) return;
-    const data = event.data;
-    if (!data || !data.type) return;
-
-    if (data.type === "vlab:simulation_report_generated") {
-      const html = typeof data.html === "string" ? data.html : "";
-      const updatedAt = (data.updatedAt || String(Date.now())).toString();
-      if (html && html.trim()) {
+        // show prompt once per session load
+        const sessionKey = "vlab_exp2_prompted_once";
         try {
-          localStorage.setItem("vlab_exp2_simulation_report_html", html);
-          localStorage.setItem("vlab_exp2_simulation_report_updated_at", updatedAt);
-          const activeHash = localStorage.getItem("vlab_exp2_active_user_hash");
-          if (activeHash) {
-            localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_html`, html);
-            localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_updated_at`, updatedAt);
+          if (sessionStorage.getItem(sessionKey) === "1") return;
+          sessionStorage.setItem(sessionKey, "1");
+        } catch { }
+
+        openPrompt();
+      };
+
+      const modal = document.getElementById("userFormPrompt");
+      const yesBtn = document.getElementById("promptYes");
+      const noBtn = document.getElementById("promptNo");
+      const AIM_USER_FORM_PROMPT_AUDIO_SRC = "./audio/userinput.wav";
+      const AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE =
+        "To access the progress report, first fill out the user form and generate the simulation report by performing the experiment.";
+      const AIM_PROGRESS_REPORT_ACCESS_ALERT_USER_ONLY_MESSAGE =
+        "Please fill out the user form to access the progress report.";
+      const AIM_PROGRESS_REPORT_ACCESS_ALERT_SIM_ONLY_MESSAGE =
+        "Please generate the simulation report by performing the experiment.";
+      const AIM_PROGRESS_REPORT_ACCESS_ALERT_AUDIO_SRC = "./audio/progressreportalert.wav";
+      let aimUserFormPromptAudioEl = null;
+      let aimProgressReportAccessAlertAudioEl = null;
+
+      function playAimUserFormPromptAudio() {
+        if (!AIM_USER_FORM_PROMPT_AUDIO_SRC) return;
+        if (!aimUserFormPromptAudioEl) {
+          aimUserFormPromptAudioEl = new Audio(AIM_USER_FORM_PROMPT_AUDIO_SRC);
+          aimUserFormPromptAudioEl.preload = "auto";
+        }
+        aimUserFormPromptAudioEl.currentTime = 0;
+        const playPromise = aimUserFormPromptAudioEl.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(() => { });
+        }
+      }
+
+      function stopAimUserFormPromptAudio() {
+        if (!aimUserFormPromptAudioEl) return;
+        aimUserFormPromptAudioEl.pause();
+        aimUserFormPromptAudioEl.currentTime = 0;
+      }
+
+      function getAimProgressReportAccessAlertMessage(needUser, needSim) {
+        if (window.VLProgress && typeof window.VLProgress.getProgressReportBlockMessage === "function") {
+          const mapped = window.VLProgress.getProgressReportBlockMessage(needUser, needSim);
+          if (String(mapped || "").trim()) return String(mapped).trim();
+        }
+        if (needUser && needSim) return AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE;
+        if (needUser) return AIM_PROGRESS_REPORT_ACCESS_ALERT_USER_ONLY_MESSAGE;
+        if (needSim) return AIM_PROGRESS_REPORT_ACCESS_ALERT_SIM_ONLY_MESSAGE;
+        return AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE;
+      }
+
+      function playAimProgressReportAccessAlertAudio(message) {
+        const normalizedMessage = String(message || "").trim();
+        if (normalizedMessage !== AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE) return;
+        if (!AIM_PROGRESS_REPORT_ACCESS_ALERT_AUDIO_SRC) return;
+        if (!aimProgressReportAccessAlertAudioEl) {
+          aimProgressReportAccessAlertAudioEl = new Audio(AIM_PROGRESS_REPORT_ACCESS_ALERT_AUDIO_SRC);
+          aimProgressReportAccessAlertAudioEl.preload = "auto";
+        }
+        aimProgressReportAccessAlertAudioEl.currentTime = 0;
+        const playPromise = aimProgressReportAccessAlertAudioEl.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(() => { });
+        }
+      }
+
+      function stopAimProgressReportAccessAlertAudio() {
+        if (!aimProgressReportAccessAlertAudioEl) return;
+        aimProgressReportAccessAlertAudioEl.pause();
+        aimProgressReportAccessAlertAudioEl.currentTime = 0;
+      }
+
+      function openPrompt() {
+        if (!modal) return;
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        playAimUserFormPromptAudio();
+      }
+
+      function closePrompt() {
+        stopAimUserFormPromptAudio();
+        if (!modal) return;
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+
+      const userInputModal = document.getElementById("userInputModal");
+      const userInputIframe = document.getElementById("userInputIframe");
+      const userInputModalClose = document.getElementById("userInputModalClose");
+      const userInputNavLink = document.querySelector("[data-user-input-link]");
+      const userInputNavAvatar = userInputNavLink?.querySelector("[data-user-avatar]");
+      const userInputNavText = userInputNavLink?.querySelector("[data-user-text]");
+      const userInputModalAvatar = document.getElementById("userInputModalAvatar");
+      const userInputModalName = document.getElementById("userInputModalName");
+      const userInputModalDesignation = document.getElementById("userInputModalDesignation");
+      const aimAlertModal = document.getElementById("aimAlertModal");
+      const aimAlertTitle = document.getElementById("aimAlertTitle");
+      const aimAlertMessage = document.getElementById("aimAlertMessage");
+      const aimAlertClose = aimAlertModal?.querySelector("[data-aim-alert-close]");
+      let aimAlertOnClose = null;
+
+      const defaultUserInputNavLabel = "User Input";
+
+      function getFirstName(fullName) {
+        if (!fullName || typeof fullName !== "string") return "";
+        const trimmed = fullName.trim();
+        if (!trimmed) return "";
+        return trimmed.split(/\s+/)[0];
+      }
+
+      function pickUserColors(seed) {
+        const palettes = [
+          ["#0b60a8", "#021a2c"],
+          ["#2563eb", "#0b60a8"],
+          ["#0ea5e9", "#0369a1"],
+          ["#22c55e", "#14532d"],
+          ["#f97316", "#c2410c"]
+        ];
+        const key = (seed || "user").toLowerCase();
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+          hash = (hash * 31 + key.charCodeAt(i)) & 0xffffffff;
+        }
+        const idx = Math.abs(hash) % palettes.length;
+        return palettes[idx];
+      }
+
+      function paintAvatar(el, seed, fallbackInitial = "U") {
+        if (!el) return;
+        const [c1, c2] = pickUserColors(seed);
+        const initial = (seed && seed[0] ? seed[0] : fallbackInitial).toUpperCase();
+        el.textContent = initial;
+        el.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+      }
+
+      function refreshUserInputModalBadge(firstName, designation) {
+        if (userInputModalName) {
+          userInputModalName.textContent = firstName || "User Input Form";
+        }
+        if (userInputModalAvatar) {
+          paintAvatar(userInputModalAvatar, firstName || "User");
+        }
+        if (userInputModalDesignation) {
+          if (designation) {
+            userInputModalDesignation.textContent = designation;
+            userInputModalDesignation.classList.remove("hidden");
+          } else {
+            userInputModalDesignation.textContent = "";
+            userInputModalDesignation.classList.add("hidden");
           }
-        } catch (e) {}
+        }
+      }
+
+      function refreshUserInputNavLabel() {
+        const state = VLProgress.getState();
+        const firstName = getFirstName(state.user?.name);
+        const designation = (state.user?.designation || "").trim();
+
+        if (userInputNavText) {
+          userInputNavText.textContent = firstName || defaultUserInputNavLabel;
+        } else if (userInputNavLink) {
+          userInputNavLink.textContent = firstName || defaultUserInputNavLabel;
+        }
+
+        if (userInputNavAvatar) {
+          if (firstName) {
+            paintAvatar(userInputNavAvatar, firstName, "U");
+          } else {
+            userInputNavAvatar.textContent = "UI";
+            userInputNavAvatar.style.background = "linear-gradient(135deg, #94a3b8, #475569)";
+          }
+        }
+
+        if (userInputNavLink) {
+          if (firstName) {
+            userInputNavLink.setAttribute("title", state.user?.name || firstName);
+            userInputNavLink.classList.add("nav-user-link-active");
+          } else {
+            userInputNavLink.removeAttribute("title");
+            userInputNavLink.classList.remove("nav-user-link-active");
+          }
+        }
+
+        refreshUserInputModalBadge(firstName, designation);
+      }
+
+      function openUserInputModal(returnUrl = "aim.html") {
+        if (!userInputModal || !userInputIframe) return;
+        refreshUserInputNavLabel();
+        const params = new URLSearchParams();
+        if (returnUrl) params.set("return", returnUrl);
+        userInputIframe.src = `user_input.html${params.toString() ? `?${params}` : ""}`;
+        userInputModal.classList.remove("hidden");
+        userInputModal.classList.add("flex");
+        document.body.classList.add("overflow-hidden");
+      }
+
+      function closeUserInputModal() {
+        if (!userInputModal) return;
+        userInputModal.classList.add("hidden");
+        userInputModal.classList.remove("flex");
+        document.body.classList.remove("overflow-hidden");
+        if (userInputIframe) {
+          userInputIframe.src = "about:blank";
+        }
+      }
+
+      function showAimAlert(message, title = "Notice", onClose = null) {
+        if (!aimAlertModal) {
+          alert(message);
+          if (typeof onClose === "function") onClose();
+          return;
+        }
+        if (aimAlertTitle) aimAlertTitle.textContent = title;
+        if (aimAlertMessage) aimAlertMessage.textContent = message;
+        aimAlertOnClose = typeof onClose === "function" ? onClose : null;
+        aimAlertModal.classList.add("show");
+        document.body.classList.add("is-modal-open");
+        aimAlertClose?.focus?.();
+        playAimProgressReportAccessAlertAudio(message);
+      }
+
+      window.showAimAlert = showAimAlert;
+
+      function closeAimAlert() {
+        stopAimProgressReportAccessAlertAudio();
+        if (typeof window.stopAimReadyNoticeAudio === "function") {
+          window.stopAimReadyNoticeAudio();
+        }
+        if (!aimAlertModal) return;
+        aimAlertModal.classList.remove("show");
+        document.body.classList.remove("is-modal-open");
+        if (aimAlertOnClose) {
+          const callback = aimAlertOnClose;
+          aimAlertOnClose = null;
+          callback();
+        }
+      }
+
+      if (aimAlertClose) {
+        aimAlertClose.addEventListener("click", closeAimAlert);
+      }
+
+      aimAlertModal?.addEventListener("click", (event) => {
+        if (event.target === aimAlertModal) closeAimAlert();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && aimAlertModal?.classList.contains("show")) {
+          closeAimAlert();
+        }
+      });
+
+      if (userInputModalClose) {
+        userInputModalClose.addEventListener("click", closeUserInputModal);
+      }
+
+      if (userInputModal) {
+        userInputModal.addEventListener("click", (event) => {
+          if (event.target === userInputModal) {
+            closeUserInputModal();
+          }
+        });
+      }
+
+      if (userInputNavLink) {
+        userInputNavLink.addEventListener("click", (event) => {
+          if (VLProgress.hasUser()) return; // already filled; let it behave as normal link (no modal)
+          event.preventDefault();
+          openUserInputModal(userInputNavLink.dataset.redirectReturn || "aim.html");
+        });
+      }
+
+      refreshUserInputNavLabel();
+
+      window.addEventListener("message", (event) => {
+        const allowedOrigin = window.location.origin;
+        const fromNullOrigin = event.origin === "null";
+        if (allowedOrigin !== "null" && event.origin !== allowedOrigin && !fromNullOrigin) return;
+        const data = event.data;
+        if (!data || !data.type) return;
+
+        if (data.type === "vlab:simulation_report_generated") {
+          const html = typeof data.html === "string" ? data.html : "";
+          const updatedAt = (data.updatedAt || String(Date.now())).toString();
+          if (html && html.trim()) {
+            try {
+              localStorage.setItem("vlab_exp2_simulation_report_html", html);
+              localStorage.setItem("vlab_exp2_simulation_report_updated_at", updatedAt);
+              const activeHash = localStorage.getItem("vlab_exp2_active_user_hash");
+              if (activeHash) {
+                localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_html`, html);
+                localStorage.setItem(`vlab_exp2_user_${activeHash}_simulation_report_updated_at`, updatedAt);
+              }
+            } catch (e) { }
+
+            try {
+              const PREFIX = "VLAB_EXP2::";
+              if (html.length <= 1500000) {
+                let wn = {};
+                if (typeof window.name === "string" && window.name.startsWith(PREFIX)) {
+                  wn = JSON.parse(window.name.slice(PREFIX.length)) || {};
+                }
+                wn["vlab_exp2_simulation_report_html"] = html;
+                wn["vlab_exp2_simulation_report_updated_at"] = updatedAt;
+                window.name = PREFIX + JSON.stringify(wn);
+              }
+            } catch (e) { }
+          }
+
+          ensureProgressReportState();
+          return;
+        }
+
+        if (data.type === "vlab:user_input_cancel") {
+          closeUserInputModal();
+          return;
+        }
+
+        if (data.type !== "vlab:user_input_submitted") return;
+        closeUserInputModal();
+        refreshUserInputNavLabel();
+        ensureProgressReportState();
+        if (data.returnUrl) {
+          window.location.href = data.returnUrl;
+        }
+      });
+
+      const progressReportLinks = Array.from(document.querySelectorAll("[data-progress-report-link]"));
+
+      // Make sure Progress Report never opens in a new tab/window
+      const allProgressReportLinks = Array.from(document.querySelectorAll('a[href*="progressreport"]'));
+      [...new Set([...progressReportLinks, ...allProgressReportLinks])].forEach((link) => {
+        link.removeAttribute("target");
+        link.setAttribute("target", "_self");
+      });
+
+      function hasSimulationReport() {
+        try {
+          const activeHash = localStorage.getItem("vlab_exp2_active_user_hash") || "";
+          const keys = [];
+          if (activeHash) keys.push(`vlab_exp2_user_${activeHash}_simulation_report_html`);
+          keys.push("vlab_exp2_simulation_report_html");
+          for (const k of keys) {
+            const html = localStorage.getItem(k);
+            if (html && String(html).trim()) return true;
+          }
+        } catch { }
 
         try {
           const PREFIX = "VLAB_EXP2::";
-          if (html.length <= 1500000) {
-            let wn = {};
-            if (typeof window.name === "string" && window.name.startsWith(PREFIX)) {
-              wn = JSON.parse(window.name.slice(PREFIX.length)) || {};
-            }
-            wn["vlab_exp2_simulation_report_html"] = html;
-            wn["vlab_exp2_simulation_report_updated_at"] = updatedAt;
-            window.name = PREFIX + JSON.stringify(wn);
+          if (typeof window.name === "string" && window.name.startsWith(PREFIX)) {
+            const data = JSON.parse(window.name.slice(PREFIX.length)) || {};
+            const html = (data["vlab_exp2_simulation_report_html"] || "").toString();
+            if (html.trim()) return true;
           }
-        } catch (e) {}
+        } catch { }
+        return false;
+      }
+
+      function disableProgressReportUI(message = AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE) {
+        progressReportLinks.forEach((link) => {
+          link.classList.add("opacity-50", "cursor-not-allowed");
+          link.setAttribute("aria-disabled", "true");
+          link.setAttribute("title", message);
+          // Fallback if Tailwind classes are unavailable (offline).
+          link.style.opacity = "0.55";
+          link.style.cursor = "not-allowed";
+        });
+      }
+
+      function enableProgressReportUI() {
+        progressReportLinks.forEach((link) => {
+          link.classList.remove("opacity-50", "cursor-not-allowed");
+          link.removeAttribute("aria-disabled");
+          link.removeAttribute("title");
+          link.style.opacity = "";
+          link.style.cursor = "";
+        });
+      }
+
+      function ensureProgressReportState() {
+        const needUser = !VLProgress.hasUser();
+        const needSim = !hasSimulationReport();
+        if (!needUser && !needSim) {
+          enableProgressReportUI();
+        } else {
+          disableProgressReportUI(getAimProgressReportAccessAlertMessage(needUser, needSim));
+        }
       }
 
       ensureProgressReportState();
-      return;
-    }
+      window.addEventListener("storage", ensureProgressReportState);
 
-    if (data.type === "vlab:user_input_cancel") {
-      closeUserInputModal();
-      return;
-    }
+      // YES → go to form
+      if (yesBtn) yesBtn.addEventListener("click", () => {
+        closePrompt();
+        openUserInputModal("aim.html");
+      });
 
-    if (data.type !== "vlab:user_input_submitted") return;
-    closeUserInputModal();
-    refreshUserInputNavLabel();
-    ensureProgressReportState();
-    if (data.returnUrl) {
-      window.location.href = data.returnUrl;
-    }
-  });
+      // NO → stay, but block report
+      if (noBtn) noBtn.addEventListener("click", () => {
+        closePrompt();
+        VLProgress.declineReport();
+        disableProgressReportUI();
+      });
 
-  const progressReportLinks = Array.from(document.querySelectorAll("[data-progress-report-link]"));
+      // Block progress report access unless form is filled
+      progressReportLinks.forEach((link) => {
+        link.addEventListener("click", function (e) {
+          const needUser = !VLProgress.hasUser();
+          const needSim = !hasSimulationReport();
+          if (!needUser && !needSim) {
+            enableProgressReportUI();
+            return;
+          }
+          e.preventDefault();
+          e.stopImmediatePropagation();
 
-  // Make sure Progress Report never opens in a new tab/window
-  const allProgressReportLinks = Array.from(document.querySelectorAll('a[href*="progressreport"]'));
-  [...new Set([...progressReportLinks, ...allProgressReportLinks])].forEach((link) => {
-    link.removeAttribute("target");
-    link.setAttribute("target", "_self");
-  });
+          const msg = getAimProgressReportAccessAlertMessage(needUser, needSim);
+          showAimAlert(msg, "Instructions");
+        }, true);
+      });
 
-  function hasSimulationReport() {
-    try {
-      const activeHash = localStorage.getItem("vlab_exp2_active_user_hash") || "";
-      const keys = [];
-      if (activeHash) keys.push(`vlab_exp2_user_${activeHash}_simulation_report_html`);
-      keys.push("vlab_exp2_simulation_report_html");
-      for (const k of keys) {
-        const html = localStorage.getItem(k);
-        if (html && String(html).trim()) return true;
+      // Delegated guard for any missed Progress Report links (safety net)
+      document.addEventListener("click", (event) => {
+        const target = event.target.closest("a");
+        if (!target) return;
+        const href = (target.getAttribute("href") || "").trim();
+        const isProgressLink =
+          target.hasAttribute("data-progress-report-link") ||
+          href.toLowerCase().includes("progressreport") ||
+          href === "#progressreport" ||
+          href.endsWith("#progressreport");
+        if (!isProgressLink) return;
+        const needUser = !VLProgress.hasUser();
+        const needSim = !hasSimulationReport();
+        if (!needUser && !needSim) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const msg = getAimProgressReportAccessAlertMessage(needUser, needSim);
+        showAimAlert(msg, "Instructions");
+      }, true);
+
+      // If user loads aim.html#progressreport directly without user form
+      if (window.location.hash === "#progressreport" && (!VLProgress.hasUser() || !hasSimulationReport())) {
+        const needUser = !VLProgress.hasUser();
+        const needSim = !hasSimulationReport();
+        const msg = getAimProgressReportAccessAlertMessage(needUser, needSim);
+        showAimAlert(msg, "Instructions");
       }
-    } catch {}
 
-    try {
-      const PREFIX = "VLAB_EXP2::";
-      if (typeof window.name === "string" && window.name.startsWith(PREFIX)) {
-        const data = JSON.parse(window.name.slice(PREFIX.length)) || {};
-        const html = (data["vlab_exp2_simulation_report_html"] || "").toString();
-        if (html.trim()) return true;
-      }
-    } catch {}
-    return false;
-  }
-
-  function disableProgressReportUI(message = AIM_PROGRESS_REPORT_ACCESS_ALERT_BOTH_MESSAGE) {
-    progressReportLinks.forEach((link) => {
-      link.classList.add("opacity-50", "cursor-not-allowed");
-      link.setAttribute("aria-disabled", "true");
-      link.setAttribute("title", message);
-      // Fallback if Tailwind classes are unavailable (offline).
-      link.style.opacity = "0.55";
-      link.style.cursor = "not-allowed";
-    });
-  }
-
-  function enableProgressReportUI() {
-    progressReportLinks.forEach((link) => {
-      link.classList.remove("opacity-50", "cursor-not-allowed");
-      link.removeAttribute("aria-disabled");
-      link.removeAttribute("title");
-      link.style.opacity = "";
-      link.style.cursor = "";
-    });
-  }
-
-  function ensureProgressReportState() {
-    const needUser = !VLProgress.hasUser();
-    const needSim = !hasSimulationReport();
-    if (!needUser && !needSim) {
-      enableProgressReportUI();
-    } else {
-      disableProgressReportUI(getAimProgressReportAccessAlertMessage(needUser, needSim));
-    }
-  }
-
-  ensureProgressReportState();
-  window.addEventListener("storage", ensureProgressReportState);
-
-  // YES → go to form
-  if (yesBtn) yesBtn.addEventListener("click", () => {
-    closePrompt();
-    openUserInputModal("aim.html");
-  });
-
-  // NO → stay, but block report
-  if (noBtn) noBtn.addEventListener("click", () => {
-    closePrompt();
-    VLProgress.declineReport();
-    disableProgressReportUI();
-  });
-
-  // Block progress report access unless form is filled
-  progressReportLinks.forEach((link) => {
-    link.addEventListener("click", function (e) {
-      const needUser = !VLProgress.hasUser();
-      const needSim = !hasSimulationReport();
-      if (!needUser && !needSim) {
-        enableProgressReportUI();
-        return;
-      }
-      e.preventDefault();
-      e.stopImmediatePropagation();
-
-      const msg = getAimProgressReportAccessAlertMessage(needUser, needSim);
-      showAimAlert(msg, "Instructions");
-    }, true);
-  });
-
-  // Delegated guard for any missed Progress Report links (safety net)
-  document.addEventListener("click", (event) => {
-    const target = event.target.closest("a");
-    if (!target) return;
-    const href = (target.getAttribute("href") || "").trim();
-    const isProgressLink =
-      target.hasAttribute("data-progress-report-link") ||
-      href.toLowerCase().includes("progressreport") ||
-      href === "#progressreport" ||
-      href.endsWith("#progressreport");
-    if (!isProgressLink) return;
-    const needUser = !VLProgress.hasUser();
-    const needSim = !hasSimulationReport();
-    if (!needUser && !needSim) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const msg = getAimProgressReportAccessAlertMessage(needUser, needSim);
-    showAimAlert(msg, "Instructions");
-  }, true);
-
-  // If user loads aim.html#progressreport directly without user form
-  if (window.location.hash === "#progressreport" && (!VLProgress.hasUser() || !hasSimulationReport())) {
-    const needUser = !VLProgress.hasUser();
-    const needSim = !hasSimulationReport();
-    const msg = getAimProgressReportAccessAlertMessage(needUser, needSim);
-    showAimAlert(msg, "Instructions");
-  }
-
-  // If intro is not shown (already shown earlier), still prompt on load (optional but useful)
-})();
-</script>
+      // If intro is not shown (already shown earlier), still prompt on load (optional but useful)
+    })();
+  </script>
 
 </body>
+
 </html>
